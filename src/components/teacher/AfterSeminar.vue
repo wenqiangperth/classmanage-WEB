@@ -7,9 +7,9 @@
         <el-dropdown class="plus" trigger="click">
           <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item><i class="el-icon-bell icon0"></i>&nbsp;&nbsp;个人页</el-dropdown-item>
+            <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
             <el-dropdown-item>
-              <router-link :to="{name:'Login'}"><i class="el-icon-back icon0"></i>&nbsp;&nbsp;退 出</router-link>
+              <router-link :to="{name:'Login'}"><i class="el-icon-back">&nbsp;&nbsp;退 出</i></router-link>
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -41,7 +41,7 @@
         <el-button type="success" class="btn" plain @click="viewReport">书面报告</el-button>
       </div>
       <div>
-        <el-button type="success" class="btn1" plain @click="viewResults">查看成绩</el-button>
+        <el-button type="success" class="btn1 btn" plain @click="viewResults">查看成绩</el-button>
       </div>
 
     </div>
@@ -62,6 +62,9 @@
       }
     },
     methods: {
+      gotoHomePage(){
+        this.$router.push({path:'/teacher/HomePage'});
+      },
       viewReport() {
         this.$router.push({path: '/teacher/ReportPage'});
       },
@@ -74,58 +77,9 @@
 </script>
 
 <style scoped>
-  .head {
-    height: 70px;
-    width: 100%;
-    background-color: #CCFF99;
-  }
-
-  .title {
-    display: block;
-    text-align: center;
-    line-height: 70px;
-  }
-
-  .plus {
-    float: right;
-    margin-right: 3%;
-    line-height: 70px;
-  }
-
-  .icon1 {
-    float: left;
-    margin-left: 3%;
-    line-height: 70px;
-  }
-
-  .icon0 {
-    font-weight: bolder;
-  }
-  .btn {
-    width: 100%;
-    border: none;
-    color: white;
-    background-color: #66cccc;
-    margin-top: 100px;
-  }
 
   .btn1 {
-    width: 100%;
-    border: none;
-    color: white;
-    background-color: #66cccc;
     margin-top: 5px;
-  }
-
-  .main {
-    width: 50%;
-    margin: auto;
-  }
-
-  @media (max-width: 640px) {
-    .main {
-      width: 100%;
-    }
   }
 
 

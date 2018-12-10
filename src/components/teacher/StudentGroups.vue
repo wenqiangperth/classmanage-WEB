@@ -3,15 +3,11 @@
     <div id="head" class="head">
       <div class="title"><i class="el-icon-back icon1 icon0" @click="returnCourseManage"></i>我的课程
         <el-dropdown class="plus" trigger="click">
-          <i class="el-icon-menu icon1 icon0"></i>
+          <i class="el-icon-plus icon1 icon0"></i>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item><i class="el-icon-bell icon0"></i>&nbsp;&nbsp;个人页</el-dropdown-item>
-            <el-dropdown-item>
-              <div @click="gotoSeminar"><i class="el-icon-service icon0"></i>&nbsp;&nbsp;讨论课</div>
-            </el-dropdown-item>
-            <el-dropdown-item>
-              <div @click="returnLogin"><i class="el-icon-back icon0"></i>&nbsp;&nbsp;退 出</div>
-            </el-dropdown-item>
+            <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
+            <el-dropdown-item><i class="el-icon-service" @click="gotoSeminar">&nbsp;&nbsp;讨论课</i></el-dropdown-item>
+            <el-dropdown-item><i class="el-icon-back" @click="returnLogin">&nbsp;&nbsp;退 出</i></el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -26,14 +22,15 @@
               &nbsp;&nbsp;<i class="header-icon el-icon-star-off icon0"></i>&nbsp;&nbsp;{{item.groupId}}&nbsp;&nbsp;{{item.groupName}}
             </div>
           </template>
-          <table style="width: 100%;background-color: lavender;text-align: center">
+          <table border="0" cellspacing="0" cellpadding="0"
+            style="width: 100%;background-color: beige;text-align: center;">
             <tr style="height: 40px">
               <td style="width: 20%;font-weight: bold">组长:</td>
               <td style="width: 40%">{{item.leader.account}}</td>
               <td>{{item.leader.name}}</td>
             </tr>
           </table>
-          <table style="width: 100%;background-color: beige;text-align:center"
+          <table style="width: 100%;background-color:#f4f4f5 ;text-align:center"
                  v-for="(item0,index0) in item.members"
                  :key="index0">
             <tr style="height: 30px">
@@ -171,6 +168,9 @@
       },
       gotoSeminar() {
         this.$router.push({path: '/teacher/SeminarPage'});
+      },
+      gotoHomePage(){
+        this.$router.push({path:'teacher/HomePage'});
       }
 
     }
@@ -178,48 +178,10 @@
 </script>
 
 <style scoped>
-  .head {
-    height: 70px;
-    width: 100%;
-    background-color: #CCFF99;
-  }
-
-  .title {
-    display: block;
-    text-align: center;
-    line-height: 70px;
-  }
-
-  .plus {
-    float: right;
-    margin-right: 3%;
-    line-height: 70px;
-  }
-
-  .icon0 {
-    font-weight: bolder;
-  }
-
-  .icon1 {
-    float: left;
-    margin-left: 3%;
-    line-height: 70px;
-  }
 
   .empty {
     width: 100%;
     height: 30px;
-  }
-
-  .main {
-    width: 50%;
-    margin: auto;
-  }
-
-  @media (max-width: 640px) {
-    .main {
-      width: 100%;
-    }
   }
 
 </style>

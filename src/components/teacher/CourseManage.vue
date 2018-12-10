@@ -5,13 +5,9 @@
         <el-dropdown class="plus" trigger="click">
           <i class="el-icon-more icon1"></i>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item><i class="el-icon-bell"></i>&nbsp;&nbsp;个人页</el-dropdown-item>
-            <el-dropdown-item>
-              <div @click="gotoSeminar"><i class="el-icon-service"></i>&nbsp;&nbsp;讨论课</div>
-            </el-dropdown-item>
-            <el-dropdown-item>
-              <div @click="returnLogin"><i class="el-icon-back"></i>&nbsp;&nbsp;退 出</div>
-            </el-dropdown-item>
+            <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
+            <el-dropdown-item><i class="el-icon-service" @click="gotoSeminar">&nbsp;&nbsp;讨论课</i></el-dropdown-item>
+            <el-dropdown-item><i class="el-icon-back" @click="returnLogin">&nbsp;&nbsp;退 出</i></el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -34,27 +30,27 @@
           </template>
           <div style="width: 100%">
             <div>
-              <el-button class="btn" type="info" plain @click="viewGrades"><i class="iconfont icon-chengjiguanli"></i>&nbsp;&nbsp;{{items.item[0]}}
+              <el-button class="btn_info" type="info" plain @click="viewGrades"><i class="iconfont icon-chengjiguanli"></i>&nbsp;&nbsp;{{items.item[0]}}
               </el-button>
             </div>
             <div>
-              <el-button class="btn" type="info" plain @click="viewGroups"><i class="iconfont icon-zudui"></i>&nbsp;&nbsp;{{items.item[1]}}
+              <el-button class="btn_info" type="info" plain @click="viewGroups"><i class="iconfont icon-zudui"></i>&nbsp;&nbsp;{{items.item[1]}}
               </el-button>
             </div>
             <div>
-              <el-button class="btn" type="info" plain @click="viewCourseInfo"><i class="iconfont icon-xinxi1"></i>&nbsp;&nbsp;{{items.item[2]}}
+              <el-button class="btn_info" type="info" plain @click="viewCourseInfo"><i class="iconfont icon-xinxi1"></i>&nbsp;&nbsp;{{items.item[2]}}
               </el-button>
             </div>
             <div>
-              <el-button class="btn" type="info" plain @click="viewClassInfo"><i class="iconfont icon-xinxi"></i>&nbsp;&nbsp;{{items.item[3]}}
+              <el-button class="btn_info" type="info" plain @click="viewClassInfo"><i class="iconfont icon-xinxi"></i>&nbsp;&nbsp;{{items.item[3]}}
               </el-button>
             </div>
             <div>
-              <el-button class="btn" type="info" plain @click="gotoSeminar"><i class="iconfont icon-guanlianguize"></i>&nbsp;&nbsp;{{items.item[4]}}
+              <el-button class="btn_info" type="info" plain @click="gotoSeminar"><i class="iconfont icon-guanlianguize"></i>&nbsp;&nbsp;{{items.item[4]}}
               </el-button>
             </div>
             <div>
-              <el-button class="btn" type="info" plain @click="setShare"><i class="el-icon-share"></i>&nbsp;&nbsp;{{items.item[5]}}
+              <el-button class="btn_info" type="info" plain @click="setShare"><i class="el-icon-share"></i>&nbsp;&nbsp;{{items.item[5]}}
               </el-button>
             </div>
           </div>
@@ -103,6 +99,9 @@
       returnHomePage() {
         this.$router.push({path: '/teacher/HomePage'});
       },
+      gotoHomePage(){
+        this.$router.push({path:'/teacher/HomePage'});
+      },
       NewCourse() {
         this.$router.push({path: '/teacher/NewCourse'});
       },
@@ -130,40 +129,12 @@
 </script>
 
 <style scoped>
-  .head {
-    height: 70px;
-    width: 100%;
-    background-color: #CCFF99;
-  }
-
-  .title {
-    display: block;
-    text-align: center;
-    line-height: 70px;
-  }
-
-  .plus {
-    float: right;
-    margin-right: 3%;
-    line-height: 70px;
-  }
-
-  .icon1 {
-    float: left;
-    margin-left: 3%;
-    line-height: 70px;
-    font-weight: bolder;
-  }
 
   .empty {
     width: 100%;
     height: 30px;
   }
 
-  .main {
-    width: 50%;
-    margin: auto;
-  }
   .new_course {
     width: 100%;
     height: 50px;
@@ -173,13 +144,8 @@
     float: right;
   }
 
-  .btn {
+  .btn_info {
     width: 100%;
   }
 
-  @media (max-width: 640px) {
-    .main {
-      width: 100%;
-    }
-  }
 </style>

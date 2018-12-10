@@ -114,22 +114,6 @@
 </script>
 
 <style scoped>
-  .body0 {
-    font-size: 14px;
-    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
-  }
-
-  .head {
-    height: 70px;
-    width: 100%;
-    background-color: #CCFF99;
-  }
-
-  .title {
-    display: block;
-    text-align: center;
-    line-height: 70px;
-  }
   .pause {
     position: fixed;
     top: 0;
@@ -143,34 +127,6 @@
     text-align: center;
     font-size: 14px;
     display: none;
-  }
-
-  .icon1 {
-    float: left;
-    margin-left: 3%;
-    line-height: 70px;
-  }
-
-  .icon0 {
-    font-weight: bolder;
-  }
-
-  .main {
-    width: 50%;
-    margin: auto;
-  }
-
-  .btn {
-    width: 100%;
-    border: none;
-    background-color: #66cccc;
-    color: white;
-  }
-
-  @media (max-width: 640px) {
-    .main {
-      width: 100%;
-    }
   }
 
 </style>

@@ -3,23 +3,19 @@
     <div id="head" class="head">
       <div class="title"><i class="el-icon-back icon1 icon0" @click="returnCourseManage"></i>班级信息
         <el-dropdown class="plus" trigger="click">
-          <i class="el-icon-menu icon0"></i>
+          <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item><i class="el-icon-bell icon0"></i>&nbsp;&nbsp;个人页</el-dropdown-item>
-            <el-dropdown-item>
-              <div @click="gotoSeminar"><i class="el-icon-service icon0"></i>&nbsp;&nbsp;讨论课</div>
-            </el-dropdown-item>
-            <el-dropdown-item>
-              <div @click="returnLogin"><i class="el-icon-back icon0"></i>&nbsp;&nbsp;退 出</div>
-            </el-dropdown-item>
+            <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
+            <el-dropdown-item><i class="el-icon-service" @click="gotoSeminar">&nbsp;&nbsp;讨论课</i></el-dropdown-item>
+            <el-dropdown-item><i class="el-icon-back" @click="returnLogin">&nbsp;&nbsp;退 出</i></el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
     </div>
     <div class="main">
       <div style="margin-top: 10px;margin-bottom: 10px">
-        <el-button type="success" plain
-                   style="width: 100%"
+        <el-button type="success" plain class="btn"
+                   style="margin-top: 5px"
                    @click="addClass">
           <i class="el-icon-plus icon0"></i>&nbsp;新增班级
         </el-button>
@@ -65,7 +61,7 @@
             </tr>
             <tr style="height: 20px">
               <td>
-                <el-button type="danger" plain style="width: 50%">删除班级</el-button>
+                <el-button type="info" plain style="width: 50%">删除班级</el-button>
               </td>
             </tr>
             <tr style="height: 20px">
@@ -121,6 +117,9 @@
       }
     },
     methods: {
+      gotoHomePage(){
+        this.$router.push({path:'/teacher/HomePage'});
+      },
       returnLogin() {
         this.$router.push({path: '/'});
       },
@@ -141,42 +140,5 @@
 </script>
 
 <style scoped>
-  .head {
-    height: 70px;
-    width: 100%;
-    background-color: #CCFF99;
-  }
 
-  .title {
-    display: block;
-    text-align: center;
-    line-height: 70px;
-  }
-
-  .plus {
-    float: right;
-    margin-right: 3%;
-    line-height: 70px;
-  }
-
-  .icon1 {
-    float: left;
-    margin-left: 3%;
-    line-height: 70px;
-  }
-
-  .icon0 {
-    font-weight: bolder;
-  }
-
-  .main {
-    width: 50%;
-    margin: auto;
-  }
-
-  @media (max-width: 640px) {
-    .main {
-      width: 100%;
-    }
-  }
 </style>

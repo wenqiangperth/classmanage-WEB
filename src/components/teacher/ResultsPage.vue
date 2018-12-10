@@ -7,7 +7,8 @@
         <el-dropdown class="plus" trigger="click">
           <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item><i class="el-icon-bell icon0"></i>&nbsp;&nbsp;个人页</el-dropdown-item>
+            <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
+            <el-dropdown-item><i class="el-icon-service" @click="gotoSeminar">&nbsp;&nbsp;讨论课</i></el-dropdown-item>
             <el-dropdown-item>
               <router-link :to="{name:'Login'}"><i class="el-icon-back icon0"></i>&nbsp;&nbsp;退 出</router-link>
             </el-dropdown-item>
@@ -109,7 +110,12 @@
       }
     },
     methods: {
-
+      gotoHomePage(){
+        this.$router.push({path:'/teacher/HomePage'});
+      },
+      gotoSeminar(){
+        this.$router.push({path:'/teacher/SeminarPage'});
+      },
       updateSuccess() {
         this.$router.push({path: '/teacher/AfterSeminar'});
       },
@@ -119,54 +125,12 @@
 </script>
 
 <style scoped>
-  .head {
-    height: 70px;
-    width: 100%;
-    background-color: #CCFF99;
-  }
 
-  .title {
-    display: block;
-    text-align: center;
-    line-height: 70px;
-  }
-
-  .plus {
-    float: right;
-    margin-right: 3%;
-    line-height: 70px;
-  }
-
-  .icon1 {
-    float: left;
-    margin-left: 3%;
-    line-height: 70px;
-  }
-
-  .btn {
-    width: 100%;
-    border: none;
-    color: white;
-    background-color: #66cccc;
-  }
 
   .input0 {
     background-color: lavender;
   }
 
-  .icon0 {
-    font-weight: bolder;
-  }
-  .main {
-    width: 50%;
-    margin: auto;
-  }
-
-  @media (max-width: 640px) {
-    .main {
-      width: 100%;
-    }
-  }
 </style>
 
 

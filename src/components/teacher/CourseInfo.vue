@@ -3,15 +3,11 @@
     <div id="head" class="head">
       <div class="title"><i class="el-icon-back icon1 icon0" @click="returnCourseManage"></i>课程信息
         <el-dropdown class="plus" trigger="click">
-          <i class="el-icon-menu icon0"></i>
+          <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item><i class="el-icon-bell icon0"></i>&nbsp;&nbsp;个人页</el-dropdown-item>
-            <el-dropdown-item>
-              <div @click="gotoSeminar"><i class="el-icon-service icon0"></i>&nbsp;&nbsp;讨论课</div>
-            </el-dropdown-item>
-            <el-dropdown-item>
-              <div @click="returnLogin"><i class="el-icon-back icon0"></i>&nbsp;&nbsp;退 出</div>
-            </el-dropdown-item>
+            <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
+            <el-dropdown-item><i class="el-icon-service" @click="gotoSeminar">&nbsp;&nbsp;讨论课</i></el-dropdown-item>
+            <el-dropdown-item><i class="el-icon-back" @click="returnLogin">&nbsp;&nbsp;退 出</i></el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -59,7 +55,7 @@
         </table>
       </el-card>
       <div style="width: 100%;margin-top: 20px">
-        <el-button class="btn" type="danger"
+        <el-button class="btn_info" type="info"
                    @click="deleteCourse" plain
                    style="float: right">
           删除该课程
@@ -102,6 +98,9 @@
       returnLogin() {
         this.$router.push({path: '/'});
       },
+      gotoHomePage(){
+        this.$router.push({path:'/teacher/HomePage'});
+      },
       returnCourseManage() {
         this.$router.push({path: '/teacher/CourseManage'});
       },
@@ -116,51 +115,6 @@
 </script>
 
 <style scoped>
-  .body0 {
-    font-size: 14px;
-    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
-  }
-  .head {
-    height: 70px;
-    width: 100%;
-    background-color: #CCFF99;
-  }
 
-  .title {
-    display: block;
-    text-align: center;
-    line-height: 70px;
-  }
-
-  .plus {
-    float: right;
-    margin-right: 3%;
-    line-height: 70px;
-  }
-
-  .icon1 {
-    float: left;
-    margin-left: 3%;
-    line-height: 70px;
-  }
-
-  .icon0 {
-    font-weight: bolder;
-  }
-
-  .main {
-    width: 50%;
-    margin: auto;
-  }
-
-  @media (max-width: 640px) {
-    .main {
-      width: 100%;
-    }
-  }
-
-  .btn {
-
-  }
 
 </style>

@@ -10,6 +10,7 @@ import qs from 'qs'
 import './assets/iconfont/iconfont.css'
 import Mint from 'mint-ui';
 import 'mint-ui/lib/style.css';
+import './assets/common_style_teacher.css'
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI);

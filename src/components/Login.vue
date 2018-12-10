@@ -1,11 +1,10 @@
 <template>
   <div class="body">
-    <div id="head" class="login_head">
-      <div class="title"><i class="el-icon-close icon1"></i>课堂管理系统登录</div>
+    <div id="head" class="head">
+      <div class="title"><i class="el-icon-close icon1"></i>课堂管理系统</div>
 
     </div>
-    <div class="login_main">
-      <form>
+    <div class="main">
         <table class="table0">
           <tr>
             <td class="td0"></td>
@@ -38,7 +37,6 @@
           </tr>
 
         </table>
-      </form>
     </div>
     <div class="footer">
       <p>默认密码为123456</p>
@@ -91,42 +89,6 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
-  .login_head {
-    height: 70px;
-    width: 100%;
-    background-color: #CCFF99;
-  }
-
-  .title {
-    display: block;
-    text-align: center;
-    line-height: 70px;
-  }
-
-  .icon1 {
-    float: left;
-    margin-left: 3%;
-    line-height: 70px;
-  }
-
-  .table0 {
-    width: 30%;
-    margin: auto;
-  }
-
-  @media (max-width: 640px) {
-    .table0 {
-      width: 100%;
-    }
-  }
-
-  .td0 {
-    width: 100%;
-    height: 45px;
-
-
-  }
 
   .btn {
     height: 36px;

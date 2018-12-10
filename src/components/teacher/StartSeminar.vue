@@ -3,12 +3,10 @@
     <div id="head" class="head">
       <div class="title"><i class="el-icon-back icon1 icon0" @click="returnSeminarPage"></i>讨论课
         <el-dropdown class="plus" trigger="click">
-          <i class="el-icon-menu icon0"></i>
+          <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item><i class="el-icon-bell icon0"></i>&nbsp;&nbsp;个人页</el-dropdown-item>
-            <el-dropdown-item>
-              <div @click="returnLogin"><i class="el-icon-back icon0"></i>&nbsp;&nbsp;退 出</div>
-            </el-dropdown-item>
+            <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
+            <el-dropdown-item><i class="el-icon-back" @click="returnLogin">&nbsp;&nbsp;退 出</i></el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -20,7 +18,7 @@
           class="el-menu-vertical-demo"
           background-color="#dbf5f9"
           text-color="#b4b8b9"
-          active-text-color="#ffd04b"
+          active-text-color="#66cccc"
           v-for="(item,index) in groups"
           :key="index">
           <el-menu-item index="index" @click="updateGrade">
@@ -37,7 +35,7 @@
           class="el-menu-vertical-demo"
           background-color="#dbf5f9"
           text-color="#b4b8b9"
-          active-text-color="#ffd04b"
+          active-text-color="#66cccc"
           v-for="(item,index) in quesGroups"
           :key="index">
           <el-menu-item index="index" @click="updateQuesGrade">
@@ -96,10 +94,10 @@
         <table style="width: 100%">
           <tr>
             <td style="width: 30%">
-              <el-button type="primary" plain size="small" @click="start">开始展示</el-button>
+              <el-button type="success" plain size="small" @click="start">开始展示</el-button>
             </td>
             <td style="width: 30%">
-              <el-button type="primary" plain size="small" @click="stop">结束展示</el-button>
+              <el-button type="success" plain size="small" @click="stop">结束展示</el-button>
             </td>
             <td style="text-align: center">{{str}}</td>
           </tr>
@@ -112,19 +110,19 @@
             </td>
           </tr>
         </table>
-        <el-button plain size="mini"
-                   style="float: left;margin-top: 5px;margin-bottom: 10px;background-color: #f8e9e9;border-color:#ff9999;color:#ff6666"
+        <el-button type="success" plain size="mini"
+                   style="float: left;margin-left: 10px;margin-top: 5px;margin-bottom: 10px;"
                    @click="displayOthers">
           修改展示成绩
         </el-button>
-        <el-button plain size="mini"
-                   style="float: left;margin-top: 5px;margin-bottom: 10px;background-color: #f8e9e9;border-color:#ff9999;color:#ff6666"
+        <el-button type="success" plain size="mini"
+                   style="float: left;margin-left: 5px;margin-top: 5px;margin-bottom: 10px;"
                    @click="quesOthers">
           修改提问成绩
         </el-button>
         <el-button size="mini"
                    icon="el-icon-caret-right icon0" circle
-                   style="float: right;margin-top: 5px;margin-bottom: 10px;background-color: #f8e9e9;border-color:#ff9999;color:#ff6666"
+                   style="float: right;margin-top: 5px;margin-bottom: 10px;background-color: #fff;border-color:#66cccc;color:#66cccc"
                    @click="isSuspend"></el-button>
       </el-card>
       <el-card id="ques" style="display: none">
@@ -193,9 +191,9 @@
           当前已有{{num1}}位同学提问
         </el-alert>
         <div style="width:100%;">
-          <el-button style="width: 40%;float:left;margin-top: 10px;margin-bottom: 10px" @click="askQuestions">抽取提问
+          <el-button type="success" plain style="width: 40%;float:left;margin-top: 10px;margin-bottom: 10px" @click="askQuestions">抽取提问
           </el-button>
-          <el-button id="nextGroup" style="width:40%;float:right;margin-top: 10px;margin-bottom: 10px"
+          <el-button type="success" plain id="nextGroup" style="width:40%;float:right;margin-top: 10px;margin-bottom: 10px"
                      @click="nextGroup">下组展示
           </el-button>
         </div>
@@ -258,6 +256,10 @@
       }
     },
     methods: {
+
+    gotoHomePage(){
+      this.$router.push({path:'/teacher/HomePage'});
+    },
       returnLogin() {
         this.$router.push({path: '/'});
       },
@@ -387,34 +389,6 @@
 </script>
 
 <style scoped>
-  .head {
-    height: 70px;
-    width: 100%;
-    background-color: #CCFF99;
-  }
-
-  .title {
-    display: block;
-    text-align: center;
-    line-height: 70px;
-  }
-
-  .plus {
-    float: right;
-    margin-right: 3%;
-    line-height: 70px;
-  }
-
-  .icon0 {
-    font-weight: bolder;
-  }
-
-  .icon1 {
-    float: left;
-    margin-left: 3%;
-    line-height: 70px;
-  }
-
   .pause {
     position: fixed;
     top: 0;
@@ -443,16 +417,5 @@
     text-align: center;
     font-size: 14px;
     display: none;
-  }
-
-  .main {
-    margin: auto;
-    width: 50%;
-  }
-
-  @media (max-width: 640px) {
-    .main {
-      width: 100%;
-    }
   }
 </style>

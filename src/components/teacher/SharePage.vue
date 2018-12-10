@@ -5,13 +5,9 @@
         <el-dropdown class="plus" trigger="click">
           <i class="el-icon-menu icon0"></i>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item><i class="el-icon-bell icon0"></i>&nbsp;&nbsp;个人页</el-dropdown-item>
-            <el-dropdown-item>
-              <div @click="gotoSeminar"><i class="el-icon-service icon0"></i>&nbsp;&nbsp;讨论课</div>
-            </el-dropdown-item>
-            <el-dropdown-item>
-              <div @click="returnLogin"><i class="el-icon-back icon0"></i>&nbsp;&nbsp;退 出</div>
-            </el-dropdown-item>
+            <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
+            <el-dropdown-item><i class="el-icon-service" @click="gotoSeminar">&nbsp;&nbsp;讨论课</i></el-dropdown-item>
+            <el-dropdown-item><i class="el-icon-back" @click="returnLogin">&nbsp;&nbsp;退 出</i></el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -95,54 +91,15 @@
       cancel(){
         var share=document.getElementById("pause");
         share.style.display="none";
+      },
+      gotoHomePage(){
+        this.$router.push({path:'/teacher/HomePage'});
       }
     }
   }
 </script>
 
 <style scoped>
-  .body0 {
-    font-size: 14px;
-    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
-  }
-  .head {
-    height: 70px;
-    width: 100%;
-    background-color: #CCFF99;
-  }
-
-  .title {
-    display: block;
-    text-align: center;
-    line-height: 70px;
-  }
-
-  .plus {
-    float: right;
-    margin-right: 3%;
-    line-height: 70px;
-  }
-
-  .icon1 {
-    float: left;
-    margin-left: 3%;
-    line-height: 70px;
-  }
-
-  .icon0 {
-    font-weight: bolder;
-  }
-
-  .main {
-    width: 50%;
-    margin: auto;
-  }
-  .btn{
-    width:100%;
-    border:none;
-    background-color: #66cccc;
-    color:white;
-  }
   .pause {
     position: fixed;
     top: 0;
@@ -156,13 +113,6 @@
     text-align: center;
     font-size: 14px;
     display: none;
-  }
-
-
-  @media (max-width: 640px) {
-    .main {
-      width: 100%;
-    }
   }
 
 </style>

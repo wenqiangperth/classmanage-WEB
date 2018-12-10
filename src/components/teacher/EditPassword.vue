@@ -5,12 +5,9 @@
         <el-dropdown class="plus" trigger="click">
           <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>
-              <div @click="gotoSeminar"><i class="el-icon-service icon0"></i>&nbsp;&nbsp;讨论课</div>
-            </el-dropdown-item>
-            <el-dropdown-item>
-              <div @click="returnLogin"><i class="el-icon-back icon0"></i>&nbsp;&nbsp;退 出</div>
-            </el-dropdown-item>
+            <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
+            <el-dropdown-item><i class="el-icon-service" @click="gotoSeminar">&nbsp;&nbsp;讨论课</i></el-dropdown-item>
+            <el-dropdown-item><i class="el-icon-back" @click="returnLogin">&nbsp;&nbsp;退 出</i></el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -42,14 +39,14 @@
         <tr>
           <td class="td0">
             <el-input class="input0" placeholder="填写验证码">
-              <el-button slot="append" type="danger" plain>立即验证</el-button>
+              <el-button slot="append" type="info" plain>立即验证</el-button>
             </el-input>
           </td>
         </tr>
 
       </table>
       <div class="footer">
-        <el-button class="btn1" type="success" @click="returnAccountManage">确认修改</el-button>
+        <el-button class="btn" type="success" plain @click="returnAccountManage">确认修改</el-button>
       </div>
     </div>
 
@@ -68,6 +65,9 @@
     methods: {
       returnLogin() {
         this.$router.push({path: '/'});
+      },
+      gotoHomePage(){
+        this.$router.push({path:'/teacher/HomePage'});
       },
       gotoSeminar() {
         this.$router.push({path: '/teacher/SeminarPage'});
@@ -99,33 +99,6 @@
 </script>
 
 <style scoped>
-  .head {
-    height: 70px;
-    width: 100%;
-    background-color: #CCFF99;
-  }
-
-  .title {
-    display: block;
-    text-align: center;
-    line-height: 70px;
-  }
-
-  .icon1 {
-    float: left;
-    margin-left: 3%;
-    line-height: 70px;
-  }
-
-  .plus {
-    float: right;
-    margin-right: 3%;
-    line-height: 70px;
-  }
-
-  .icon0 {
-    font-weight: bolder;
-  }
 
   .table0 {
     width: 100%;
@@ -151,17 +124,6 @@
     width: 100%;
     border: none;
     background-color: #66CCCC;
-  }
-
-  .main {
-    width: 50%;
-    margin: auto;
-  }
-  @media (max-width: 640px) {
-    .main {
-      width: 100%;
-    }
-
   }
 
   .footer {

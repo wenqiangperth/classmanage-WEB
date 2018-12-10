@@ -81,7 +81,7 @@
         </table>
       </el-card>
       <div style="width: 100%;margin-top: 20px">
-        <el-button class="btn" type="success" @click="NewSuccess">发布</el-button>
+        <el-button class="btn" type="success" plain @click="NewSuccess">发布</el-button>
       </div>
 
     </div>
@@ -127,31 +127,6 @@
 </script>
 
 <style scoped>
-  .body0 {
-    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
-    font-size: 14px;
-  }
-
-  .head {
-    height: 70px;
-    width: 100%;
-    background-color: #CCFF99;
-  }
-
-  .title {
-    display: block;
-    text-align: center;
-    line-height: 70px;
-  }
-
-  .icon0 {
-    font-weight: bolder;
-  }
-  .icon1 {
-    float: left;
-    margin-left: 3%;
-    line-height: 70px;
-  }
 
   .box-card {
     width: 100%;
@@ -163,26 +138,4 @@
     text-align: center;
   }
 
-  .btn {
-    height: 36px;
-    width: 100%;
-    border: none;
-    background-color: #66CCCC;
-    margin: auto;
-  }
-
-  .main {
-    width: 50%;
-    margin: auto;
-  }
-
-  .el-input-number__decrease {
-    background: aquamarine;
-  }
-  @media (max-width: 640px) {
-    .main {
-      width: 100%;
-      margin: auto;
-    }
-  }
 </style>

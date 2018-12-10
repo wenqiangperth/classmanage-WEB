@@ -50,6 +50,7 @@ import ClassInfo from "../components/teacher/ClassInfo";
 import NewClass from "../components/teacher/NewClass";
 import AddShare from "../components/teacher/AddShare";
 import SharePage from "../components/teacher/SharePage";
+import Backlog from "../components/teacher/Backlog";
 
 Vue.use(Router)
 
@@ -299,6 +300,11 @@ export default new Router({
       name: 'AddShare',
       path: '/teacher/AddShare',
       component: AddShare
+    },
+    {
+      name: 'Backlog',
+      path: '/teacher/Backlog',
+      component: Backlog
     }
 
   ]

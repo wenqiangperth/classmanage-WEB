@@ -26,7 +26,7 @@
           <td class="td0"></td>
         </tr>
         <tr>
-          <td class="td0"><el-button class="btn" type="success" @click="Login">确认提交</el-button></td>
+          <td class="td0"><el-button class="btn" type="success" @click="Login" plain>确认提交</el-button></td>
         </tr>
 
       </table>
@@ -51,56 +51,5 @@
 </script>
 
 <style scoped>
-  .head{
-    height: 70px;
-    width:100%;
-    background-color: #CCFF99;
-  }
-  .title{
-    display: block;
-    text-align: center;
-    line-height: 70px;
-  }
-  .icon1{
-    float:left;
-    margin-left: 3%;
-    line-height: 70px;
-  }
-  .table0{
-    width: 100%;
-    margin:auto;
-  }
 
-  .td0{
-    width:100%;
-    height:45px;
-  }
-  .td0 p{
-    font-size: 12px;
-  }
-  .td0 a{
-    text-decoration: none;
-  }
-
-  .btn{
-    height:36px;
-    width: 100%;
-    border: none;
-    background-color: #66CCCC;
-    margin: auto;
-  }
-
-  .icon0 {
-    font-weight: bolder;
-  }
-
-  .main {
-    width: 50%;
-    margin: auto;
-  }
-  @media (max-width: 640px) {
-    .main {
-      width:100%;
-    }
-  }
 </style>
