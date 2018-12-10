@@ -8,12 +8,14 @@ import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
 import qs from 'qs'
 import './assets/iconfont/iconfont.css'
-
+import Mint from 'mint-ui';
+import 'mint-ui/lib/style.css';
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
-Vue.prototype.$axios = axios
-Vue.prototype.$qs = qs
+Vue.use(Mint);
+Vue.prototype.$axios = axios;
+Vue.prototype.$qs = qs;
 
 /* eslint-disable no-new */
 new Vue({
