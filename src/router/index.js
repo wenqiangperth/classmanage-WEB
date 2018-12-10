@@ -46,6 +46,8 @@ import StudentGrades from "../components/teacher/StudentGrades";
 import StudentGroups from "../components/teacher/StudentGroups";
 import ClassInfo from "../components/teacher/ClassInfo";
 import NewClass from "../components/teacher/NewClass";
+import AddShare from "../components/teacher/AddShare";
+import SharePage from "../components/teacher/SharePage";
 
 Vue.use(Router)
 
@@ -274,12 +276,17 @@ export default new Router({
     {
       name: 'SharePage',
       path: '/teacher/SharePage',
-      component: ClassInfo
+      component: SharePage
     },
     {
       name: 'NewClass',
       path: '/teacher/NewClass',
       component: NewClass
+    },
+    {
+      name: 'AddShare',
+      path: '/teacher/AddShare',
+      component: AddShare
     }
 
   ]
