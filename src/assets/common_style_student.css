@@ -1,0 +1,26 @@
+.homeTitle{
+  width: 100%;
+  line-height: 70px;
+  display: block;
+  background-color: #CCFF99;
+  border-radius: 5px;
+}
+
+.el-icon-arrow-left{
+  transform: translateX(-380%);
+}
+
+.homeTitle label{
+  font-style: normal;
+  font-size: 25px;
+}
+
+.el-icon-plus{
+  font-size: 25px;
+  color: grey;
+  font-weight: bold;
+  transform: translateX(250%);
+}
+.el-dropDown{
+  transform: translateX(70%);
+}

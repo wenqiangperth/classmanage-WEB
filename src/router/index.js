@@ -21,6 +21,8 @@ import CheckInfo from '../components/Courses/AfterSeminar/CheckInfo'
 import ManageAccount from '../components/Account/ManageAccount'
 import MyCourse from '../components/Courses/MyCourse'
 import Grade from '../components/Courses/AllGrade/Grade'
+import ScourseInfo from '../components/Courses/CourseInfo'
+import TeamInfo from '../components/Courses/MyTeam/TeamInfo'
 
 import Activate from "../components/teacher/Activate";
 import FindPassword from "../components/teacher/FindPassword";
@@ -160,6 +162,16 @@ export default new Router({
       path: '/Courses/AllGrade/Grade',
       name: 'Grade',
       component: Grade
+    },
+    {
+      path: '/Courses/CourseInfo',
+      name: 'ScourseInfo',
+      component: ScourseInfo
+    },
+    {
+      path: '/Courses/MyTeam/TeamInfo',
+      name: 'TeamInfo',
+      component: TeamInfo
     },
     {
       path: '/',

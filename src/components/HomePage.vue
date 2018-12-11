@@ -36,7 +36,7 @@
       <div class="per-box">
         <div class="per-box1">
           <i class="el-icon-document"></i>
-          <label >我的课程</label>
+          <label @click="findCourse">我的课程</label>
           <i class="el-icon-d-arrow-right"></i>
         </div>
         <div class="divHeight"></div>
@@ -72,6 +72,10 @@
 
           back(){
             this.$router.push({path:'/'});
+          },
+
+          findCourse(){
+            this.$router.push({path:'/Courses/MyCourse'})
           },
 
           getData(){

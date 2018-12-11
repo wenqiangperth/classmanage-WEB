@@ -38,16 +38,20 @@
           width="80%"
           fullscreen="true">
           <div style="color: #66CCCC;">
-            <div class="Grade" style="float: left;width:50%;font-size: 30px;">
+            <div class="info" style="float: left;width:33.3%;font-size: 30px;">
+              <i class="el-icon-view" @click="courseInfo"></i>
+            </div>
+            <div class="Grade" style="float: left;width:33.3%;font-size: 30px;">
               <i class="el-icon-tickets" @click="toGrade"></i>
             </div>
-            <div class="team" style="float: left;width:50%;font-size: 30px">
-              <i class="el-icon-share"></i>
+            <div class="team" style="float: left;width:33.3%;font-size: 30px">
+              <i class="el-icon-share" @click="teamInfo"></i>
             </div>
           </div>
           <div style="color: #66CCCC">
-            <div style="float: left;width: 50%">我的成绩</div>
-            <div style="float: left;width: 50%">我的组队</div>
+            <div style="float: left;width: 33.3%">课程信息</div>
+            <div style="float: left;width: 33.3%">我的成绩</div>
+            <div style="float: left;width: 33.3%">我的组队</div>
           </div>
         </el-dialog>
       </div>
@@ -82,6 +86,12 @@
           },
           toGrade(){
             this.$router.push({path:'/Courses/AllGrade/Grade'});
+          },
+          courseInfo(){
+            this.$router.push({path:'/Courses/CourseInfo'})
+          },
+          teamInfo(){
+            this.$router.push({path:'/Courses/MyTeam/TeamInfo'})
           }
       }
     }
