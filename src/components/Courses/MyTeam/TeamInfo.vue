@@ -51,7 +51,7 @@
       </el-collapse>
 
       <div class="login-input">
-        <a >创建小组</a>
+        <a @click="MakeTeam">创建小组</a>
       </div>
     </div>
 </template>
@@ -102,6 +102,9 @@
       methods:{
           back(){
             this.$router.push({path:'/Courses/MyCourse'})
+          },
+          MakeTeam(){
+            this.$router.push({path:'/Courses/MyTeam/MakeTeam'})
           }
       }
     }

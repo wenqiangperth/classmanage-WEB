@@ -23,6 +23,7 @@ import MyCourse from '../components/Courses/MyCourse'
 import Grade from '../components/Courses/AllGrade/Grade'
 import ScourseInfo from '../components/Courses/CourseInfo'
 import TeamInfo from '../components/Courses/MyTeam/TeamInfo'
+import MakeTeam from '../components/Courses/MyTeam/MakeTeam'
 
 import Activate from "../components/teacher/Activate";
 import FindPassword from "../components/teacher/FindPassword";
@@ -172,6 +173,11 @@ export default new Router({
       path: '/Courses/MyTeam/TeamInfo',
       name: 'TeamInfo',
       component: TeamInfo
+    },
+    {
+      path: '/Courses/MyTeam/MakeTeam',
+      name: 'MakeTeam',
+      component: MakeTeam
     },
     {
       path: '/',
