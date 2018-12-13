@@ -36,18 +36,39 @@
           </el-select>
         </el-form-item>
 
-        <el-collapse >
-          <el-collapse-item >
-            <template slot="title">
-              <div style="font-size: 17px"><i class="header-icon el-icon-search"></i>
-                添加组员</div>
-            </template>
-            <div v-for="stu in Unteam" style="text-align: center;font-size: 16px;font-family: 微软雅黑;font-weight: bold;">
-              <el-checkbox  name="type">{{stu.Na}}——{{stu.No}}</el-checkbox>
-              <div class="line"/>
-            </div>
-          </el-collapse-item>
-        </el-collapse>
+        <div class="search">
+          <el-input class="search-input" placeholder="输入学号/姓名" v-model="student"> <!--<i slot="prefix" class="iconfont icon-search" ></i>-->
+            <el-button @click="searchStu" slot="append" icon="el-icon-search"></el-button>
+          </el-input>
+        </div>
+
+        <template>
+          <el-table
+            :data="Unteam"
+            style="width: 100%">
+            <el-table-column
+              label="添加队友"
+              fixed="left">
+              <template slot-scope="scope">
+                <el-checkbox text-color="red"></el-checkbox>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="Na"
+              label="姓名"
+              width="130">
+            </el-table-column>
+            <el-table-column
+              prop="No"
+              label="学号"
+              width="130">
+            </el-table-column>
+          </el-table>
+        </template>
+        <el-pagination
+          layout="prev, pager, next"
+          :total="100">
+        </el-pagination>
 
       </el-form>
 
@@ -62,6 +83,7 @@
         name: "MakeTeam",
       data() {
         return {
+          student:'',
           ruleForm: {
             name: '',
             region: '',
@@ -110,6 +132,20 @@
                 return false;
               }
             });
+          },
+          searchStu(){
+            let that=this;
+            let j=0;
+            let tableData=that.Unteam;
+            for(let i in tableData){
+              if(tableData[i].No===that.student||tableData[i].Na===that.student){
+                that.Unteam=[];
+                that.Unteam[j++]=tableData[i];
+              }
+            }
+            if(that.student==='')
+              that.Unteam = that.Unteam;
+
           }
       }
     }
@@ -143,11 +179,6 @@
     transform: translateX(90%);
   }
 
-  .line{
-    height: 1px;
-    background-color: #66cccc;
-  }
-
   .login-input{
     margin:40px 30px 15px 30px;
     border:1px solid #66CCCC;
@@ -164,5 +195,9 @@
     font-size: 17px;
     letter-spacing: 5px;
     border-radius: 25px;
+  }
+
+  .search button{
+    color: #66cccc;
   }
 </style>
