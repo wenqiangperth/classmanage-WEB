@@ -24,14 +24,16 @@
 
       <el-card class="box-card">
         <div slot="header" class="clearfix">
-          <span>卡片名称</span>
-          <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
+          <span>{{teamTitle}}</span>
+          <el-button style="float: right; padding: 3px 0" type="text">操作</el-button>
         </div>
-        <div v-for="o in 4" :key="o" class="text item">
-          {{'列表内容 ' + o }}
+        <div style="font-weight: bold">组长：{{leader.Na}}--{{leader.No}}</div>
+        <div v-for="o in members" class="text item">
+          {{o.Na}}--{{o.No}}
+          <i style="float: right; color: red" class="el-icon-error"></i>
         </div>
       </el-card>
-
+      <div class="divHeight"></div>
 
       <div class="search">
         <el-input class="search-input" placeholder="输入学号/姓名" v-model="student"> <!--<i slot="prefix" class="iconfont icon-search" ></i>-->
@@ -82,6 +84,14 @@
       data(){
           return{
             student:'',
+            teamTitle:'1-1 武林盟主',
+            leader:{ Na:'王强', No: '24320162201122' } ,
+            members:[
+              { Na:'赵某',No:'24320162200000'  },
+              { Na:'高某',No:'24232001213213' },
+              { Na:'方某',No:'24323425233232' },
+              { Na:'叶某',No:'24329753973845' }
+              ],
             Unteam:[{
               Na: '我是1号',
               No: '11111111111'
@@ -159,6 +169,7 @@
   }
 
   .item {
+    margin-top: 5px;
     margin-bottom: 18px;
   }
 
@@ -173,10 +184,12 @@
 
   .box-card {
     width: 100%;
+    background-color: #66cccc;
   }
 
   .divHeight{
     display: block;
     height: 20px;
   }
+
 </style>
