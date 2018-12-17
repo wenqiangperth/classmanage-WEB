@@ -8,19 +8,19 @@
 
       <div class="inp-pw">
         <label >输入密码：</label>
-        <input type="password" placeholder="">
+        <input v-model="password1" type="password" placeholder="">
       </div>
 
       <div class="inp-pw">
         <label>确认密码：</label>
-        <input type="password" placeholder="">
+        <input v-model="password" type="password" placeholder="">
       </div>
 
       <div class="inp-pw">
         <label>填写邮箱：</label>
-        <input type="email" placeholder="">
+        <input v-model="email" type="email" placeholder="">
       </div>
-
+<!--
       <div class="inp-pw">
         <label>验证码：</label>
         <input type="number" placeholder="">
@@ -29,9 +29,9 @@
       <div class="inp-check">
         <button id="check">发送验证码</button>
       </div>
-
+-->
       <div class="inp-sub">
-        <a @click="toHomePage">确认提交</a>
+        <a @click="submit">确认提交</a>
       </div>
 
       <div class="inp-info">
@@ -46,12 +46,40 @@
 <script>
     export default {
         name: "activate",
+        data(){
+          return {
+            password1:'',
+            password:'',
+            email:''
+          }
+        },
+
         methods:{
           back(){
             this.$router.push({path:'/'})
           },
-          toHomePage(){
-            this.$router.push({path:'/HomePage'})
+          submit(){
+            let that=this;
+            if(that.password !== that.password1)
+              alert("密码不一致，请重新输入");
+            else
+              that.$axios({
+                method: 'PUT',
+                url: '/student/active',
+                data:{
+                  password: that.password,
+                  email: that.email
+                }
+              })
+                .then(response => {
+                  if(response.status===200)
+                    alert("激活成功")
+                  else if(response.status===400)
+                    alert("信息不合法,检验邮箱是否正确！")
+                })
+                .catch(error => {
+                  console.log(error)
+                })
           }
         }
     }

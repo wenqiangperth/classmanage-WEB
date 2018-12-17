@@ -8,7 +8,7 @@
 
       <div class="login-input">
         <label>学/工号:</label>
-        <input v-model="accountNumber" type="text"  placeholder=""/>
+        <input v-model="account" type="text"  placeholder=""/>
       </div>
 
       <div class="login-input">
@@ -37,7 +37,7 @@ export default {
   data () {
     return {
       msg: 'Welcome to Your Vue.js App',
-      accountNumber: '',
+      account: '',
       password: ''
     }
   },
@@ -45,29 +45,40 @@ export default {
     login(){
       let _this = this;
       _this.$axios({
-        method: 'post',
-        url: '/Login',
+        method: 'POST',
+        url: '/user/login',
         data: {
-          accountNumber: _this.accountNumber,
+          account: _this.account,
           password: _this.password
         }
       })
         .then(response => {
-          if(response.data.type===false){
+          if(response.status===200 && response.data.role==="student"
+            && response.data.isActived===1){
+            //已激活，进入主页
             _this.$router.push({
               path:'/HomePage',
               name:'HomePage',
               query:{
-                accountNumber: response.data.accountNumber
+                account: response.data.account
               }
             }),
               console.log(response)
-          }else if(response.data.type===true){
+          }else if(response.status===200 && response.data.role==="teacher"
+            && response.data.isActived===1){
             _this.$router.push({path:'/teacher/HomePage'});
             console.log(response.data);
+          }else if(response.status===200 && response.data.role==="student"
+            && response.data.isActived===0){
+            //激活
+            _this.router.push({
+              path:'/activate',
+              name:'activate',
+              account: response.data.account
+            })
           }
-          else{
-            alert("密码错误！");
+          else {
+            alert("账号/密码错误！");
             console.log(response.data);
           }
         })
