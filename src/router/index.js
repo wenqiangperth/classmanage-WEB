@@ -4,6 +4,7 @@ import HelloWorld from '../components/HelloWorld'
 import activate from '../components/activate'
 import findkey1 from '../components/findkey1'
 import findkey2 from '../components/findkey2'
+import ChangeEmail from '../components/Account/ChangeEmail'
 import homePage from '../components/HomePage'
 import CoursePage from '../components/Courses/CoursePage'
 import Seminaring from '../components/Courses/Seminaring/Seminaring'
@@ -80,6 +81,11 @@ export default new Router({
       path: '/findkey2',
       name: 'findkey2',
       component: findkey2
+    },
+    {
+      path:'/Account/ChangeEmail',
+      name:'ChangeEmail',
+      component: ChangeEmail
     },
     {
       path: '/HomePage',

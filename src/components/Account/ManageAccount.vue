@@ -3,7 +3,7 @@
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
           <label>账户与设置</label>
-          <el-dropdown trigger="click" @command="handleCommand">
+          <el-dropdown trigger="click" >
             <span class="el-dropdown-link">
               <i class="el-icon-plus"></i>
             </span>
@@ -21,7 +21,7 @@
         </div>
 
         <div style="width:100%;height:45px"></div>
-        <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
+        <el-form :label-position="labelPosition" label-width="90px" :model="formLabelAlign">
           <el-form-item label="姓名">
             <el-input v-model="formLabelAlign.name" :disabled="true"></el-input>
           </el-form-item>
@@ -30,16 +30,20 @@
           </el-form-item>
           <el-form-item label="联系方式">
             <el-input v-model="formLabelAlign.email">
-              <i slot="suffix" class="el-input__icon el-icon-edit icon0" @click="editEmail"></i>
+              <i slot="suffix" class="el-input__icon el-icon-edit icon0" @click="ChangeEmail"></i>
             </el-input>
           </el-form-item>
           <el-form-item label="账户密码">
             <el-input v-model="formLabelAlign.password" id="pass">
-              <i slot="suffix" class="el-input__icon el-icon-edit icon0" @click="editPassword"></i>
+              <i slot="suffix" class="el-input__icon el-icon-edit icon0" ></i>
             </el-input>
             <el-button size="mini" style="float: right;background-color: #66CCCC" @click="ChangePassword">修改</el-button>
           </el-form-item>
+          <el-form-item label="管理员邮箱">
+            <el-input v-model="formLabelAlign.memail" :disabled="true"></el-input>
+          </el-form-item>
         </el-form>
+      <!--
         <div class="message">
           <label>通知发送间隔</label>
           <el-select v-model="value" placeholder="请选择" class="interval">
@@ -51,6 +55,7 @@
             </el-option>
           </el-select>
         </div>
+        -->
 
       <div class="ensure-change">
         <a >确认修改</a>
@@ -66,28 +71,53 @@
         return {
           labelPosition: 'right',
           formLabelAlign: {
-            name: '王强',
+            name: '',
             account: '24320162209999',
-            email: '24320162209999@xmu.edu.cn',
-            password: '111111',
+            email: '',
+            password: '',
             interval: '',
-            isShow: false
+            isShow: false,
+            memail:'65321@163.com',
+            messageInterval: 1
           },
           options: [{
-            value: '选项1',
-            label: '每6h一次'
+            value: '6',
+            label: '6h'
           }, {
-            value: '选项2',
-            label: '每3h一次'
+            value: '3',
+            label: '3h'
           }, {
-            value: '选项3',
-            label: '每2h一次'
+            value: '2',
+            label: '2h'
           }, {
-            value: '选项4',
-            label: '每1h一次'
+            value: '1',
+            label: '1h'
           }],
-          value: ''
+          value:''
         }
+      },
+      created(){
+          let that=this;
+          that.$axios({
+            method:'GET',
+            url:'/user/information',
+            headers:{
+              'token':window.localStorage['token']
+            }
+          })
+            .then(res=>{
+              if(res.data.status===200){
+                let data=res.data;
+                that.formLabelAlign.name=data.name;
+                that.formLabelAlign.account=data.account;
+                that.formLabelAlign.email=data.email;
+                that.formLabelAlign.messageInterval=data.messageInterval;
+                that.formLabelAlign.password=data.password
+              }
+            })
+            .catch(e=>{
+              console.log(e)
+            })
       },
       methods: {
           back(){
@@ -104,6 +134,9 @@
         },
         ChangePassword(){
           this.$router.push({path:'/findkey1'});
+        },
+        ChangeEmail(){
+          this.$router.push({path:'/Account/ChangeEmail'});
         }
       }
     }

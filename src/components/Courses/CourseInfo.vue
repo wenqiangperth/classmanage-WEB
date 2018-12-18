@@ -123,7 +123,7 @@
       created(){
           let that=this;
 
-          //that.courseId=this.
+          that.courseId=this.$route.query.courseId
 
           that.$axios({
             method:'GET',
