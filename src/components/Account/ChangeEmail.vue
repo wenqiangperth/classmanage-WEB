@@ -27,6 +27,10 @@
         <input v-model="email" type="text" placeholder="XXXX@163.com"/>
       </div>
 
+      <div class="icon">
+        <i class="el-icon-message"></i>
+      </div>
+
       <div class="confirm">
         <a @click="confirm">确认提交</a>
       </div>
@@ -99,9 +103,18 @@
     transform: translateX(70%);
   }
   .change{
-    margin: 50px 30px 20px 30px;
+    margin: 50px 30px 50px 30px;
     border: 1px solid #66CCCC;
     border-radius: 25px;
+  }
+
+  .icon{
+    color: #66cccc;
+    font-size: 80px;
+  }
+
+  .el-icon-message{
+    color: #66cccc;
   }
 
   .change label{
