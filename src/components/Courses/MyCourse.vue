@@ -80,11 +80,14 @@
         let that = this
         that.$axios({
           method: 'GET',
-          url: '/course'
+          url: '/course?userId=${localStorage.userId}',
+          headers:{
+            'token':window.localStorage['token']
+          }
         })
           .then(response=>{
-            if(response.status===200){
-              that.teachers=response.data
+            if(response.data.status===200){
+              that.courses=response.data
               console.log(response.data)
             }
             else if(response.status===404)
@@ -110,7 +113,13 @@
             this.$router.push({path:'/Courses/AllGrade/Grade'});
           },
           courseInfo(){
-            this.$router.push({path:'/Courses/CourseInfo'})
+            this.$router.push({
+              path:'/Courses/CourseInfo',
+              name:'CourseInfo',
+              query:{
+                courseId: this.course.id
+              }
+            })
           },
           teamInfo(){
             this.$router.push({path:'/Courses/MyTeam/TeamInfo'})

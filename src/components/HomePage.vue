@@ -63,7 +63,10 @@
           let that=this
           that.$axios({
             method:'GET',
-            url:'/user/information'
+            url:'/user/information?userId=${localStorage.userId}',
+            headers:{
+              'token': window.localStorage['token']
+            }
           })
             .then(response=>{
               if(response.status===200){

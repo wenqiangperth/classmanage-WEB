@@ -66,10 +66,12 @@
               <td style="width: 30%">性别要求:</td>
               <td style="text-align: center">男:{{courseInfo.maleNum}}  女:{{courseInfo.femaleNum}}</td>
             </tr>
+            <!--
             <tr>
               <td style="width: 30%">星座要求:</td>
               <td style="text-align: center">{{courseInfo.star}}</td>
             </tr>
+            -->
             <tr>
               <td style="width: 30%">冲突课程:</td>
               <td style="text-align:center" v-for="item in courseInfo.defeatCourse">
@@ -90,25 +92,27 @@
           courseInfo: {
             name: '',
             description: '翻转课堂形式上课，学生自由组队，以小组形式每周做汇报，每组汇报时间15分钟',
+            presentationWeight:'',
+            questionWeight:'',
+            reportWeight:'',
             tableData1: [{
               make_up: '课堂展示',
-              percentage: '50%',
+              percentage: this.presentationWeight,
             },
               {
                 make_up: '课堂提问',
-                percentage: '20%',
+                percentage: this.questionWeight,
               },
               {
                 make_up: '书面报告',
-                percentage: '30%',
+                percentage: this.reportWeight,
               }],
-            startTime: '2018-12-01 12:00:00',
-            endTime: '2018-12-06 12:00:00',
-            minNum: 6,
-            maxNum: 8,
+            startTime: '',
+            endTime: '',
+            minNum: '',
+            maxNum: '',
             maleNum:'2~4',
             femaleNum: '2~4',
-            star: 'no',
             defeatCourse: [{
               name: '.net',
               teacher: 'Lin'
@@ -116,10 +120,45 @@
           }
         }
       },
+      created(){
+          let that=this;
+
+          //that.courseId=this.
+
+          that.$axios({
+            method:'GET',
+            url:'/course/courseId?userId=${localStorage.userId}',
+            headers:{
+              'token':window.localStorage['token']
+            }
+          })
+            .then(res=>{
+              if(res.data.status===200){
+                console.log(res.data)
+                that.presentationWeight=res.data.presentationWeight
+                that.questionWeight=res.data.questionWeight
+                that.reportWeight=res.data.reportWeight
+                that.startTime=res.data.startTeamTime
+                that.endTime=res.data.endTeamTime
+                that.minNum=res.data.minMemberNumber
+                that.maxNum=res.data.maxMemberNumber
+              }
+              else if(res.data.status===404)
+              {
+                alert("未找到指定课程")
+              }
+              else
+                alert("错误的ID格式")
+            })
+            .catch((e)=>{
+              console.log(e)
+            })
+      },
       methods:{
           back(){
             this.$router.push({path:'/Courses/MyCourse'});
           }
+
       }
     }
 </script>
