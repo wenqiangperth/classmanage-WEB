@@ -32,7 +32,7 @@
           轮次：
         </label>
         <label style="text-align: center">
-          第{{order}}轮
+          第1{{order}}轮
         </label>
       </div>
 
@@ -88,6 +88,7 @@
       name: "Seminaring",
       data(){
         return{
+          seminarId:'',
           order:'',
           topic:'',
           status:'',
@@ -125,11 +126,17 @@
           back(){
             this.$router.push({path: '/Courses/TotalSeminars'});
           },
-        present(){
-            this.$router.push({path:'/Courses/Seminaring/present'});
-        },
-        check(){
-            this.$router.push({path:'/Courses/Seminaring/download'})
+          present(){
+              this.$router.push({path:'/Courses/Seminaring/present'});
+          },
+          check(){
+            this.$router.push({
+              path:'/Courses/Seminaring/download',
+              name:'download',
+              query:{
+                seminarId:this.seminarId
+              }
+            })
         }
       }
     }

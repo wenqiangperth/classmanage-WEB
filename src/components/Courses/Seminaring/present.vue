@@ -4,7 +4,7 @@
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
           <label>OOAD-讨论课</label>
-          <el-dropdown trigger="click" @command="handleCommand">
+          <el-dropdown trigger="click" >
             <span class="el-dropdown-link">
               <i class="el-icon-plus"></i>
             </span>
@@ -62,6 +62,24 @@
             {message:'1-4'}
           ]
         }
+      },
+      created(){
+          let that = this;
+          that.$axios({
+            method:'GET',
+            url:'/seminar/seminarId/class/classId/presentation?status=present',
+            headers:{
+              'token':window.localStorage['token']
+            }
+          })
+            .then(res=>{
+              let data=res.data.data;
+              that.order=data.order;
+              that.items=data.item;
+            })
+            .catch(e=>{
+              console.log(e)
+            })
       },
       methods:{
           back(){
