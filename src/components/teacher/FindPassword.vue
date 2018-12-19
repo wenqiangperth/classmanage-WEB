@@ -8,15 +8,9 @@
       <div style="width: 100%;height: 25px"></div>
       <table class="table0">
         <tr><td class="td0">
-          <p>&nbsp;&nbsp;&nbsp;发送验证码: <a href="mailto:qiuming@qq.com">qiuming@qq.com</a></p>
-        </td></tr>
-        <tr><td class="td0">
           <el-input class="input0" type="text" placeholder="学号/教工号"></el-input>
         </td></tr>
 
-        <tr><td class="td0">
-          <el-input class="input0"><el-button slot="append" type="info" plain>立即验证</el-button></el-input>
-        </td></tr>
         <tr>
           <td class="td0"></td>
         </tr>
@@ -24,7 +18,7 @@
           <td class="td0"></td>
         </tr>
         <tr>
-          <td class="td0"><el-button class="btn" type="success" @click="SetPassword" plain>确认</el-button></td>
+          <td class="td0"><el-button class="btn" type="success" @click="SetPassword" plain>找回密码</el-button></td>
         </tr>
       </table>
     </div>

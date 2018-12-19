@@ -42,7 +42,7 @@
           </tr>
         </table>
       </el-card>
-      <div style="width: 100%;margin-top: 80px">
+      <div style="width: 100%;margin-top: 180px">
         <el-button class="btn" type="success" plain @click="NewSuccess">保存</el-button>
       </div>
 

@@ -18,7 +18,7 @@
         :props="defaultProps"
         accordion
         @node-click="handleNodeClick"
-        style="width: 100%;background-color:#f4f4f5;font-weight: bold">
+        style="width: 100%;font-weight: bold">
       </el-tree>
 
       <div class="empty">
@@ -84,6 +84,22 @@
           </table>
         </el-card>
       </div>
+      <el-dialog
+        title="选择要修改的讨论课"
+        :visible.sync="dialogTableVisible"
+        width="90%">
+        <el-select v-model="option" placeholder="请选择"
+                   style="margin-bottom: 60px">
+          <el-option
+            v-for="(item,index) in data[0].children" v-if='index>1'
+            :key="index"
+            :label="item.label"
+            >
+          </el-option>
+        </el-select>
+        <el-button type="info" size="small" plain @click="gotoUpdate">确定</el-button>
+
+      </el-dialog>
       <div class="new">
         <div>
           <el-button class="btn" type="success" plain @click="NewRound"><i class="el-icon-plus"
@@ -105,20 +121,26 @@
     name: "SeminarPage",
     data() {
       return {
+        dialogTableVisible: false,
         data: [{
           label: '第一轮',
           children: [{
             label: '该轮轮次设置',
-          }, {
-            label: '业务流程分析',
-            children: [{
-              label: '2016--1'
-            }, {
-              label: '2016--2'
-            }, {
-              label: '2016--3'
-            }]
-          }, {
+            },
+            {
+              label:'修改讨论课'
+            },
+            {
+              label: '业务流程分析',
+              children: [{
+                label: '2016--1'
+              }, {
+                label: '2016--2'
+              }, {
+                label: '2016--3'
+              }]
+            },
+            {
             label: '领域模型设计',
             children: [{
               label: '2016--1'
@@ -193,7 +215,8 @@
           name: '用例分析',
           course: 'OOAD',
           desc: '界面导航图，每组要求15分组'
-        }]
+        }],
+        option:''
 
       }
     },
@@ -205,6 +228,10 @@
           this.$router.push({path: '/teacher/BeforeSeminar'});
         if (data.label === '2016--2')
           this.$router.push({path: '/teacher/AfterSeminar'});
+        if(data.label==='修改讨论课')
+        {
+          this.dialogTableVisible=true;
+        }
       },
       returnLogin() {
         this.$router.push({path: '/'});
@@ -226,11 +253,15 @@
         show.style.display = "block";
       },
       gotoStartSeminar() {
-        this.$router.push({path: '/teacher/StartSeminar'});
+        this.$router.push({path: '/teacher/OngoingSeminar'});
       },
       CancelPopBox() {
         var show = document.getElementById("pop-box");
         show.style.display = "none";
+      },
+      gotoUpdate(){
+        this.dialogTableVisible=false;
+        this.$router.push({path:'/teacher/UpdateSeminarInfo'});
       }
 
     }
@@ -259,4 +290,13 @@
     margin-top: 25px;
   }
 
+</style>
+<style>
+  .el-tree-node__content{
+    height:40px;
+  }
+  .el-tree-node__expand-icon{
+    font-size: 20px;
+    color: #66cccc;
+  }
 </style>

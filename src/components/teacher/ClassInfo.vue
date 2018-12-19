@@ -25,9 +25,9 @@
            :key="index">
         <el-card>
           <div slot="header">
-            <span>{{item.classId}}</span>
+            <span style="font-weight: bold">{{item.classId}}</span>
           </div>
-          <table style="width: 100%">
+          <table style="width: 100%;font-weight: bold;color: dimgrey">
             <tr>
               <td style="width: 35%">讨论课时间:</td>
               <td>{{item.time}}</td>
@@ -61,7 +61,7 @@
             </tr>
             <tr style="height: 20px">
               <td>
-                <el-button type="info" plain style="width: 50%">删除班级</el-button>
+                <el-button type="info" plain size="small" style="width: 40%">删除班级</el-button>
               </td>
             </tr>
             <tr style="height: 20px">

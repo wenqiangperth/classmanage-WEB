@@ -33,19 +33,7 @@
               </el-select>
             </td>
           </tr>
-          <tr id="collision" style="display: table-row">
-            <td style="width: 30%;color:#66cccc">冲突课程:</td>
-            <td>
-              <el-select v-model="value3" placeholder="请选择">
-                <el-option
-                  v-for="item in options3"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </td>
-          </tr>
+
         </table>
         <el-button type="info" plain size="small" style="float: right;margin-top:10px;margin-bottom: 15px">新增对象
         </el-button>
@@ -55,7 +43,7 @@
         <br><br>
         <br>确认发送共享请求
         <br><br><br>
-        <el-button type="text" style="float: right;color: #99CC00">
+        <el-button type="text" style="float: right;color: #99CC00" @click="sendSuccess">
           SURE
         </el-button>
         <el-button type="text" style="float:right;margin-right: 5px;color:#99CC00" @click="cancelShare">CANCEL</el-button>
@@ -108,6 +96,16 @@
       cancelShare(){
         var share=document.getElementById("pause");
         share.style.display="none";
+      },
+      sendSuccess(){
+        this.$notify.success({
+          title: 'Info',
+          message: '共享请求发送成功',
+          showClose: false
+        });
+        var share=document.getElementById("pause");
+        share.style.display="none";
+        this.$router.push({path:'/teacher/SharePage'});
       }
     }
   }

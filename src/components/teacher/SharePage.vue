@@ -17,7 +17,7 @@
       <br><br>
       <br>是否取消与**老师的 共享
       <br><br><br>
-      <el-button type="text" style="float: right;color: #99CC00">
+      <el-button type="text" style="float: right;color: #99CC00" @click="successCancel">
         SURE
       </el-button>
       <el-button type="text" style="float:right;margin-right: 5px;color:#99CC00" @click="cancel">CANCEL</el-button>
@@ -94,6 +94,15 @@
       },
       gotoHomePage(){
         this.$router.push({path:'/teacher/HomePage'});
+      },
+      successCancel(){
+        this.$notify.success({
+          title: 'Info',
+          message: '取消共享操作成功',
+          showClose: false
+        });
+        var share=document.getElementById("pause");
+        share.style.display="none";
       }
     }
   }

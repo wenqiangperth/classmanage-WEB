@@ -28,7 +28,6 @@ import MakeTeam from '../components/Courses/MyTeam/MakeTeam'
 import TeamManage from '../components/Courses/MyTeam/TeamManage'
 import WithDraw from '../components/Courses/MyTeam/WithDraw'
 
-import Activate from "../components/teacher/Activate";
 import FindPassword from "../components/teacher/FindPassword";
 import HomePage from "../components/teacher/HomePage";
 import SetPassword from "../components/teacher/SetPassword";
@@ -57,6 +56,8 @@ import NewClass from "../components/teacher/NewClass";
 import AddShare from "../components/teacher/AddShare";
 import SharePage from "../components/teacher/SharePage";
 import Backlog from "../components/teacher/Backlog";
+import OngoingSeminar from "../components/teacher/OngoingSeminar";
+
 
 Vue.use(Router)
 
@@ -203,11 +204,6 @@ export default new Router({
       component: Login
     },
     {
-      name: 'Activate',
-      path:'/teacher/Activate',
-      component:Activate
-    },
-    {
       name: 'FindPassword',
       path:'/teacher/FindPassword',
       component:FindPassword
@@ -341,6 +337,11 @@ export default new Router({
       name: 'Backlog',
       path: '/teacher/Backlog',
       component: Backlog
+    },
+    {
+      name: 'OngoingSeminar',
+      path: '/teacher/OngoingSeminar',
+      component: OngoingSeminar
     }
 
   ]

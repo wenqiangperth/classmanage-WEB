@@ -16,38 +16,64 @@
     <div class="main">
       <el-collapse accordion v-for="(round,index) in grades"
                    :key="index">
-        <el-collapse-item style="color: gainsboro">
+        <el-collapse-item>
           <template slot="title">
             &nbsp;&nbsp;<i class="header-icon el-icon-service icon0"></i>&nbsp;&nbsp;{{round.name}}
           </template>
-          <el-col>
-            <el-menu v-for="(item0,index) in round.groups"
-                     :key="index"
-                     default-active="2"
-                     class="el-menu-vertical-demo icon0"
-                     background-color="gainsboro"
-                     text-color="#66cccc"
-                     active-text-color="#339999">
-              <el-submenu index="index">
-                <template slot="title">
-                  <i class="el-icon-menu icon0"></i>
-                  <span>{{item0.groupId}}</span>
-                </template>
-                <el-menu-item-group v-for="(item1,index1) in item0.item"
-                                    :key="index1">
-                  <template slot="title">{{item1.topic}}</template>
-                  <el-menu-item index="index-1">展示:{{item1.pre}}&nbsp;提问:{{item1.question}}&nbsp;报告:{{item1.report}}
-                  </el-menu-item>
-                </el-menu-item-group>
-                <el-menu-item-group>
-                  <template slot="title">{{item0.total.name}}</template>
-                  <el-menu-item index="index-1">展示:{{item0.total.pre}}&nbsp;提问:{{item0.total.question}}&nbsp;报告:{{item0.total.report}}</el-menu-item>
-                </el-menu-item-group>
-              </el-submenu>
-            </el-menu>
-          </el-col>
+          <div style="width: 100%;">
+            <div v-for="(group0,index0) in round.groups"
+            :key="index0">
+              <el-button type="info" plain style="width:100%" @click="dialogTableVisible = true">
+                <i class="iconfont icon-zudui"></i>&nbsp;&nbsp;{{group0}}
+              </el-button>
+            </div>
+          </div>
+
         </el-collapse-item>
       </el-collapse>
+      <div>
+        <el-dialog
+          title="成绩"
+          :visible.sync="dialogTableVisible"
+          width="90%">
+          <el-table
+            :data="groupScore.item"
+            style="width: 100%;"
+            >
+            <el-table-column
+              prop="name"
+              label="主题"
+              width="80"
+              align="center">
+            </el-table-column>
+            <el-table-column
+              label="展示"
+              width="75"
+              align="center">
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.pre"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="提问"
+              width="75"
+              align="center">
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.question"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="报告"
+              width="75"
+              align="center">
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.report"></el-input>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-button type="info" plain @click="UpdateGrades" style="margin-top: 5px">修改</el-button>
+        </el-dialog>
+      </div>
 
     </div>
   </div>
@@ -58,114 +84,49 @@
     name: "CourseManage",
     data() {
       return {
+        groupScore:{
+          groupId:'1-1',
+          item:[
+            {
+              name: '用例分析',
+              pre: '5.0',
+              question: '5.0',
+              report: '5.0'
+
+            },
+            {
+              name: '界面原型',
+              pre: '5.0',
+              question: '5.0',
+              report: '5.0'
+            },
+            {
+              name: '总成绩',
+              pre: '5.0',
+              question: '5.0',
+              report: '5.0'
+            }
+          ]
+        },
         grades: [
           {
             name: '第一轮',
             groups: [
-              {
-                groupId: '1-1',
-                item: [
-                  {
-                    topic: '用例分析',
-                    pre: '5.0',
-                    question: '5.0',
-                    report: '5.0'
-
-                  },
-                  {
-                    topic: '界面原型',
-                    pre: '5.0',
-                    question: '5.0',
-                    report: '5.0'
-                  }
-                ],
-                total: {
-                  name: '总成绩',
-                  pre: '5.0',
-                  question: '5.0',
-                  report: '5.0'
-                }
-              },
-              {
-                groupId: '1-2',
-                item: [
-                  {
-                    topic: '用例分析',
-                    pre: '5.0',
-                    question: '5.0',
-                    report: '5.0'
-                  },
-                  {
-                    topic: '界面原型',
-                    pre: '5.0',
-                    question: '5.0',
-                    report: '5.0'
-                  }
-                ],
-                total: {
-                  name: '总成绩',
-                  pre: '5.0',
-                  question: '5.0',
-                  report: '5.0'
-                }
-              }
+               '1-1',
+               '1-2'
             ],
 
           },
           {
             name: '第二轮',
             groups: [
-              {
-                groupId: '1-1',
-                item: [
-                  {
-                    topic: '用例分析',
-                    pre: '5.0',
-                    question: '5.0',
-                    report: '5.0'
-                  },
-                  {
-                    topic: '界面原型',
-                    pre: '5.0',
-                    question: '5.0',
-                    report: '5.0'
-                  }
-                ],
-                total: {
-                  name: '总成绩',
-                  pre: '5.0',
-                  question: '5.0',
-                  report: '5.0'
-                }
-              },
-              {
-                groupId: '1-2',
-                item: [
-                  {
-                    topic: '用例分析',
-                    pre: '5.0',
-                    question: '5.0',
-                    report: '5.0'
-                  },
-                  {
-                    topic: '界面原型',
-                    pre: '5.0',
-                    question: '5.0',
-                    report: '5.0'
-
-                  }
-                ],
-                total: {
-                  name: '总成绩',
-                  pre: '5.0',
-                  question: '5.0',
-                  report: '5.0'
-                }
-              }
+              '2-1',
+              '2-2'
             ],
 
           }
-        ]
+        ],
+        dialogTableVisible: false
       }
     },
     methods: {
@@ -180,6 +141,9 @@
       },
       gotoHomePage(){
         this.$router.push({path:'/teacher/HomePage'});
+      },
+      UpdateGrades(){
+
       }
 
     }
