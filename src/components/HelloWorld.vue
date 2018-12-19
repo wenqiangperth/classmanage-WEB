@@ -6,23 +6,26 @@
         <a >讨论课管理系统登陆</a>
       </div>
 
-      <div class="login-input">
-        <label>学/工号:</label>
-        <input v-model="accountNumber" type="text"  placeholder=""/>
-      </div>
+      <el-form class="login">
+        <div class="login-input">
+          <label>学/工号:</label>
+          <input v-model="account" type="text"  placeholder=""/>
+        </div>
 
-      <div class="login-input">
-        <label>密码:</label>
-        <input v-model="password" type="password" placeholder="" />
-      </div>
+        <div class="login-input">
+          <label>密码:</label>
+          <input v-model="password" type="password" placeholder="" />
+        </div>
 
-      <div class="login-input">
-        <a v-on:click="login">登陆</a>
-      </div>
+        <div class="login-input">
+          <a v-on:click="login">登陆</a>
+        </div>
 
-      <div class="login-txt">
-        <a href="#/findkey1">忘记密码</a>
-      </div>
+        <div class="login-txt">
+          <a href="#/findkey1">忘记密码</a>
+        </div>
+
+      </el-form>
 
       <div class="login-info">
         <a>初始密码为123456</a>
@@ -37,7 +40,7 @@ export default {
   data () {
     return {
       msg: 'Welcome to Your Vue.js App',
-      accountNumber: '',
+      account: '',
       password: ''
     }
   },
@@ -45,29 +48,48 @@ export default {
     login(){
       let _this = this;
       _this.$axios({
-        method: 'post',
-        url: '/Login',
+        method: 'POST',
+        url: '/user/login',
         data: {
-          accountNumber: _this.accountNumber,
+          account: _this.account,
           password: _this.password
         }
       })
         .then(response => {
-          if(response.data.type===false){
-            _this.$router.push({
-              path:'/HomePage',
-              name:'HomePage',
-              query:{
-                accountNumber: response.data.accountNumber
+          if(response.data.status===200){
+            let data=response.data
+
+            //将token与userId存入本地
+            window.localStorage["token"]=response.data.data.token;
+            window.localStorage["userId"]=response.data.data.user.userId;
+
+            //有token说明有此用户
+            if(localStorage.getItem('token')){
+              if(response.data.role==="student" && response.data.isActived===1){
+                //已激活，进入主页
+                _this.$router.push({
+                  path:'/HomePage',
+                  name:'HomePage',
+                  query:{
+                    account: response.data.account
+                  }
+                }),
+                  console.log(response)
+              }else if(response.data.role==="teacher" && response.data.isActived===1){
+                _this.$router.push({path:'/teacher/HomePage'});
+                console.log(response.data);
+              }else if(response.data.role==="student" && response.data.isActived===0){
+                //激活
+                _this.router.push({
+                  path:'/activate',
+                  name:'activate',
+                  account: response.data.account
+                })
               }
-            }),
-              console.log(response)
-          }else if(response.data.type===true){
-            _this.$router.push({path:'/teacher/HomePage'});
-            console.log(response.data);
+            }
           }
-          else{
-            alert("密码错误！");
+          else {
+            alert("账号/密码错误！");
             console.log(response.data);
           }
         })

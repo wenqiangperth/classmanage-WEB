@@ -7,9 +7,9 @@
 
       <div class="find-pw">
         <label>学号/教工号：</label>
-        <input type="number" placeholder=""/>
+        <input v-model="account" type="number" placeholder=""/>
       </div>
-
+<!--
       <div class="find-pw">
         <label>验证码：</label>
         <input type="number" placeholder="">
@@ -19,8 +19,9 @@
         <button id="check">立即验证</button>
       </div>
 
+-->
       <div class="confirm">
-        <a @click="confirmps">确认</a>
+        <a @click="confirm">下一步</a>
       </div>
     </div>
 </template>
@@ -28,13 +29,43 @@
 <script>
     export default {
         name: "findkey1",
+        data(){
+          return {
+            account: ''
+          }
+        },
         methods:{
+          confirm(){
+            let that = this
+            that.$axios({
+              method: 'GET',
+              url: 'user/password',
+              params:{
+                account: that.account
+              }
+            })
+              .then(response =>{
+                if(response.status===200){
+                  that.$router.push({
+                    path:'/findkey2',
+                    name:'findkey2',
+                    query:{
+                      account: that.account
+                    }
+                  })
+                }
+                else{
+                  alert("账号不存在，请重新输入！")
+                }
+              })
+              .catch(e=>{
+                console.log(e)
+              })
+          },
           backToLogin(){
             this.$router.push({path:'/'})
-          },
-          confirmps(){
-            this.$router.push({path:'/findkey2'})
           }
+
         }
     }
 </script>

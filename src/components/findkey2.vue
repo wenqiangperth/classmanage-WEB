@@ -6,16 +6,16 @@
       </div>
       <div class="find-pw">
         <label>输入密码：</label>
-        <input type="password" placeholder=""/>
+        <input v-model="password1" type="password" placeholder=""/>
       </div>
 
       <div class="find-pw">
         <label>确认密码：</label>
-        <input type="password" placeholder="">
+        <input v-model="password" type="password" placeholder="">
       </div>
 
       <div class="confirm">
-        <a @click="backLogin">确认提交</a>
+        <a @click="submit">确认提交</a>
       </div>
 
       <div class="inp-info">
@@ -27,12 +27,44 @@
 <script>
     export default {
         name: "findkey2",
+        data(){
+          return {
+            account:'',
+            password1: '',
+            password: ''
+          }
+        },
+      created(){
+          this.account = this.$route.query.account
+      },
         methods:{
           back(){
             this.$router.push({path:'/findkey1'})
           },
-          backLogin(){
-            this.$router.push({path:'/Account/ManageAccount'})
+          submit(){
+           let that = this
+            if(that.password1 !== that.password)
+              alert("密码不一致，请重新输入！")
+            else{
+              that.$axios({
+                method: 'PUT',
+                url:'/user/password',
+                data:{
+                  password: that.password
+                }
+              })
+                .then(response => {
+                  if(response.status === 200){
+                    alert("已成功修改密码")
+                    this.$router.push({path:'/'})
+                  }
+                  else if(response.status===400)
+                    alert("密码设置错误，请重新输入")
+                })
+                .catch( e =>{
+                  console.log(e)
+                })
+            }
           }
         }
     }

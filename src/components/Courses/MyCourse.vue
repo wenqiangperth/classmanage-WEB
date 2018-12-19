@@ -25,32 +25,37 @@
         <img src="../../assets/3.jpg">
       </div>
 
-      <div class="course">
+      <div class="course" v-for="course in courses">
         <el-button style="width: 90%;background-color: #66CCCC"
           @click="dialogVisible=true">
           <i class="el-icon-document" style="font-size: 20px;color:#fff"></i>
-          <label style="font-size: 20px;color: #fff">OOAD</label>
-          <el-tag style="float: right;color:#fff">2016-(1)</el-tag>
+          <label style="font-size: 20px;color: #fff">{{course.name}}</label>
+          <el-tag style="float: right;color:#fff">{{course.className}}</el-tag>
         </el-button>
         <el-dialog
-          title="OOAD"
+          title="课程安排"
           :visible.sync="dialogVisible"
           width="80%"
           fullscreen="true">
           <div style="color: #66CCCC;">
-            <div class="Grade" style="float: left;width:50%;font-size: 30px;">
+            <div class="info" style="float: left;width:33.3%;font-size: 30px;">
+              <i class="el-icon-view" @click="courseInfo"></i>
+            </div>
+            <div class="Grade" style="float: left;width:33.3%;font-size: 30px;">
               <i class="el-icon-tickets" @click="toGrade"></i>
             </div>
-            <div class="team" style="float: left;width:50%;font-size: 30px">
-              <i class="el-icon-share"></i>
+            <div class="team" style="float: left;width:33.3%;font-size: 30px">
+              <i class="el-icon-share" @click="teamInfo"></i>
             </div>
           </div>
           <div style="color: #66CCCC">
-            <div style="float: left;width: 50%">我的成绩</div>
-            <div style="float: left;width: 50%">我的组队</div>
+            <div style="float: left;width: 33.3%">课程信息</div>
+            <div style="float: left;width: 33.3%">我的成绩</div>
+            <div style="float: left;width: 33.3%">我的组队</div>
           </div>
         </el-dialog>
       </div>
+      <!--
       <div class="course">
         <el-button style="width:90%;background-color: #66CCCC">
           <i class="el-icon-document" style="font-size: 20px;color:#fff"></i>
@@ -58,7 +63,7 @@
           <el-tag style="float: right;color:#fff">2016-(3)</el-tag>
         </el-button>
       </div>
-
+-->
     </div>
 </template>
 
@@ -67,8 +72,32 @@
         name: "MyCourse",
       data(){
           return{
-            dialogVisible: false
+            dialogVisible: false,
+            courses:[]
           }
+      },
+      created(){
+        let that = this
+        that.$axios({
+          method: 'GET',
+          url: '/course?userId=${localStorage.userId}',
+          headers:{
+            'token':window.localStorage['token']
+          }
+        })
+          .then(response=>{
+            if(response.data.status===200){
+              that.courses=response.data
+              console.log(response.data)
+            }
+            else if(response.status===404)
+              alert("暂未找到课程")
+            else
+              alert("错误的ID格式")
+          })
+          .catch(e=>{
+            console.log(e)
+          })
       },
       methods:{
         handleCommand(command){
@@ -82,6 +111,18 @@
           },
           toGrade(){
             this.$router.push({path:'/Courses/AllGrade/Grade'});
+          },
+          courseInfo(){
+            this.$router.push({
+              path:'/Courses/CourseInfo',
+              name:'CourseInfo',
+              query:{
+                courseId: this.course.id
+              }
+            })
+          },
+          teamInfo(){
+            this.$router.push({path:'/Courses/MyTeam/TeamInfo'})
           }
       }
     }

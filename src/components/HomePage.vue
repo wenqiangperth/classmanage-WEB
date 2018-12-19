@@ -27,7 +27,7 @@
           <img src="../assets/user.png"/>
         </div>
         <div class="per-in">
-          <h2>{{accountNumber}}</h2>
+          <h2>{{name}}</h2>
           <span>学号：{{accountNumber}}</span>
         </div>
       </div>
@@ -36,7 +36,7 @@
       <div class="per-box">
         <div class="per-box1">
           <i class="el-icon-document"></i>
-          <label >我的课程</label>
+          <label @click="findCourse">我的课程</label>
           <i class="el-icon-d-arrow-right"></i>
         </div>
         <div class="divHeight"></div>
@@ -54,15 +54,30 @@
         name: "HomePage",
       data(){
         return {
-          id: '',
-          username: '',
+          name: '',
           accountNumber:''
         }
       },
       created(){
           this.getData();
+          let that=this
+          that.$axios({
+            method:'GET',
+            url:'/user/information?userId=${localStorage.userId}',
+            headers:{
+              'token': window.localStorage['token']
+            }
+          })
+            .then(response=>{
+              if(response.status===200){
+                that.name=response.data.name
+              }
+            })
+            .catch(e=>{
+              console.log(e)
+            })
       },
-        methods:{
+      methods:{
           handleCommand(command){
             if(command === "course")
               this.$router.push({
@@ -74,10 +89,13 @@
             this.$router.push({path:'/'});
           },
 
+          findCourse(){
+            this.$router.push({path:'/Courses/MyCourse'})
+          },
+
           getData(){
-            this.id = this.$route.query.id
-            this.accountNumber = this.$route.query.accountNumber
-            console.log('id',this.id)
+            this.accountNumber = this.$route.query.account
+            //console.log('id',this.id)
             console.log('accountNumber',this.accountNumber)
           },
 

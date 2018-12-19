@@ -4,6 +4,7 @@ import HelloWorld from '../components/HelloWorld'
 import activate from '../components/activate'
 import findkey1 from '../components/findkey1'
 import findkey2 from '../components/findkey2'
+import ChangeEmail from '../components/Account/ChangeEmail'
 import homePage from '../components/HomePage'
 import CoursePage from '../components/Courses/CoursePage'
 import Seminaring from '../components/Courses/Seminaring/Seminaring'
@@ -21,6 +22,11 @@ import CheckInfo from '../components/Courses/AfterSeminar/CheckInfo'
 import ManageAccount from '../components/Account/ManageAccount'
 import MyCourse from '../components/Courses/MyCourse'
 import Grade from '../components/Courses/AllGrade/Grade'
+import ScourseInfo from '../components/Courses/CourseInfo'
+import TeamInfo from '../components/Courses/MyTeam/TeamInfo'
+import MakeTeam from '../components/Courses/MyTeam/MakeTeam'
+import TeamManage from '../components/Courses/MyTeam/TeamManage'
+import WithDraw from '../components/Courses/MyTeam/WithDraw'
 
 import FindPassword from "../components/teacher/FindPassword";
 import HomePage from "../components/teacher/HomePage";
@@ -76,6 +82,11 @@ export default new Router({
       path: '/findkey2',
       name: 'findkey2',
       component: findkey2
+    },
+    {
+      path:'/Account/ChangeEmail',
+      name:'ChangeEmail',
+      component: ChangeEmail
     },
     {
       path: '/HomePage',
@@ -161,6 +172,31 @@ export default new Router({
       path: '/Courses/AllGrade/Grade',
       name: 'Grade',
       component: Grade
+    },
+    {
+      path: '/Courses/CourseInfo',
+      name: 'ScourseInfo',
+      component: ScourseInfo
+    },
+    {
+      path: '/Courses/MyTeam/TeamInfo',
+      name: 'TeamInfo',
+      component: TeamInfo
+    },
+    {
+      path: '/Courses/MyTeam/MakeTeam',
+      name: 'MakeTeam',
+      component: MakeTeam
+    },
+    {
+      path: '/Courses/MyTeam/TeamManage',
+      name: 'TeamManage',
+      component: TeamManage
+    },
+    {
+      path: '/Courses/MyTeam/WithDraw',
+      name: 'WithDraw',
+      component: WithDraw
     },
     {
       path: '/',
