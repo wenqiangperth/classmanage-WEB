@@ -15,19 +15,20 @@
     <div class="empty" style="height: 10px;width: 100%"></div>
     <div class="main">
       <el-card>
-        <div slot="header">
-          <span>课程要求</span>
+        <div slot="header" style="float: left">
+          <span style="font-weight: bold">课程要求</span>
         </div>
         <p>{{courseInfo.description}}</p>
       </el-card>
       <el-card class="box-card">
-        <span>成绩计算规则:</span>
-        <br>
+        <div slot="header" style="float: left">
+          <span style="font-weight: bold">成绩计算规则</span>
+        </div>
         <table
           v-for="(item,index) in courseInfo.tableData1"
           :key="index"
           style="width: 100%;">
-          <tr>
+          <tr style="height: 35px">
             <td style="width:30%">{{item.make_up}}</td>
             <td style="text-align: center">
               {{item.percentage}}%
@@ -38,17 +39,17 @@
       <el-card>
         <table
           style="width: 100%;text-align: center">
-          <tr>
+          <tr style="height: 35px">
             <td style="width:30%">小组人数:</td>
             <td>
               {{courseInfo.minNum}}~{{courseInfo.maxNum}}
             </td>
           </tr>
-          <tr>
+          <tr style="height: 35px">
             <td style="width: 30%">组队开始:</td>
             <td style="text-align: right">{{courseInfo.startTime}}</td>
           </tr>
-          <tr>
+          <tr style="height: 35px">
             <td style="width: 30%">组队截止:</td>
             <td style="text-align: right">{{courseInfo.endTime}}</td>
           </tr>
@@ -68,6 +69,7 @@
 </template>
 
 <script>
+  import {MessageBox} from 'mint-ui'
   export default {
     name: "CourseInfo",
     data() {
@@ -108,9 +110,24 @@
         this.$router.push({path: '/teacher/SeminarPage'});
       },
       deleteCourse() {
-
+        MessageBox.confirm('此操作将永久删除该课程?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.$router.push({path:'/teacher/CourseManage'});
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
       }
-    }
+      }
   }
 </script>
 

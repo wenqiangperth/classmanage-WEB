@@ -13,15 +13,11 @@
       </div>
     </div>
     <div class="main">
+      <div style="width:100%;height:15px"></div>
       <table class="table0">
         <tr>
           <td class="td0">
-            <p>&nbsp;&nbsp;&nbsp;发送验证码: <a href="mailto:qiuming@qq.com">qiuming@qq.com</a></p>
-          </td>
-        </tr>
-        <tr>
-          <td class="td0">
-            <el-tooltip class="item" effect="dark" content="可包含字母、数字、下划线，长度不少于6位" placement="bottom">
+            <el-tooltip class="item" effect="dark" content="密码长度8-32位，须包含数字字母符号至少两种或以上" placement="bottom">
               <el-input id="pass" type="password" placeholder="新密码">
                 <i slot="suffix" class="el-input__icon el-icon-view icon2 icon0" @click="showPassword"></i>
               </el-input>
@@ -35,13 +31,14 @@
             </el-input>
           </td>
         </tr>
-
         <tr>
-          <td class="td0">
-            <el-input class="input0" placeholder="填写验证码">
-              <el-button slot="append" type="info" plain>立即验证</el-button>
-            </el-input>
-          </td>
+          <td class="td0"></td>
+        </tr>
+        <tr>
+          <td class="td0"></td>
+        </tr>
+        <tr>
+          <td class="td0"></td>
         </tr>
 
       </table>

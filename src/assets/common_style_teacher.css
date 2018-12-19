@@ -1,7 +1,10 @@
 .head{
   height: 70px;
   width:100%;
-  background-color: #CCFF99;
+  background-color: #666669;
+  font-family: 黑体;
+  font-size: 20px;
+  color:white;
 }
 .title{
   display: block;
@@ -46,6 +49,8 @@
 .main {
   width: 50%;
   margin: auto;
+  font-size: 14px;
+  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB",Arial,sans-serif;
 }
 
 @media (max-width: 640px) {

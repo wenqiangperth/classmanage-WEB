@@ -12,16 +12,17 @@
           </el-dropdown>
         </div>
       </div>
-      <div class="per-info b-line">
-        <div class="per-pic">
-          <img src="../../assets/user.png"/>
-        </div>
-        <div class="per-in">
-          <h2>{{username}}</h2>
-          <span>教工号：{{id}}</span>
-        </div>
-      </div>
+
       <div class="main">
+        <el-card>
+          <fieldset>
+            <legend style="font-size: 20px;color:#66cccc;">xxXX课堂管理系统XXxx </legend>
+            <span style="float: left;font-weight: bold">欢迎您: {{username}}老师！</span>
+            <br>
+            <p>当前账户信息: 12345678965{{id}}</p>
+            <p></p>
+          </fieldset>
+        </el-card>
         <el-row>
           <el-col :span="12">
             <el-card shadow="hover" class="card">
@@ -92,58 +93,6 @@
 </script>
 
 <style scoped>
-  .per-info{
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: flex;
-    -webkit-box-align: center;
-    -webkit-align-items: center;
-    align-items: center;
-    padding: 15px;
-    position: relative;
-    background-color: #f4f4f5;
-  }
-
-  .b-line{
-    position: relative;
-  }
-
-  .per-pic{
-    width:60px;
-    height:60px;
-    margin-right:0.6rem;
-    position:relative;
-  }
-
-  .per-pic img{
-    width:80px;
-    height:80px;
-    display:block;
-    border:none;
-    border-radius:100%;
-  }
-
-  .per-in{
-    -webkit-box-flex: 1;
-    -webkit-flex: 1;
-    flex: 1;
-    min-width: 0;
-    font-size: 14px;
-    color: #333;
-  }
-
-  .per-in h2{
-    font-weight:normal;
-    font-size:1.2rem;
-  }
-
-  .per-in span{
-    font-size:0.8rem;
-    color:#9e9e9e;
-    position:relative;
-    padding-right:25px;
-  }
-
   .icon11{
     font-size: 55px;
     color: #66cccc;

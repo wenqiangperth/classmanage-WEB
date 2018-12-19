@@ -15,18 +15,14 @@
     <div class="main">
       <el-form label-width="80px">
         <el-form-item></el-form-item>
-        <el-form-item label="e-mail:">
-          <el-input placeholder="填写邮箱"></el-input>
-        </el-form-item>
-        <el-form-item label="验证码:">
-          <el-input placeholder="填写验证码"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button class="btn1" type="info" plain
-          >立即验证
-          </el-button>
+        <el-form-item label="新e-mail:">
+          <el-tooltip class="item" effect="dark" content="邮箱格式如：user@host.domainnames" placement="bottom">
+            <el-input placeholder="填写新邮箱">
+            </el-input>
+          </el-tooltip>
         </el-form-item>
       </el-form>
+
       <div class="footer">
         <el-button class="btn" type="success" @click="returnAccountManage" plain>确认修改</el-button>
       </div>
@@ -56,13 +52,10 @@
 </script>
 
 <style scoped>
-  .btn1 {
-    float: right;
-  }
 
   .footer {
     width: 100%;
-    margin-top: 190px;
+    margin-top: 30px;
   }
 
 </style>

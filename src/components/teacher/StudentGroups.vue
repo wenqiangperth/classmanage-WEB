@@ -20,25 +20,32 @@
           <template slot="title">
             <div style="font-weight: bold">
               &nbsp;&nbsp;<i class="header-icon el-icon-star-off icon0"></i>&nbsp;&nbsp;{{item.groupId}}&nbsp;&nbsp;{{item.groupName}}
+              <span v-show="item.status==='Invaild'" style="color: red;"><i class="el-icon-warning"></i></span>
             </div>
           </template>
-          <table border="0" cellspacing="0" cellpadding="0"
-            style="width: 100%;background-color: beige;text-align: center;">
-            <tr style="height: 40px">
-              <td style="width: 20%;font-weight: bold">组长:</td>
-              <td style="width: 40%">{{item.leader.account}}</td>
-              <td>{{item.leader.name}}</td>
-            </tr>
-          </table>
-          <table style="width: 100%;background-color:#f4f4f5 ;text-align:center"
-                 v-for="(item0,index0) in item.members"
-                 :key="index0">
-            <tr style="height: 30px">
-              <td style="width: 20%">组员:</td>
-              <td style="width: 40%">{{item0.account}}</td>
-              <td>{{item0.name}}</td>
-            </tr>
-          </table>
+          <el-table
+            :data="item.members"
+            style="width: 100%;"
+          >
+            <el-table-column
+              prop="account"
+              label="学号"
+              width="140"
+              align="center">
+            </el-table-column>
+            <el-table-column
+              prop="name"
+              label="姓名"
+              width="130"
+              align="center">
+            </el-table-column>
+            <el-table-column
+              prop="isLeader"
+              label="是否组长"
+              width="80"
+              align="center">
+            </el-table-column>
+          </el-table>
         </el-collapse-item>
       </el-collapse>
     </div>
@@ -55,84 +62,88 @@
           {
             groupId: '1-1',
             groupName: 'Untitled',
-            leader: {
-              account: '24320162202xxx',
-              name: 'yyyyyy'
-            },
+            status:'Invaild',
             members: [
               {
                 account: '24320162202xxx',
-                name: 'bbbbbb'
+                name: 'bbbbbb',
+                isLeader:'Yes'
               },
               {
                 account: '24320162202xxx',
-                name: 'bbbbbb'
+                name: 'bbbbbb',
+                isLeader:''
               },
               {
                 account: '24320162202xxx',
-                name: 'bbbbbb'
+                name: 'bbbbbb',
+                isLeader:''
               },
               {
                 account: '24320162202xxx',
-                name: 'bbbbbb'
+                name: 'bbbbbb',
+                isLeader:''
               }
             ]
           },
           {
             groupId: '1-2',
             groupName: 'Untitled',
-            leader: {
-              account: '24320162202xxx',
-              name: 'yyyyyy'
-            },
+            status:'Invaild',
             members: [
               {
                 account: '24320162202xxx',
-                name: 'bbbbbb'
+                name: 'bbbbbb',
+                isLeader:'Yes'
               },
               {
                 account: '24320162202xxx',
-                name: 'bbbbbb'
+                name: 'bbbbbb',
+                isLeader:''
               },
               {
                 account: '24320162202xxx',
-                name: 'bbbbbb'
+                name: 'bbbbbb',
+                isLeader:''
               },
               {
                 account: '24320162202xxx',
-                name: 'bbbbbb'
+                name: 'bbbbbb',
+                isLeader:''
               }
             ]
           },
           {
             groupId: '1-3',
             groupName: 'Untitled',
-            leader: {
-              account: '24320162202xxx',
-              name: 'yyyyyy'
-            },
+            status:'success',
             members: [
               {
                 account: '24320162202xxx',
-                name: 'bbbbbb'
+                name: 'bbbbbb',
+                isLeader:'Yes'
               },
               {
                 account: '24320162202xxx',
-                name: 'bbbbbb'
+                name: 'bbbbbb',
+                isLeader:''
               },
               {
                 account: '24320162202xxx',
-                name: 'bbbbbb'
+                name: 'bbbbbb',
+                isLeader:''
               },
               {
                 account: '24320162202xxx',
-                name: 'bbbbbb'
+                name: 'bbbbbb',
+                isLeader:''
               }
             ]
           },
           {
             groupId: '1-4',
             groupName: 'Untitled',
+            status:'success',
             leader: {
               account: '24320162202xxx',
               name: 'yyyyyy'
