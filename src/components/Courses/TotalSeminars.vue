@@ -120,10 +120,10 @@
           })
           .catch(e=>{
             console.log(e)
-          });
+          })
 
-        for(let j=0;j<courses.length;j++){
-          that.roundId=courses[j].order;
+        for(let j=0;j<that.courses.length;j++){
+          that.roundId=that.courses[j].order;
           that.$axios({
             method:'GET',
             url:'/round/roundId/seminar',
@@ -136,13 +136,22 @@
           })
             .then(res=>{
               if(res.data.status===200){
-
+                let m=0;
+                that.courses[j].item[m++]=res.data.data[m++].topic;
+              }
+              else if(res.data.status===404){
+                alert(j+"轮未找到讨论课");
+              }
+              else{
+                alert("错误的ID格式");
               }
             })
             .catch(e=>{
               console.log(e)
             })
         }
+        //检测courses有无成功得到轮次和轮次下的讨论课
+        console.log(this.courses[0].item);
       },
       methods: {
         back(){
