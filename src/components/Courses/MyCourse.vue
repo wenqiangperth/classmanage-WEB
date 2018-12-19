@@ -87,7 +87,7 @@
         })
           .then(response=>{
             if(response.data.status===200){
-              that.courses=response.data
+              that.courses=response.data.data
               console.log(response.data)
             }
             else if(response.status===404)

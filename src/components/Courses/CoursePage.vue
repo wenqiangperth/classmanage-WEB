@@ -30,16 +30,19 @@
         <el-menu
           default-active="2"
           class="el-menu-vertical-demo"
-          @open="handleOpen"
-          @close="handleClose"
           background-color="#66CCCC"
           text-color="#fff"
           active-text-color="#ffd04b">
-          <el-menu-item index="2" style="text-align: left">
+          <el-menu-item
+            v-for="course in courses"
+            index="1"
+            @click="getCourse(course.id)"
+            style="text-align: left">
             <i class="el-icon-menu"></i>
-            <span slot="title">软件工程</span>
+            <span slot="title">{{course.name}}</span>
           </el-menu-item>
           <div class="line"></div>
+          <!--
           <el-menu-item index="3" style="text-align: left" @click="getCourse">
             <i class="el-icon-document"></i>
             <span slot="title">OOAD</span>
@@ -49,6 +52,7 @@
             <i class="el-icon-setting"></i>
             <span slot="title">J2EE</span>
           </el-menu-item>
+          -->
         </el-menu>
       </el-col>
     </div>
@@ -58,14 +62,54 @@
     export default {
         name: "CoursePage",
       data() {
-
+        return{
+          courses:[{name:'OOAD',id:'2'}],
+          courseId:''
+        }
+      },
+      created(){
+          let that = this;
+          /*
+          for (let i=0;i<this.courses.length;i++)
+            console.log(this.courses[i].name);
+*/
+        that.$axios({
+            method:'GET',
+            url:'/course',
+            headers:{
+              'token':window.localStorage['token']
+            }
+          })
+            .then(res=>{
+              if(res.data.status===200){
+                that.courses=res.data.data;
+                console.log(res.data.data);
+              }
+              else if(res.data.status===404){
+                alert("未找到课程！")
+              }
+              else{
+                alert("错误的ID格式")
+              }
+            })
+            .catch(e=>{
+              console.log(e)
+            })
       },
       methods:{
-          back(){
-            this.$router.push({path:'/HomePage'});
-          },
-        getCourse(){
-            this.$router.push({path:'/Courses/TotalSeminars'});
+        back(){
+          this.$router.push({path:'/HomePage'});
+        },
+        getCourse(value){
+          this.courseId=value;
+          console.log(this.courseId);
+          this.$router.push({
+            path:'/Courses/TotalSeminars',
+            name:'TotalSeminars',
+            query:{
+              courseId: this.courseId
+            }
+          });
         }
       }
     }
