@@ -86,19 +86,38 @@
             this.$router.push({path:'/Courses/Seminaring/Seminaring'})
           },
          open() {
-          this.$alert('请<br/><strong>1-3: 赵四同学</strong>' +
-            '</br><strong>24320162202825</strong></br>提问', '提问成功', {
-            confirmButtonText: '确定',
-            dangerouslyUseHTMLString: true,
-            type: 'success',
-            center: true,
-            callback: action => {
-              this.$message({
-                type: 'info',
-                message: `action: ${ action }`
-              });
-            }
-          });
+           this.$axios({
+             method:'POST',
+             url:'seminar/seminarId/class/classId/question',
+             headers:{
+               'token':window.localStorage['token']
+             },
+             data:{
+               userId:window.localStorage['userId']
+             }
+           })
+             .then(res=>{
+               if(res.status===200){
+                 //提问报名成功
+                 let data=res.data.data;
+                 this.account=data.account;
+                 this.name=data.name;
+                 this.$alert('请<br/><strong>{{this.name}}1-3: 赵四同学</strong>' +
+                   '</br><strong>{{this.account}}24320162202825</strong></br>提问', '提问成功', {
+                   confirmButtonText: '确定',
+                   dangerouslyUseHTMLString: true,
+                   type: 'success',
+                   center: true,
+                   callback: action => {
+                     this.$message({
+                       type: 'info',
+                       message: `action: ${ action }`
+                     });
+                   }
+                 })
+               }
+             })
+             .catch()
         }
       }
     }
