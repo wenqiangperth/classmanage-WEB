@@ -29,10 +29,10 @@
         </el-form-item>
         <el-form-item label="选择班级" prop="region">
           <el-select v-model="ruleForm.region" placeholder="2016-（1）">
-            <el-option label="2016-（1）" value="2016-（1）"></el-option>
-            <el-option label="2016-（2）" value="2016-（2）"></el-option>
-            <el-option label="2016-（3）" value="2016-（3）"></el-option>
-            <el-option label="2016-（4）" value="2016-（4）"></el-option>
+            <el-option label="2016-（1）" value="1"></el-option>
+            <el-option label="2016-（2）" value="2"></el-option>
+            <el-option label="2016-（3）" value="3"></el-option>
+            <el-option label="2016-（4）" value="4"></el-option>
           </el-select>
         </el-form-item>
 
@@ -83,6 +83,7 @@
         name: "MakeTeam",
       data() {
         return {
+          courseId:'',
           student:'',
           ruleForm: {
             name: '',
@@ -119,11 +120,29 @@
           }]
         };
       },
+      created(){
+          let that = this;
+          that.$axios({
+            method:'GET',
+            url:'/course/courseId/noTeam',
+            params:{
+              courseId: that.courseId
+            }
+          })
+            .then(res=>{
+              if(res.data.status===200){
+                let data=res.data;
+                that.Unteam=data.noTeam;
+              }
+            })
+            .catch(e=>{console.log(e)})
+      },
       methods:{
           back(){
             this.$router.push({path:'/Courses/MyTeam/TeamInfo'})
           },
           submitForm(ruleForm) {
+            //console.log(this.ruleForm.region);
             this.$refs[ruleForm].validate((valid) => {
               if (valid) {
                 alert('submit!');
@@ -132,6 +151,30 @@
                 return false;
               }
             });
+            this.$axios({
+              method:'POST',
+              url:'/team',
+              data:{
+                name:this.ruleForm.name,
+                courseId:this.courseId,
+                classId:this.ruleForm.region,
+                leader:{
+                  id:window.localStorage['userId']
+                },
+                members:[]
+              }
+            })
+              .then(res=>{
+                if(res.data.status===200){
+                  alert("创建成功！")
+                }
+                else{
+                  alert("创建失败！");
+                }
+              })
+              .catch(e=>{
+                console.log(e)
+              })
           },
           searchStu(){
             let that=this;
@@ -145,8 +188,8 @@
             }
             if(that.student==='')
               that.Unteam = that.Unteam;
-
           }
+
       }
     }
 </script>

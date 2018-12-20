@@ -28,9 +28,9 @@
           <el-button style="float: right; padding: 3px 0" type="text">操作</el-button>
         </div>
         <div style="font-weight: bold">组长：{{leader.Na}}--{{leader.No}}</div>
-        <div v-for="o in members" class="text item">
-          {{o.Na}}--{{o.No}}
-          <i style="float: right; color: red" class="el-icon-error"></i>
+        <div v-for="obj in members" class="text item">
+          {{obj.Na}}--{{obj.No}}
+          <i style="float: right; color: red" class="el-icon-error" @click="dele(obj.No)"></i>
         </div>
       </el-card>
       <div class="divHeight"></div>
@@ -83,6 +83,8 @@
         name: "TeamManage",
       data(){
           return{
+            teamId:'',    //记录用户所在小组的teamId并传给后端
+            item:'',      //存放所有从后端传来的数据
             student:'',
             teamTitle:'1-1 武林盟主',
             leader:{ Na:'王强', No: '24320162201122' } ,
@@ -113,6 +115,28 @@
             }]
           }
       },
+      created(){
+        let that = this;
+        that.$axios({
+          method:'GET',
+          url:'/team/teamId',
+          params:{
+            teamId:that.teamId
+          }
+        })
+          .then(res=>{
+            if(res.data.status===200){
+              let data = res.data;
+              that.item=data.data;
+            }
+            else if(res.data.status===404){
+              alert("未找到！")
+            }
+          })
+          .catch(e=>{
+            console.log(e)
+          })
+      },
       methods:{
         searchStu(){
           let that=this;
@@ -126,6 +150,45 @@
           }
           if(that.student==='')
             that.Unteam = that.Unteam;
+        },
+        //删除组员
+        dele(index){
+          this.$confirm('此操作将删除您的队友, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+            center: true
+          }).then(() => {
+            this.$axios({
+              method:'PUT',
+              url:'team/teamId/remove',
+              params:{
+                id:index,
+                teamId:this.teamId
+              }
+            })
+              .then(res=>{
+                let data=res.data;
+                if(data.status===204){
+                  this.$message({
+                    type: 'success',
+                    message: '删除成功!'
+                  });
+                }
+                else{
+                  alert("删除失败！")
+                }
+              })
+              .catch(e=>{
+                console.log(e)
+              })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            });
+          });
+
 
         }
       }

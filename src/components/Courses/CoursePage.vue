@@ -75,10 +75,12 @@
 */
         that.$axios({
             method:'GET',
-            url:'/course',
+            url:'/course'
+        /*
             headers:{
               'token':window.localStorage['token']
             }
+        */
           })
             .then(res=>{
               if(res.data.status===200){

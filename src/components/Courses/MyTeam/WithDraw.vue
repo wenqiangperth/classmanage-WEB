@@ -69,11 +69,26 @@
               type: 'warning',
               center: true
             }).then(() => {
-              this.$message({
-                type: 'success',
-                message: '退出成功!'
-              });
-              this.$router.push({path:'/Courses/MyTeam/TeamInfo'});
+              this.$axios({
+                method:'PUT',
+                url:'/team/teamId/remove',
+                params:{
+                  id:window.localStorage['userId']
+                }
+              }).then(res=>{
+                let data=res.data;
+                if(data.status===204){
+                  this.$message({
+                    type: 'success',
+                    message: '退出成功!'
+                  });
+                  this.$router.push({path:'/Courses/MyTeam/TeamInfo'});
+
+                }else{
+                  alert("退出失败，请重新尝试！")
+                }
+              })
+                .catch(e=>{console.log(e)})
             }).catch(() => {
               this.$message({
                 type: 'info',
@@ -91,7 +106,7 @@
               { Na:'高某',No:'24232001213213' },
               { Na:'方某',No:'24323425233232' },
               { Na:'叶某',No:'24329753973845' }
-              ]
+            ]
           }
       }
     }
