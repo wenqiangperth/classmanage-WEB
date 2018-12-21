@@ -5,6 +5,7 @@
         <el-dropdown class="plus" trigger="click">
           <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item><i class="el-icon-date" @click="gotoBacklog">&nbsp;&nbsp;待 办</i></el-dropdown-item>
             <el-dropdown-item><i class="el-icon-bell" @click="returnHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
             <el-dropdown-item><i class="el-icon-back" @click="returnLogin">&nbsp;&nbsp;退 出</i></el-dropdown-item>
           </el-dropdown-menu>
@@ -22,7 +23,7 @@
       </el-tree>
 
       <div class="empty">
-        <el-button class="button" type="info" size="small" plain
+        <el-button class="button" type="info" size="small"
                    @click="gotoSeminar"
                    >正在进行的讨论课
         </el-button>
@@ -78,7 +79,7 @@
                 </el-button>
               </td>
               <td style="width: 50%;text-align: center">
-                <el-button type="info" plain size="small" @click="CancelPopBox">取消</el-button>
+                <el-button type="info" size="small" @click="CancelPopBox">取消</el-button>
               </td>
             </tr>
           </table>
@@ -102,11 +103,6 @@
       </el-dialog>
       <div class="new">
         <div>
-          <el-button class="btn" type="success" plain @click="NewRound"><i class="el-icon-plus"
-                                                                              style="font-weight: bolder"></i>&nbsp;&nbsp;新建轮次
-          </el-button>
-        </div>
-        <div>
           <el-button class="btn" type="success" plain @click="NewSeminar"
                      style="margin-top: 10px"><i class="el-icon-plus" style="font-weight: bolder"></i>&nbsp;&nbsp;新建讨论课
           </el-button>
@@ -123,7 +119,7 @@
       return {
         dialogTableVisible: false,
         data: [{
-          label: '第一轮',
+          label: '第1轮',
           children: [{
             label: '该轮轮次设置',
             },
@@ -151,7 +147,7 @@
             }]
           }]
         }, {
-          label: '第二轮',
+          label: '第2轮',
           children: [{
             label: '该轮轮次设置',
           },
@@ -233,14 +229,14 @@
           this.dialogTableVisible=true;
         }
       },
+      gotoBacklog() {
+        this.$router.push({path: '/teacher/Backlog'});
+      },
       returnLogin() {
         this.$router.push({path: '/'});
       },
       returnHomePage() {
         this.$router.push({path: '/teacher/HomePage'});
-      },
-      NewRound() {
-        //this.$router.push({path:'/teacher/SetRound'});
       },
       NewSeminar() {
         this.$router.push({path: '/teacher/NewSeminar'});
@@ -277,7 +273,7 @@
 
   .new {
     width: 100%;
-    margin-top: 80px;
+    margin-top: 250px;
   }
 
   .button {
@@ -291,12 +287,4 @@
   }
 
 </style>
-<style>
-  .el-tree-node__content{
-    height:40px;
-  }
-  .el-tree-node__expand-icon{
-    font-size: 20px;
-    color: #66cccc;
-  }
-</style>
+

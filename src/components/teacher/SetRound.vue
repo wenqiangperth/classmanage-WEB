@@ -6,10 +6,10 @@
     <div class="main">
       <el-card class="box-card">
         <div slot="header">
-          <span>讨论课:</span>
-          <el-button type="success" size="small" plain style="float: right" @click="addSeminar"><i
-            class="el-icon-plus icon0"></i>&nbsp;添加讨论课
-          </el-button>
+          <span class="font_style">讨论课:</span>
+          <!--<el-button type="success" size="small" plain style="float: right" @click="addSeminar"><i
+            class="el-icon-plus"></i>&nbsp;添加讨论课
+          </el-button>-->
         </div>
         <table
           style="width: 100%;text-align: center"
@@ -21,7 +21,7 @@
       </el-card>
       <el-card class="box-card">
         <div slot="header">
-          <span>成绩设置:</span>
+          <span class="font_style">成绩设置:</span>
         </div>
         <table style="width: 100%;">
           <tr>
@@ -67,7 +67,7 @@
       </el-card>
       <el-card class="box-card">
         <div slot="header">
-          <span>本轮讨论课报名次数:</span>
+          <span class="font_style">本轮讨论课报名次数:</span>
         </div>
         <table
           v-for="item in signUpNum"
@@ -76,13 +76,13 @@
           <tr>
             <td style="width: 50%;text-align: center">{{item.value}}</td>
             <td>
-              <el-input-number size="small" v-model="item.num"></el-input-number>
+              <el-input-number size="mini" v-model="item.num"></el-input-number>
             </td>
           </tr>
         </table>
       </el-card>
       <div style="width: 100%;margin-top: 20px">
-        <el-button class="btn" type="success" plain @click="SetSuccess">发布</el-button>
+        <el-button class="btn" type="success" plain @click="SetSuccess">修改</el-button>
       </div>
     </div>
 
@@ -139,6 +139,10 @@
         this.$router.push({path: '/teacher/SeminarPage'});
       },
       SetSuccess() {
+        this.$message({
+          message: '修改成功!',
+          type: 'success'
+        });
         this.$router.push({path: '/teacher/SeminarPage'});
       },
       addSeminar() {
@@ -151,3 +155,4 @@
 <style scoped>
 
 </style>
+

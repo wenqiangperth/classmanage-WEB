@@ -1,13 +1,13 @@
 <template>
   <div>
     <div id="head" class="head">
-      <div class="title"><i class="el-icon-back icon1 icon0" @click="returnCourseManage"></i>我的课程
+      <div class="title"><i class="el-icon-back icon1 icon0" @click="returnCourseManage"></i>组队信息
         <el-dropdown class="plus" trigger="click">
           <i class="el-icon-plus icon1 icon0"></i>
           <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item><i class="el-icon-date" @click="gotoBacklog">&nbsp;&nbsp;待 办</i></el-dropdown-item>
             <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
             <el-dropdown-item><i class="el-icon-service" @click="gotoSeminar">&nbsp;&nbsp;讨论课</i></el-dropdown-item>
-            <el-dropdown-item><i class="el-icon-back" @click="returnLogin">&nbsp;&nbsp;退 出</i></el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -19,18 +19,18 @@
         <el-collapse-item>
           <template slot="title">
             <div style="font-weight: bold">
-              &nbsp;&nbsp;<i class="header-icon el-icon-star-off icon0"></i>&nbsp;&nbsp;{{item.groupId}}&nbsp;&nbsp;{{item.groupName}}
+              &nbsp;&nbsp;<i class="header-icon el-icon-star-off el-icon0"></i>&nbsp;&nbsp;{{item.groupId}}&nbsp;&nbsp;{{item.groupName}}
               <span v-show="item.status==='Invaild'" style="color: red;"><i class="el-icon-warning"></i></span>
             </div>
           </template>
           <el-table
             :data="item.members"
-            style="width: 100%;"
+            style="width: 100%;margin: auto"
           >
             <el-table-column
               prop="account"
               label="学号"
-              width="140"
+              width="130"
               align="center">
             </el-table-column>
             <el-table-column
@@ -171,8 +171,8 @@
       }
     },
     methods: {
-      returnLogin() {
-        this.$router.push({path: '/'});
+      gotoBacklog() {
+        this.$router.push({path: '/teacher/Backlog'});
       },
       returnCourseManage() {
         this.$router.push({path: '/teacher/CourseManage'});

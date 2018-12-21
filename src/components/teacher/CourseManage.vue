@@ -1,9 +1,9 @@
 <template>
   <div>
     <div id="head" class="head">
-      <div class="title"><i class="el-icon-back icon1" @click="returnHomePage"></i><span>我的课程</span>
+      <div class="title"><i class="el-icon-back icon0 icon1" @click="returnHomePage"></i><span>我的课程</span>
         <el-dropdown class="plus" trigger="click">
-          <i class="el-icon-more icon1"></i>
+          <i class="el-icon-plus icon0 icon1"></i>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
             <el-dropdown-item><i class="el-icon-service" @click="gotoSeminar">&nbsp;&nbsp;讨论课</i></el-dropdown-item>
@@ -50,7 +50,7 @@
               </el-button>
             </div>
             <div>
-              <el-button class="btn_info" type="info" plain @click="setShare"><i class="el-icon-share"></i>&nbsp;&nbsp;{{items.item[5]}}
+              <el-button class="btn_info" type="info" plain @click="setShare"><i class="el-icon-share el-icon0"></i>&nbsp;&nbsp;{{items.item[5]}}
               </el-button>
             </div>
           </div>

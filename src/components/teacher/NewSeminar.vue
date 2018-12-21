@@ -32,7 +32,7 @@
             </td>
           </tr>
           <tr>
-            <td style="width: 28%;height: 50px">是否可见:</td>
+            <td style="width: 28%;height: 35px">是否可见:</td>
             <td style="text-align: right">
               <el-switch
                 v-model="isVisible"
@@ -43,72 +43,65 @@
           </tr>
         </table>
       </el-card>
-      <el-collapse accordion>
-        <el-collapse-item>
-          <template slot="title">
-            &nbsp;&nbsp;<i class="header-icon el-icon-info icon0"></i>&nbsp;&nbsp;2016--1
-          </template>
-          <el-card class="box-card">
-            <table
-              style="width:100%">
-              <tr>
-                <td style="width: 28%">报名开始:</td>
-                <td style="text-align: right">
-                  <el-date-picker
-                    v-model="startTime"
-                    type="datetime"
-                    placeholder="选择日期时间"
-                    style="width:100%">
-                  </el-date-picker>
-                </td>
-              </tr>
-              <tr>
-                <td style="width: 28%">报名截止:</td>
-                <td style="text-align: right">
-                  <el-date-picker
-                    v-model="endTime"
-                    type="datetime"
-                    placeholder="选择日期时间"
-                    style="width: 100%">
-                  </el-date-picker>
-                </td>
-              </tr>
-              <tr>
-                <td style="width: 28%">报名组数:</td>
-                <td style="text-align: right">
-                  <el-input-number size="mini" v-model="signUpNum"></el-input-number>
-                </td>
-              </tr>
-              <tr>
-                <td style="width: 28%">报名顺序:</td>
-                <td style="text-align: right">
-                  <el-select v-model="value" placeholder="请选择">
-                    <el-option
-                      v-for="item in signUpOrder"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
-                  </el-select>
-                </td>
-              </tr>
-              <tr>
-                <td style="width: 28%">所属round:</td>
-                <td style="text-align: right">
-                  <el-select v-model="value" placeholder="请选择">
-                    <el-option
-                      v-for="item in rounds"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
-                  </el-select>
-                </td>
-              </tr>
-            </table>
-          </el-card>
-        </el-collapse-item>
-      </el-collapse>
+      <el-card class="box-card">
+        <table
+          style="width:100%">
+          <tr>
+            <td style="width: 26%">报名开始</td>
+            <td style="text-align: right">
+              <el-date-picker
+                v-model="startTime"
+                type="datetime"
+                placeholder="选择日期时间"
+                style="width:100%">
+              </el-date-picker>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 26%">报名截止</td>
+            <td style="text-align: right">
+              <el-date-picker
+                v-model="endTime"
+                type="datetime"
+                placeholder="选择日期时间"
+                style="width: 100%">
+              </el-date-picker>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 26%">报名组数</td>
+            <td style="text-align: right">
+              <el-input-number size="mini" v-model="signUpNum"></el-input-number>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 26%">报名顺序</td>
+            <td style="text-align: right">
+              <el-select v-model="value" placeholder="请选择">
+                <el-option
+                  v-for="item in signUpOrder"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 26%">round</td>
+            <td style="text-align: right">
+              <el-select v-model="value" placeholder="请选择">
+                <el-option
+                  v-for="item in rounds"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </td>
+          </tr>
+        </table>
+      </el-card>
 
       <div style="width: 100%;margin-top: 20px">
         <el-button class="btn" type="success" plain @click="NewSuccess">发布</el-button>
@@ -154,6 +147,10 @@
         this.$router.push({path: '/teacher/SeminarPage'});
       },
       NewSuccess() {
+        this.$message({
+          message: '发布成功！',
+          type: 'success'
+        });
         this.$router.push({path: '/teacher/seminarPage'});
       }
     }

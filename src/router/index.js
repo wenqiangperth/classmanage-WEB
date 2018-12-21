@@ -4,7 +4,7 @@ import HelloWorld from '../components/HelloWorld'
 import activate from '../components/activate'
 import findkey1 from '../components/findkey1'
 import findkey2 from '../components/findkey2'
-import ChangeEmail from '../components/Account/ChangeEmail'
+
 import homePage from '../components/HomePage'
 import CoursePage from '../components/Courses/CoursePage'
 import Seminaring from '../components/Courses/Seminaring/Seminaring'
@@ -57,6 +57,8 @@ import AddShare from "../components/teacher/AddShare";
 import SharePage from "../components/teacher/SharePage";
 import Backlog from "../components/teacher/Backlog";
 import OngoingSeminar from "../components/teacher/OngoingSeminar";
+import CheckInformation from "../components/teacher/CheckInformation";
+
 
 
 Vue.use(Router)
@@ -82,11 +84,6 @@ export default new Router({
       path: '/findkey2',
       name: 'findkey2',
       component: findkey2
-    },
-    {
-      path:'/Account/ChangeEmail',
-      name:'ChangeEmail',
-      component: ChangeEmail
     },
     {
       path: '/HomePage',
@@ -342,6 +339,11 @@ export default new Router({
       name: 'OngoingSeminar',
       path: '/teacher/OngoingSeminar',
       component: OngoingSeminar
+    },
+    {
+      name: 'CheckInformation',
+      path: '/teacher/CheckInformation',
+      component: CheckInformation
     }
 
   ]

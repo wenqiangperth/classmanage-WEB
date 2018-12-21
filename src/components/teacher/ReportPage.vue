@@ -2,14 +2,13 @@
   <div>
     <div id="head" class="head">
       <div class="title">
-        <router-link :to="{name:'AfterSeminar'}"><i class="el-icon-back icon1 icon0"></i></router-link>
-        OOAD--书面报告
+        <i class="el-icon-back icon1 icon0" @click="returnAfterSeminar"></i>
+        书面报告
         <el-dropdown class="plus" trigger="click">
           <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
             <el-dropdown-item><i class="el-icon-service" @click="gotoSeminar">&nbsp;&nbsp;讨论课</i></el-dropdown-item>
-            <el-dropdown-item><router-link :to="{name:'Login'}"><i class="el-icon-back icon0"></i>&nbsp;&nbsp;退 出</router-link></el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -30,7 +29,7 @@
       </el-card>
       <div>
         <el-button type="success" class="btn" plain
-                   style="margin-top: 20px"
+                   style="margin-top: 60px"
                    @click="downloadReport">批量下载
         </el-button>
       </div>
@@ -84,6 +83,9 @@
       }
     },
     methods: {
+      returnAfterSeminar() {
+        this.$router.push({path: '/teacher/AfterSeminar'});
+      },
       gotoHomePage(){
         this.$router.push({path:'/teacher/HomePage'});
       },
@@ -94,7 +96,7 @@
 
       },
       editResults() {
-        this.$router.push({path: '/teacher/UpdateReportGrade'});
+        this.$router.push({path: '/teacher/AfterSeminar'});
       },
 
     }

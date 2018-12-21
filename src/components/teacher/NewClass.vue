@@ -72,6 +72,10 @@
         this.$router.push({path: '/teacher/ClassInfo'});
       },
       NewSuccess() {
+        this.$message({
+          message: '新建成功！',
+          type: 'success'
+        });
         this.$router.push({path: '/teacher/ClassInfo'});
       }
     }

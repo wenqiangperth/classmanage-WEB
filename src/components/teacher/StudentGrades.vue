@@ -18,7 +18,8 @@
                    :key="index">
         <el-collapse-item>
           <template slot="title">
-            &nbsp;&nbsp;<i class="header-icon el-icon-service icon0"></i>&nbsp;&nbsp;{{round.name}}
+            &nbsp;&nbsp;<i class="header-icon el-icon-service el-icon0"></i>&nbsp;&nbsp;<span
+            style="font-weight: bold;font-family: 黑体;color: #616161">{{round.name}}</span>
           </template>
           <div style="width: 100%;">
             <div v-for="(group0,index0) in round.groups"

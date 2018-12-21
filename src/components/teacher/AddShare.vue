@@ -5,6 +5,7 @@
       </div>
     </div>
     <div class="main">
+      <div style="width: 100%;height:40px"></div>
       <el-card>
         <table>
           <tr>
@@ -35,8 +36,7 @@
           </tr>
 
         </table>
-        <el-button type="info" plain size="small" style="float: right;margin-top:10px;margin-bottom: 15px">新增对象
-        </el-button>
+        <!--<el-button type="info" size="small" style="float: right;margin-top:10px;margin-bottom: 15px">新增对象</el-button>-->
       </el-card>
       <el-card class="pause" id="pause">
         <i class="el-icon-info icon0" style="color:#99CC00;font-size: 25px"></i>
@@ -48,7 +48,7 @@
         </el-button>
         <el-button type="text" style="float:right;margin-right: 5px;color:#99CC00" @click="cancelShare">CANCEL</el-button>
       </el-card>
-      <el-button class="btn" type="success" plain style="margin-top: 10px" @click="successShare"> 确认共享</el-button>
+      <el-button class="btn" type="success" plain style="margin-top: 20px" @click="successShare"> 确认共享</el-button>
     </div>
   </div>
 </template>

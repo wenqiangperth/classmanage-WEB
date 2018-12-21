@@ -25,14 +25,15 @@
         <tr class="tr0">
           <td><label>联系方式</label></td>
           <td>
-            <label style="height:45px;line-height: 45px">{{teacher_account.email}}<i class="el-input__icon el-icon-edit icon0" @click="editEmail"></i></label>
+            <label style="height:45px;line-height: 45px">{{teacher_account.email}}<i
+              class="el-input__icon el-icon-edit el-icon0" @click="editEmail"></i></label>
           </td>
         </tr>
         <tr class="tr1">
           <td><label>账户密码</label></td>
           <td>
             <label></label>
-            <i class="el-input__icon el-icon-edit icon0" @click="editPassword"></i>
+            <i class="el-input__icon el-icon-edit el-icon0" @click="editPassword"></i>
           </td>
         </tr>
         <tr class="tr0">
@@ -59,11 +60,31 @@
           account: '123456789',
           email: '12345678@xmu.edu.cn',
           password: '111111',
-          interval: '',
           isShow: false,
           manager_email:'654321@163.com'
         }
       }
+    },
+    created() {
+      let that = this;
+      that.$axios({
+        method: 'GET',
+        url: 'user/information',
+        headers: {
+          'token': window.localStorage['token']
+        }
+      }).then(res => {
+        if (res.data.status === 200) {
+          let data = res.data.data;
+          that.teacher_account.name = data.name;
+          that.teacher_account.account = data.account;
+          that.teacher_account.email = data.email;
+          that.teacher_account.password = data.password;
+        }
+      })
+        .catch((e) => {
+          console.log(e);
+        })
     },
     methods: {
       returnHomePage() {
@@ -101,11 +122,11 @@
 
   .tr0{
     height:45px;
-    background-color: whitesmoke;
+    background-color: rgba(97, 97, 97, 0.05);
   }
   .tr1{
     height:45px;
-    background-color: mintcream;
+    background-color: rgba(102, 204, 204, 0.05);
   }
   .footer {
     width: 100%;

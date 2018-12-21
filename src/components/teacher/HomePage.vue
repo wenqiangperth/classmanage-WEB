@@ -1,7 +1,7 @@
 <template>
     <div>
       <div id="head" class="head">
-        <div class="title"><span>个人主页</span>
+        <div class="title"><i class="el-icon-close icon1 icon0"></i><span>个人主页</span>
           <el-dropdown class="plus" trigger="click">
             <i class="el-icon-plus icon0" style="font:25px bolder;color:white"></i>
             <el-dropdown-menu slot="dropdown">
@@ -19,7 +19,7 @@
             <legend style="font-size: 20px;color:#66cccc;">xxXX课堂管理系统XXxx </legend>
             <span style="float: left;font-weight: bold">欢迎您: {{username}}老师！</span>
             <br>
-            <p>当前账户信息: 12345678965{{id}}</p>
+            <p>当前账户信息: {{account}}</p>
             <p></p>
           </fieldset>
         </el-card>
@@ -55,22 +55,34 @@
       name: "HomePage",
       data() {
         return {
-          id: '123456789',
-          password: '',
+          account: '123456789',
           username: '邱明'
         }
       },
       created() {
         this.getData();
+        let that = this;
+        that.$axios({
+          method: 'GET',
+          url: '/user/information?userId=${localStorage.userId}',
+          headers: {
+            'token': window.localStorage['token']
+          }
+        })
+          .then(response => {
+            if (response.data.status === 200) {
+              that.name = response.data.data.name;
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          })
       },
       methods:{
         getData() {
-          this.id = this.$route.query.id;
-          this.password = this.$route.query.password;
-          this.username = this.$route.query.username;
+          this.id = this.$route.query.account;
           console.log('id', this.id);
-          console.log('password', this.password);
-          console.log('username', this.username);
+          console.log('account', this.account);
 
         },
           SetAccount(){

@@ -116,13 +116,6 @@
     color: #66CCCC;
   }
 
-  .btn1 {
-    height: 36px;
-    width: 100%;
-    border: none;
-    background-color: #66CCCC;
-  }
-
   .footer {
     width: 100%;
     margin-top: 180px;

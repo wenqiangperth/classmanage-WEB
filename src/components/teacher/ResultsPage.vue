@@ -2,8 +2,8 @@
   <div>
     <div id="head" class="head">
       <div class="title">
-        <router-link :to="{name:'AfterSeminar'}"><i class="el-icon-back icon1 icon0"></i></router-link>
-        OOAD--书面报告
+        <i class="el-icon-back icon1 icon0" @click="returnAfterSeminar"></i>
+        成绩
         <el-dropdown class="plus" trigger="click">
           <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
@@ -20,11 +20,11 @@
       <el-card>
         <table style="width: 100%;text-align: center">
           <tr>
-            <td style="width: 15%">组号</td>
-            <td style="width: 21.25%;">展示</td>
-            <td style="width: 21.25%;">提问</td>
-            <td style="width: 21.25%;">报告</td>
-            <td>总分</td>
+            <td style="width: 15%" class="font_style">组号</td>
+            <td style="width: 21.25%;" class="font_style">展示</td>
+            <td style="width: 21.25%;" class="font_style">提问</td>
+            <td style="width: 21.25%;" class="font_style">报告</td>
+            <td class="font_style">总分</td>
           </tr>
         </table>
         <table style="width: 100%;text-align: center"
@@ -50,7 +50,7 @@
 
       <div>
         <el-button type="success" class="btn" plain
-                   style="margin-top: 10px"
+                   style="margin-top: 40px"
                    @click="updateSuccess">确认修改
         </el-button>
       </div>
@@ -117,8 +117,15 @@
         this.$router.push({path:'/teacher/SeminarPage'});
       },
       updateSuccess() {
+        this.$message({
+          message: '修改成功!',
+          type: 'success'
+        });
         this.$router.push({path: '/teacher/AfterSeminar'});
       },
+      returnAfterSeminar() {
+        this.$router.push({path: '/teacher/AfterSeminar'});
+      }
 
     }
   }

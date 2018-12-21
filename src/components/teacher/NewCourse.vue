@@ -3,11 +3,11 @@
     <div id="head" class="head">
       <div class="title"><i class="el-icon-close icon1 icon0" @click="returnCourseManage"></i>新建课程</div>
     </div>
-    <div class="main">
+    <div class="main" style="font-size: 13px">
       <el-card class="box-card">
         <table style="width: 100%">
           <tr>
-            <td style="width: 28%">课程名称</td>
+            <td style="width: 28%;" class="font_style">课程名称</td>
             <td>
               <el-input v-model="course.name">
                 <i slot="suffix" class="el-input__icon el-icon-edit icon0"></i>
@@ -15,7 +15,7 @@
             </td>
           </tr>
           <tr>
-            <td style="width: 28%">课程要求</td>
+            <td style="width: 28%;" class="font_style">课程要求</td>
             <td>
               <el-input class="textArea"
                         type="textarea"
@@ -27,7 +27,9 @@
         </table>
       </el-card>
       <el-card class="box-card">
-        <span>成绩计算规则</span>
+        <div slot="header">
+          <span class="font_style">成绩计算规则</span>
+        </div>
         <table
           v-for="(item,index) in course.tableData1"
           :key="index"
@@ -118,20 +120,21 @@
           </table>
         </div>
 
-
-        <table style="width: 100%;">
-          <tr style="height: 40px">
-            <td style="width:40%;"><label>是否根据星座分组:</label></td>
-            <td style="text-align: right">
-              <el-switch
-                v-model="course.isGroupByConstellation"
-                active-color="#66cccc"
-                inactive-color="#cccccc"
-              >
-              </el-switch>
-            </td>
-          </tr>
-        </table>
+        <!--
+                <table style="width: 100%;">
+                  <tr style="height: 40px">
+                    <td style="width:40%;"><label>是否根据星座分组:</label></td>
+                    <td style="text-align: right">
+                      <el-switch
+                        v-model="course.isGroupByConstellation"
+                        active-color="#66cccc"
+                        inactive-color="#cccccc"
+                      >
+                      </el-switch>
+                    </td>
+                  </tr>
+                </table>
+                -->
         <el-table :data="data0">
           <el-table-column prop="name" label="冲突课程">
             <template slot-scope="scope">
@@ -204,6 +207,10 @@
         this.$router.push({path: '/teacher/CourseManage'});
       },
       NewSuccess() {
+        this.$message({
+          message: '发布成功！',
+          type: 'success'
+        });
         this.$router.push({path: '/teacher/CourseManage'});
       },
       addObject(){
@@ -238,5 +245,6 @@
     text-align: center;
     height:35px;
   }
+
 
 </style>

@@ -16,19 +16,19 @@
     <div class="main">
       <el-card>
         <div slot="header" style="float: left">
-          <span style="font-weight: bold">课程要求</span>
+          <span style="font-weight: bold;color: #616161">课程要求</span>
         </div>
-        <p>{{courseInfo.description}}</p>
+        <p style="font-size: 13px">{{courseInfo.description}}</p>
       </el-card>
       <el-card class="box-card">
         <div slot="header" style="float: left">
-          <span style="font-weight: bold">成绩计算规则</span>
+          <span style="font-weight: bold;color: #616161">成绩计算规则</span>
         </div>
         <table
           v-for="(item,index) in courseInfo.tableData1"
           :key="index"
-          style="width: 100%;">
-          <tr style="height: 35px">
+          style="width: 100%;font-size: 13px">
+          <tr style="height: 30px">
             <td style="width:30%">{{item.make_up}}</td>
             <td style="text-align: center">
               {{item.percentage}}%
@@ -38,27 +38,37 @@
       </el-card>
       <el-card>
         <table
-          style="width: 100%;text-align: center">
-          <tr style="height: 35px">
+          style="width: 100%;text-align: center;font-size: 13px">
+          <tr style="height: 30px">
             <td style="width:30%">小组人数:</td>
             <td>
               {{courseInfo.minNum}}~{{courseInfo.maxNum}}
             </td>
           </tr>
-          <tr style="height: 35px">
+          <tr style="height: 30px">
             <td style="width: 30%">组队开始:</td>
-            <td style="text-align: right">{{courseInfo.startTime}}</td>
+            <td>{{courseInfo.startTime}}</td>
           </tr>
-          <tr style="height: 35px">
+          <tr style="height: 30px">
             <td style="width: 30%">组队截止:</td>
-            <td style="text-align: right">{{courseInfo.endTime}}</td>
+            <td>{{courseInfo.endTime}}</td>
+          </tr>
+          <tr style="height: 30px">
+            <td style="width: 30%">性别要求:</td>
+            <td>男:{{courseInfo.maleNum}} 女:{{courseInfo.femaleNum}}</td>
+          </tr>
+          <tr style="height: 30px">
+            <td style="width: 30%">冲突课程:</td>
+            <td v-for="item in courseInfo.defeatCourse">
+              {{item.name}}({{item.teacher}})
+            </td>
           </tr>
         </table>
       </el-card>
       <div style="width: 100%;margin-top: 20px">
-        <el-button class="btn_info" type="info"
+        <el-button type="success"
                    @click="deleteCourse" plain
-                   style="float: right">
+                   style="float: right;margin-bottom: 20px">
           删除该课程
         </el-button>
       </div>
@@ -92,9 +102,46 @@
           startTime: '2018-12-01 12:00:00',
           endTime: '2018-12-06 12:00:00',
           minNum: 6,
-          maxNum: 8
+          maxNum: 8,
+          maleNum: '2-4',
+          femaleNum: '2-4',
+          defeatCourse: [{
+            name: '.net',
+            teacher: 'Lin'
+          }]
         }
       }
+    },
+    created() {
+      let that = this;
+      that.courseId = this.$route.query.courseId;
+      that.$axios({
+        method: 'GET',
+        url: '/course/courseId?userId=${localStorage.userId}',
+        headers: {
+          'token': window.localStorage['token']
+        }
+      })
+        .then(res => {
+          if (res.data.status === 200) {
+            console.log(res.data.data);
+            let data = res.data.data;
+            that.courseInfo.tableData1[0].percentage = data.presentationWeight;
+            that.courseInfo.tableData1[1].percentage = data.questionWeight;
+            that.courseInfo.tableData1[2].percentage = data.reportWeight;
+            that.courseInfo.startTime = data.startTeamTime;
+            that.courseInfo.endTime = data.endTeamTime;
+            that.courseInfo.minNum = data.MinMemberNumber;
+            that.courseInfo.maxNum = data.MaxMemberNumber;
+          } else if (res.data.status === 404) {
+            alert("未找到指定课程");
+          } else {
+            alert("错误的ID格式");
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        })
     },
     methods: {
       returnLogin() {

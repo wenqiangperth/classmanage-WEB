@@ -3,31 +3,36 @@
     <div id="head" class="head">
       <div class="title"><i class="el-icon-back icon1 icon0" @click="returnCourseManage"></i>共享设置
         <el-dropdown class="plus" trigger="click">
-          <i class="el-icon-menu icon0"></i>
+          <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
             <el-dropdown-item><i class="el-icon-service" @click="gotoSeminar">&nbsp;&nbsp;讨论课</i></el-dropdown-item>
-            <el-dropdown-item><i class="el-icon-back" @click="returnLogin">&nbsp;&nbsp;退 出</i></el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
     </div>
-    <el-card class="pause" id="pause">
-      <i class="el-icon-warning icon0" style="color:red;font-size: 25px"></i>
-      <br><br>
-      <br>是否取消与**老师的 共享
-      <br><br><br>
-      <el-button type="text" style="float: right;color: #99CC00" @click="successCancel">
-        SURE
-      </el-button>
-      <el-button type="text" style="float:right;margin-right: 5px;color:#99CC00" @click="cancel">CANCEL</el-button>
-    </el-card>
+
     <div class="main">
+      <el-card class="pause" id="pause">
+        <i class="el-icon-warning icon0" style="color:red;font-size: 25px"></i>
+        <br><br>
+        <br>是否取消与**老师的 共享
+        <br><br><br>
+        <el-button type="text" style="float: right;color: #99CC00" @click="successCancel">
+          SURE
+        </el-button>
+        <el-button type="text" style="float:right;margin-right: 5px;color:#99CC00" @click="cancel">CANCEL</el-button>
+      </el-card>
+      <div style="width: 100%;height:60px">
+        <el-button type="success" size="small" plain style="float: right;margin-top: 20px" @click="addShare"><i
+          class="el-icon-plus" style="font-weight: bolder"></i> 新增共享
+        </el-button>
+      </div>
       <el-collapse accordion v-for="(item,index) in shares"
                    :key="index">
         <el-collapse-item>
           <template slot="title">
-            <i class="el-icon-share icon0" style="float: left;margin-left: 20px;"></i>{{item.courseName}}({{item.teacher}})
+            <i class="el-icon-share el-icon0" style="float: left;margin-left: 20px;"></i>{{item.courseName}}({{item.teacher}})
           </template>
           <el-card>
             <table>
@@ -40,12 +45,13 @@
                 <td>{{item.courseType}}</td>
               </tr>
             </table>
-            <el-button type="info" plain size="small" style="float: right;margin-bottom: 5px" @click="cancelShare">取消共享</el-button>
+            <el-button type="info" size="small" style="float: right;margin-bottom: 5px" @click="cancelShare">
+              取消共享
+            </el-button>
           </el-card>
         </el-collapse-item>
 
       </el-collapse>
-      <el-button class="btn" type="success" plain style="margin-top: 10px" @click="addShare"><i class="el-icon-plus" style="font-weight: bolder"></i> 新增共享</el-button>
     </div>
   </div>
 </template>
@@ -53,25 +59,25 @@
 <script>
   export default {
     name: "SharePage",
-    data(){
-      return{
-        shares:[
+    data() {
+      return {
+        shares: [
           {
-            courseName:'J2EE',
-            teacher:'邱明',
-            shareType:'共享讨论课',
-            courseType:'主课程'
+            courseName: 'J2EE',
+            teacher: '邱明',
+            shareType: '共享讨论课',
+            courseType: '主课程'
           },
           {
-            courseName:'软件工程',
-            teacher:'王梅红',
-            shareType:'共享分组',
-            courseType:'从课程'
+            courseName: '软件工程',
+            teacher: '王梅红',
+            shareType: '共享分组',
+            courseType: '从课程'
           }
         ]
       }
     },
-    methods:{
+    methods: {
       returnLogin() {
         this.$router.push({path: '/'});
       },
@@ -81,28 +87,28 @@
       gotoSeminar() {
         this.$router.push({path: '/teacher/SeminarPage'});
       },
-      addShare(){
-        this.$router.push({path:'/teacher/AddShare'});
+      addShare() {
+        this.$router.push({path: '/teacher/AddShare'});
       },
       cancelShare() {
-        var share=document.getElementById("pause");
-        share.style.display="block";
+        var share = document.getElementById("pause");
+        share.style.display = "block";
       },
-      cancel(){
-        var share=document.getElementById("pause");
-        share.style.display="none";
+      cancel() {
+        var share = document.getElementById("pause");
+        share.style.display = "none";
       },
-      gotoHomePage(){
-        this.$router.push({path:'/teacher/HomePage'});
+      gotoHomePage() {
+        this.$router.push({path: '/teacher/HomePage'});
       },
-      successCancel(){
+      successCancel() {
         this.$notify.success({
           title: 'Info',
           message: '取消共享操作成功',
           showClose: false
         });
-        var share=document.getElementById("pause");
-        share.style.display="none";
+        var share = document.getElementById("pause");
+        share.style.display = "none";
       }
     }
   }
@@ -126,7 +132,7 @@
 
 </style>
 <style>
-  .el-collapse-item__arrow{
+  .el-collapse-item__arrow {
     font-weight: bolder;
   }
 

@@ -7,18 +7,14 @@
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
             <el-dropdown-item><i class="el-icon-service" @click="gotoSeminar">&nbsp;&nbsp;讨论课</i></el-dropdown-item>
-            <el-dropdown-item><i class="el-icon-back" @click="returnLogin">&nbsp;&nbsp;退 出</i></el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
     </div>
     <div class="main">
-      <div style="margin-top: 10px;margin-bottom: 10px">
-        <el-button type="success" plain class="btn"
-                   style="margin-top: 5px"
-                   @click="addClass">
-          <i class="el-icon-plus icon0"></i>&nbsp;新增班级
-        </el-button>
+      <div class="new_course" @click="addClass" style="width: 100%;height: 50px">
+        <i class="el-icon-plus icon2" style="font-weight: bolder;color: #66cccc"><span
+          style="color: dimgrey">新建班级</span></i>
       </div>
       <div style="width: 100%"
            v-for="(item,index) in classInfo"
@@ -49,7 +45,7 @@
                   multiple
                   :limit="3"
                   :on-exceed="handleExceed">
-                  <el-button size="mini" type="info">点击上传</el-button>
+                  <el-button size="mini" type="info" plain>点击上传</el-button>
                   <div slot="tip" class="el-upload__tip" style="float:right">未选择任何文件</div>
                 </el-upload>
               </td>
@@ -61,7 +57,10 @@
             </tr>
             <tr style="height: 20px">
               <td>
-                <el-button type="info" plain size="small" style="width: 40%">删除班级</el-button>
+                <el-button type="success" plain size="small" style="width: 40%" @click="Submit">提交</el-button>
+              </td>
+              <td>
+                <el-button type="info" size="small" style="width: 40%" @click="DeleteClass">删除</el-button>
               </td>
             </tr>
             <tr style="height: 20px">
@@ -78,6 +77,7 @@
 </template>
 
 <script>
+  import {MessageBox} from 'mint-ui';
   export default {
     name: "ClassInfo",
     data() {
@@ -134,11 +134,40 @@
       },
       addClass() {
         this.$router.push({path: '/teacher/NewClass'});
+      },
+      Submit() {
+        this.$message({
+          message: '提交成功！',
+          type: 'success'
+        });
+
+      },
+      DeleteClass() {
+        MessageBox.confirm('此操作将永久删除该班级?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.$router.push({path: '/teacher/CourseManage'});
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
       }
     }
   }
 </script>
 
 <style scoped>
-
+  .icon2 {
+    float: right;
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
 </style>
