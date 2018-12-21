@@ -18,7 +18,7 @@
       <table class="info" cellspacing="0" style="font-family: 黑体;color: #616161">
         <tr class="tr0">
           <td class="td1"><label>轮次:</label></td>
-          <td><label>{{seminar.round}}</label></td>
+          <td><label>第{{seminar.round}}轮</label></td>
         </tr>
         <tr class="tr1">
           <td class="td1"><label>主题:</label></td>
@@ -26,7 +26,7 @@
         </tr>
         <tr class="tr0">
           <td class="td1"><label>课次序号:</label></td>
-          <td><label>{{seminar.num}}</label></td>
+          <td><label>{{seminar.teamNumLimit}}</label></td>
         </tr>
         <tr class="tr1">
           <td class="td1"><label>要求:</label></td>
@@ -60,14 +60,40 @@
       return {
         seminar: {
           seminarId: '',
-          round: '第二轮',
+          round: '二',
           topic: '领域模型',
-          num: '1',
           require: '界面导航图和所有界面原型设计课堂讨论每个小组15分钟',
           status: '已完成',
+          teamNumLimit: ''
 
         },
       }
+    },
+    created() {
+      //此处先接收上个页面传入的seminarId
+      let that = this;
+      that.$axios({
+        method: 'GET',
+        url: '/seminar/seminarId',
+        headers: {
+          'token': window.localStorage['token']
+        },
+        params: {
+          seminarId: that.seminar.seminarId
+        }
+      }).then(res => {
+        if (res.data.status === 200) {
+          console.log(res.data.data);
+          let data = res.data.data;
+          that.seminar.round = data.order;
+          that.seminar.topic = data.topic;
+          that.seminar.status = data.status;
+          that.seminar.teamNumLimit = data.teamNumLimit;
+        }
+      })
+        .catch(e => {
+          console.log(e);
+        })
     },
     methods: {
       gotoHomePage(){
@@ -83,7 +109,7 @@
         this.$router.push({path: '/teacher/ResultsPage'});
       },
       checkInfo() {
-        this.$router.push({path: '/teacher/CheckInformation'});
+        this.$router.push({path: '/teacher/DownloadPPT'});
       }
     }
 

@@ -58,6 +58,7 @@ import SharePage from "../components/teacher/SharePage";
 import Backlog from "../components/teacher/Backlog";
 import OngoingSeminar from "../components/teacher/OngoingSeminar";
 import CheckInformation from "../components/teacher/CheckInformation";
+import DownloadPPT from "../components/teacher/DownloadPPT";
 
 
 
@@ -344,6 +345,11 @@ export default new Router({
       name: 'CheckInformation',
       path: '/teacher/CheckInformation',
       component: CheckInformation
+    },
+    {
+      name: 'DownloadPPT',
+      path: '/teacher/DownloadPPT',
+      component: DownloadPPT
     }
 
   ]
