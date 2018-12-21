@@ -23,7 +23,7 @@
       </header>
 
       <el-collapse v-model="activeName" class="team" accordion>
-        <el-collapse-item v-for="item in items">
+        <el-collapse-item v-for="item in teams">
           <template slot="title">
             <div style="font-size: 17px"><i class="header-icon el-icon-search"></i>
                {{item.title}}   {{item.name}}</div>
@@ -38,7 +38,7 @@
       <div class="pic"><img style="border-radius: 50px" src="../../../assets/1.jpg"></div>
 
       <el-collapse v-model="activeName2">
-        <el-collapse-item >
+        <el-collapse-item>
           <template slot="title">
             <div style="font-size: 17px"><i class="header-icon el-icon-search"></i>
               未组队学生</div>
@@ -61,9 +61,10 @@
         name: "TeamInfo",
       data(){
         return{
+          courseId:'',
           activeName: '1',
           activeName2: '2',
-          items:[{
+          teams:[{
             title: '1-1',
             name: 'HHHA',
             leader: {Na:'直线',No:'24320162201111'},
@@ -98,6 +99,50 @@
             No: '44444444444'
           }]
         };
+      },
+      created(){
+          let that = this;
+          that.$axios({
+            methos:'GET',
+            url:'course/courseId/team',
+            params:{
+              courseId: that.courseId
+            }
+          })
+            .then(res=>{
+              if(res.data.status===200){
+                let data=res.data;
+                console.log(data);
+                that.teams = data.team;
+              }
+              else if(res.data.status===404){
+                alert("未找到未组队学生！")
+              }
+            })
+            .catch(e=>{
+              console.log(e)
+            })
+
+          that.$axios({
+            method:'GET',
+            url:'course/courseId/noTeam',
+            params:{
+              courseId: that.courseId
+            }
+          })
+            .then(res=>{
+              if(res.data.status===200){
+                let data=res.data;
+                console.log(data);
+                that.Unteam = data.noTeam;
+              }
+              else if(res.data.status===404){
+                alert("未找到未组队学生！")
+              }
+            })
+            .catch(e=>{
+              console.log(e)
+            })
       },
       methods:{
           back(){

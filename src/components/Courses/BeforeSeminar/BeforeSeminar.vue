@@ -4,7 +4,7 @@
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
           <label>OOAD-讨论课</label>
-          <el-dropdown trigger="click" @command="handleCommand">
+          <el-dropdown trigger="click">
             <span class="el-dropdown-link">
               <i class="el-icon-plus"></i>
             </span>
@@ -32,7 +32,7 @@
           轮次：
         </label>
         <label style="text-align: center">
-          第二轮
+          第{{order}}轮
         </label>
       </div>
 
@@ -42,7 +42,7 @@
           主题：
         </label>
         <label style="text-align: center">
-          代码检查
+          {{topic}}
         </label>
       </div>
 
@@ -62,7 +62,7 @@
           课程情况：
         </label>
         <label style="text-align: center; color: #66CCCC">
-          未开始
+          {{status}}
         </label>
       </div>
 
@@ -93,9 +93,42 @@
         name: "BeforeSeminar",
       data(){
           return {
+            seminarId:'',
+            order:'',
+            topic:'',
+            status:'',
+            teamNumLimit:'',
             startTime: '10.1.2018  12:00',
             endTime: '10.7.2018  24:00'
           }
+      },
+      created(){
+          //在此处需要先接收上个页面传入的seminarId
+
+        let that = this;
+        that.$axios({
+          method:'GET',
+          url:'/seminar/seminarId',
+          headers:{
+            'token':window.localStorage['token']
+          },
+          params:{
+            seminarId:that.seminarId
+          }
+        })
+          .then(res=>{
+            if(res.data.status===200){
+              console.log(res.data.data);
+              let data=res.data.data;
+              that.order=data.order;
+              that.topic=data.topic;
+              that.status=data.status;
+              that.teamNumLimit=data.teamNumLimit;
+            }
+          })
+          .catch(e=>{
+            console.log(e)
+          })
       },
       methods:{
           sign(){

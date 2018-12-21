@@ -4,7 +4,7 @@
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
           <label>OOAD-讨论课</label>
-          <el-dropdown trigger="click" @command="handleCommand">
+          <el-dropdown trigger="click" >
             <span class="el-dropdown-link">
               <i class="el-icon-plus"></i>
             </span>

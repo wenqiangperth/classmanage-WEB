@@ -4,7 +4,7 @@
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
           <label>OOAD-讨论课</label>
-          <el-dropdown trigger="click" @command="handleCommand">
+          <el-dropdown trigger="click" >
             <span class="el-dropdown-link">
               <i class="el-icon-plus"></i>
             </span>
@@ -89,6 +89,18 @@
               message: '报名成功!'
             });
             this.info = '1-5 未提交';
+            this.$axios({
+              method:'POST',
+              url:'/seminar/seminarId/class/classId/presentation',
+              data:{
+                //传给后端报名的次序
+                //order:this.index
+              }
+            })
+              .then()
+              .catch(e=>{
+                console.log(e)
+              })
           }).catch(() => {
             this.$message({
               type: 'info',

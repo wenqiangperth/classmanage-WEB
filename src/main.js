@@ -25,7 +25,7 @@ new Vue({
   router,
 
   created(){
-    this.$axios.defaults.baseURL='http://localhost:8080'
+    this.$axios.defaults.baseURL='http://localhost:8082'
   },
 
   components: { App },

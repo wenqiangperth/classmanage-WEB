@@ -4,7 +4,7 @@
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
           <label>OOAD-讨论课</label>
-          <el-dropdown trigger="click" @command="handleCommand">
+          <el-dropdown trigger="click" >
             <span class="el-dropdown-link">
               <i class="el-icon-plus"></i>
             </span>
@@ -32,7 +32,7 @@
           轮次：
         </label>
         <label style="text-align: center">
-          第二轮
+          第二{{order}}轮
         </label>
       </div>
 
@@ -42,7 +42,7 @@
           主题：
         </label>
         <label style="text-align: center">
-          领域模型
+          {{topic}}领域模型
         </label>
       </div>
 
@@ -62,7 +62,7 @@
           课程情况：
         </label>
         <label style="text-align: center; color: #66CCCC">
-          已完成
+          {{status}}已完成
         </label>
       </div>
 
@@ -81,6 +81,43 @@
 <script>
     export default {
         name: "SeminarInfo",
+      data(){
+        return {
+          seminarId:'',
+          order:'',
+          topic:'',
+          status:'',
+          teamNumLimit:'',
+        }
+      },
+      created(){
+        //在此处需要先接收上个页面传入的seminarId
+
+        let that = this;
+        that.$axios({
+          method:'GET',
+          url:'/seminar/seminarId',
+          headers:{
+            'token':window.localStorage['token']
+          },
+          params:{
+            seminarId:that.seminarId
+          }
+        })
+          .then(res=>{
+            if(res.data.status===200){
+              console.log(res.data.data);
+              let data=res.data.data;
+              that.order=data.order;
+              that.topic=data.topic;
+              that.status=data.status;
+              that.teamNumLimit=data.teamNumLimit;
+            }
+          })
+          .catch(e=>{
+            console.log(e)
+          })
+      },
       methods:{
           back(){
             this.$router.push({path:'/Courses/TotalSeminars'})

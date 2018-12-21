@@ -91,6 +91,7 @@
       name: "Grade",
       data() {
         return {
+          grade:'3.3333',
           tableData: [{
             date: 'ppt',
             name: '5.0'
