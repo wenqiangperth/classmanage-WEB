@@ -69,22 +69,13 @@
       },
       created(){
           let that = this;
-          /*
-          for (let i=0;i<this.courses.length;i++)
-            console.log(this.courses[i].name);
-*/
         that.$axios({
             method:'GET',
             url:'/course'
-        /*
-            headers:{
-              'token':window.localStorage['token']
-            }
-        */
           })
             .then(res=>{
+              console.log(res);
               if(res.data.status===200){
-                that.courses=res.data.data;
                 console.log(res.data.data);
               }
               else if(res.data.status===404){
@@ -129,7 +120,7 @@
     width: 100%;
     line-height: 70px;
     display: block;
-    background-color: #CCFF99;
+    background-color: #5CACEE;
     border-radius: 5px;
   }
 

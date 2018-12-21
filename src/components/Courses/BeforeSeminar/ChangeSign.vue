@@ -2,9 +2,9 @@
   <div>
     <header class="home-title">
       <div class="homeTitle">
-        <i class="el-icon-arrow-left" @click="back"></i>
+        <i class="el-icon-arrow-left"></i>
         <label>OOAD-讨论课</label>
-        <el-dropdown trigger="click" @command="handleCommand">
+        <el-dropdown trigger="click">
             <span class="el-dropdown-link">
               <i class="el-icon-plus"></i>
             </span>
@@ -147,7 +147,7 @@
     width: 100%;
     line-height: 70px;
     display: block;
-    background-color: #CCFF99;
+    background-color: #5CACEE;
     border-radius: 5px;
   }
 

@@ -24,7 +24,7 @@
       <div class="divHeight"></div>
 
       <ul id="Files">
-        <li v-for="(value,key) in items" @click="open2">
+        <li v-for="(value,key) in items" @click="open2(key+1)">
           <a>第{{key+1}}组：</a>
           <i class="el-icon-document"></i>
           {{value.message}}
@@ -38,6 +38,7 @@
         name: "download",
       data(){
         return {
+          seminarId:'',
           items:[
           {message: '1-1.ppt'},
           {message: '1-2.ppt'},
@@ -46,6 +47,27 @@
           {message: '1-5.ppt'},
           {message: '1-6.ppt'}
         ]}
+      },
+      created(){
+        //得到上个页面的seminarId
+        let that = this;
+        that.$axios({
+          method:'GET',
+          url:'',
+          params:{
+            seminarId: that.seminarId
+          }
+        })
+          .then(res=>{
+            let data=res.data;
+            console.log(data);
+            if(res.data===200){
+              that.items=data;
+            }
+          })
+          .catch(e=>{
+            console.log(e);
+          })
       },
       methods:{
           back(){
@@ -78,7 +100,7 @@
     width: 100%;
     line-height: 70px;
     display: block;
-    background-color: #CCFF99;
+    background-color: #5CACEE;
     border-radius: 5px;
   }
 
