@@ -98,20 +98,21 @@
         console.log("传过来的courseId  "+that.courseId);
         that.$axios({
           method:'GET',
-          url:'/course/courseId/round',
-          headers:{
-            'token':window.localStorage['token']
-          },
+          url:'course/'+that.courseId+'/round',
+          // headers:{
+          //   'token':window.localStorage['token']
+          // },
           params:{
             courseId:that.courseId
           }
         })
           .then(res=>{
-            if(res.data.status===200){
+            console.log(res);
+            if(res.status===200){
               let i=0;
               that.courses[i++].order=res.data.data[i++].order;
             }
-            else if(res.data.status===404){
+            else if(res.status===404){
               alert("未找到课程");
             }
             else{
@@ -175,7 +176,7 @@
     width: 100%;
     line-height: 70px;
     display: block;
-    background-color: #CCFF99;
+    background-color: #5CACEE;
     border-radius: 5px;
   }
 

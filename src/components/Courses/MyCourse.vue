@@ -86,8 +86,8 @@
           }
         })
           .then(response=>{
-            if(response.data.status===200){
-              that.courses=response.data.data
+            if(response.status===200){
+              that.courses=response.data
               console.log(response.data)
             }
             else if(response.status===404)
@@ -133,7 +133,7 @@
     width: 100%;
     line-height: 70px;
     display: block;
-    background-color: #CCFF99;
+    background-color: #5CACEE;
     border-radius: 5px;
   }
 

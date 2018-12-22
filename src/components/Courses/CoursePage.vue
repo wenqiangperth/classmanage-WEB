@@ -63,31 +63,31 @@
         name: "CoursePage",
       data() {
         return{
-          courses:[{name:'OOAD',id:'2'}],
+          courses:[{name:'OOAD',id:'1'}],
           courseId:''
         }
       },
       created(){
           let that = this;
-        that.$axios({
-            method:'GET',
-            url:'/course'
-          })
-            .then(res=>{
-              console.log(res);
-              if(res.data.status===200){
-                console.log(res.data.data);
-              }
-              else if(res.data.status===404){
-                alert("未找到课程！")
-              }
-              else{
-                alert("错误的ID格式")
-              }
+          that.$axios({
+              method:'GET',
+              url:'/course'
             })
-            .catch(e=>{
-              console.log(e)
-            })
+              .then(res=>{
+                console.log(res);
+                if(res.status===200){
+                  console.log(res.data.data);
+                }
+                else if(res.data.status===404){
+                  alert("未找到课程！")
+                }
+                else{
+                  alert("错误的ID格式")
+                }
+              })
+              .catch(e=>{
+                console.log(e)
+              })
       },
       methods:{
         back(){

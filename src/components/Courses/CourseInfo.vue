@@ -26,45 +26,56 @@
       <div class="main">
         <el-card>
           <div slot="header">
-            <span>课程要求</span>
+            <span style="font-size: large;color: #409eff;font-weight: bold">课程要求</span>
           </div>
-          <p>{{courseInfo.description}}</p>
+          <p>{{intro}}</p>
         </el-card>
         <el-card class="box-card">
-          <span>成绩计算规则:</span>
+          <span style="font-size: large;color: #409eff;font-weight: bold">成绩计算规则:</span>
           <br>
-          <table
-            v-for="(item,index) in courseInfo.tableData1"
-            :key="index"
-            style="width: 100%;">
+          <table style="width: 100%;text-align: center">
             <tr>
-              <td style="width:30%">{{item.make_up}}</td>
-              <td style="text-align: center">
-                {{item.percentage}}
+              <td style="width:30%">课堂展示</td>
+              <td>
+                {{presentationWeight}}
+              </td>
+            </tr>
+            <tr>
+              <td style="width:30%">课堂提问</td>
+              <td>
+                {{questionWeight}}
+              </td>
+            </tr>
+            <tr>
+              <td style="width:30%">书面报告</td>
+              <td>
+                {{reportWeight}}
               </td>
             </tr>
           </table>
         </el-card>
         <el-card>
+          <span style="font-size: large;color: #409eff;font-weight: bold">其他要求</span>
+          <br>
           <table
             style="width: 100%;text-align: center">
             <tr>
               <td style="width:30%">小组人数:</td>
               <td>
-                {{courseInfo.minNum}}~{{courseInfo.maxNum}}
+                {{minNum}}~{{maxNum}}
               </td>
             </tr>
             <tr>
               <td style="width: 30%">组队开始:</td>
-              <td style="text-align: center">{{courseInfo.startTime}}</td>
+              <td style="text-align: center">{{startTime}}</td>
             </tr>
             <tr>
               <td style="width: 30%">组队截止:</td>
-              <td style="text-align: center">{{courseInfo.endTime}}</td>
+              <td style="text-align: center">{{endTime}}</td>
             </tr>
             <tr>
               <td style="width: 30%">性别要求:</td>
-              <td style="text-align: center">男:{{courseInfo.maleNum}}  女:{{courseInfo.femaleNum}}</td>
+              <td style="text-align: center">男:{{maleNum}}  女:{{femaleNum}}</td>
             </tr>
             <!--
             <tr>
@@ -74,7 +85,7 @@
             -->
             <tr>
               <td style="width: 30%">冲突课程:</td>
-              <td style="text-align:center" v-for="item in courseInfo.defeatCourse">
+              <td style="text-align:center" v-for="item in defeatCourse">
                 {{item.name}}({{item.teacher}})</td>
             </tr>
           </table>
@@ -89,61 +100,50 @@
         name: "CourseInfo",
       data() {
         return {
-          courseInfo: {
-            name: '',
-            description: '翻转课堂形式上课，学生自由组队，以小组形式每周做汇报，每组汇报时间15分钟',
-            presentationWeight:'',
-            questionWeight:'',
-            reportWeight:'',
-            tableData1: [{
-              make_up: '课堂展示',
-              percentage: this.presentationWeight,
-            },
-              {
-                make_up: '课堂提问',
-                percentage: this.questionWeight,
-              },
-              {
-                make_up: '书面报告',
-                percentage: this.reportWeight,
-              }],
-            startTime: '',
-            endTime: '',
-            minNum: '',
-            maxNum: '',
-            maleNum:'2~4',
-            femaleNum: '2~4',
             defeatCourse: [{
               name: '.net',
               teacher: 'Lin'
-            }]
+            }],
+            intro: '',
+            startTime: '',
+            endTime: '',
+            minNum: '1',
+            maxNum: '6',
+            maleNum:'',
+            femaleNum: '2~4',
+            name: '',
+            presentationWeight:'',
+            questionWeight:'',
+            reportWeight:''
           }
-        }
       },
       created(){
           let that=this;
 
-          that.courseId=this.$route.query.courseId
+          //that.courseId=this.$route.query.courseId
+          that.courseId=1;
 
           that.$axios({
             method:'GET',
-            url:'/course/courseId?userId=${localStorage.userId}',
-            headers:{
-              'token':window.localStorage['token']
-            }
+            url:'/course/'+that.courseId
+            // headers:{
+            //   'token':window.localStorage['token']
+            // }
           })
             .then(res=>{
-              if(res.data.status===200){
-                console.log(res.data)
-                that.presentationWeight=res.data.presentationWeight
-                that.questionWeight=res.data.questionWeight
-                that.reportWeight=res.data.reportWeight
-                that.startTime=res.data.startTeamTime
-                that.endTime=res.data.endTeamTime
-                that.minNum=res.data.minMemberNumber
-                that.maxNum=res.data.maxMemberNumber
+              console.log(res);
+              if(res.status===200){
+                that.presentationWeight=res.data.presentationPercentage
+                that.questionWeight=res.data.questionPercentage
+                that.reportWeight=res.data.reportPercentage
+                that.startTime=res.data.teamStartTime
+                that.endTime=res.data.teamEndTime
+                that.intro=res.data.introduction
+                // that.minNum=res.data.minMemberNumber
+                // that.maxNum=res.data.maxMemberNumber
+                console.log(that.startTime)
               }
-              else if(res.data.status===404)
+              else if(res.status===404)
               {
                 alert("未找到指定课程")
               }
@@ -168,7 +168,7 @@
     width: 100%;
     line-height: 70px;
     display: block;
-    background-color: #CCFF99;
+    background-color: #5CACEE;
     border-radius: 5px;
   }
 
