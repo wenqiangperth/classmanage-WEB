@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="note" :style="note">
     <div class="activate-form">
       <div class="inp-title">
         <i class="el-icon-arrow-left" @click="back"></i>
@@ -34,6 +34,7 @@
         <a @click="submit">确认提交</a>
       </div>
 
+      <div style="height:210px"></div>
       <div class="inp-info">
         <a>密码可包含数字、字母、下划线，长度不少于6位</a>
       </div>
@@ -50,7 +51,12 @@
           return {
             password1:'',
             password:'',
-            email:''
+            email:'',
+            note:{
+              backgroundImage:"url("+require("../assets/backpic.jpg")+")",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "100% 100%",
+            }
           }
         },
 
@@ -89,7 +95,7 @@
   .inp-title{
     line-height: 70px;
     display: block;
-    background-color: #CCFF99;
+    background-color: #87CEEB;
     margin: 0 0px 80px 0;
     border-radius: 5px;
   }

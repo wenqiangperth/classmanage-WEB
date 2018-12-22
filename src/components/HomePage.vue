@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="note" :style="note">
       <header class="home-title">
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
@@ -21,8 +21,8 @@
           </el-dropdown>
         </div>
       </header>
-      <div class="divHeight"></div>
-      <div class="per-info b-line">
+
+      <div class="per-info b-line" style="margin-top: 20px">
         <div class="per-pic">
           <img src="../assets/user.png"/>
         </div>
@@ -31,20 +31,20 @@
           <span>学号：{{accountNumber}}</span>
         </div>
       </div>
-      <div class="divHeight"></div>
-      <div class="divHeight"></div>
-      <div class="per-box">
+
+      <div class="per-box" style="margin-top: 40px">
         <div class="per-box1">
           <i class="el-icon-document"></i>
           <label @click="findCourse">我的课程</label>
           <i class="el-icon-d-arrow-right"></i>
         </div>
-        <div class="divHeight"></div>
-        <div class="per-box1">
+
+        <div class="per-box1" style="margin-top: 20px;">
           <i class="el-icon-bell"></i>
           <label @click="account">账号安全</label>
           <i class="el-icon-d-arrow-right"></i>
         </div>
+        <div style="height:350px"></div>
       </div>
     </div>
 </template>
@@ -55,7 +55,13 @@
       data(){
         return {
           name: '',
-          accountNumber:''
+          accountNumber:'',
+          note:{
+            backgroundImage:"url("+require("../assets/backpic.jpg")+")",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "100% 100%",
+          }
+
         }
       },
       created(){
@@ -120,7 +126,7 @@
     width: 100%;
     line-height: 70px;
     display: block;
-    background-color: #5CACEE;
+    background-color: #87CEEB;
     border-radius: 5px;
   }
 

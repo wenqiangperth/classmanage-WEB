@@ -23,7 +23,7 @@
       </header>
 
       <el-collapse v-model="activeName" class="team" accordion>
-        <el-collapse-item v-for="team in teams">
+        <el-collapse-item v-for="(team,index) in teams" :key="index">
           <template slot="title">
             <div style="font-size: 17px;font-weight: bold">
               <i class="header-icon el-icon-search"></i>

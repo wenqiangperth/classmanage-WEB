@@ -34,7 +34,8 @@
           text-color="#fff"
           active-text-color="#ffd04b">
           <el-menu-item
-            v-for="course in courses"
+            v-for="(course,key) in courses"
+            :key="key"
             index="1"
             @click="getCourse(course.id)"
             style="text-align: left">

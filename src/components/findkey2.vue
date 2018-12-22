@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="note" :style="note">
       <div class="find-title">
         <i class="el-icon-arrow-left" @click="back" ></i>
         <label>密码设置</label>
@@ -17,6 +17,7 @@
       <div class="confirm">
         <a @click="submit">确认提交</a>
       </div>
+      <div style="height: 215px;"></div>
 
       <div class="inp-info">
         <a>密码可包含数字、字母、下划线，长度不少于6位</a>
@@ -31,7 +32,12 @@
           return {
             account:'',
             password1: '',
-            password: ''
+            password: '',
+            note:{
+              backgroundImage:"url("+require("../assets/backpic.jpg")+")",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "100% 100%",
+            }
           }
         },
       created(){
@@ -74,7 +80,7 @@
   .find-title{
     line-height: 70px;
     display: block;
-    background-color: #CCFF99;
+    background-color: #87CEEB;
     margin: 0 0px 90px 0;
     border-radius: 5px;
   }
