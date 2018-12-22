@@ -1,5 +1,5 @@
 <template>
-  <div class="note" :style="note">
+  <div class="main" :style="note">
     <div class="login-form">
       <div class="login-title">
 

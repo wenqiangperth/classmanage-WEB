@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="main" :style="note">
       <header class="home-title">
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
@@ -30,14 +30,17 @@
           @click="dialogVisible=true">
           <i class="el-icon-document" style="font-size: 20px;color:#fff"></i>
           <label style="font-size: 20px;color: #fff">{{course.name}}</label>
-          <el-tag style="float: right;color:#fff">{{course.className}}</el-tag>
+          <el-tag style="float: right;color:#fff">{{course.classId}}</el-tag>
         </el-button>
         <el-dialog
           title="课程安排"
           :visible.sync="dialogVisible"
           width="80%"
           fullscreen="true">
-          <div style="color: #66CCCC;">
+          <div
+            style="color: #66CCCC;
+                   background: url(../../assets/cartoon1.jpg)no-repeat;
+                   background-size: 100% 100%">
             <div class="info" style="float: left;width:33.3%;font-size: 30px;">
               <i class="el-icon-view" @click="courseInfo"></i>
             </div>
@@ -54,6 +57,7 @@
             <div style="float: left;width: 33.3%">我的组队</div>
           </div>
         </el-dialog>
+
       </div>
       <!--
       <div class="course">
@@ -63,7 +67,7 @@
           <el-tag style="float: right;color:#fff">2016-(3)</el-tag>
         </el-button>
       </div>
--->
+-->   <div style="height:280px;"></div>
     </div>
 </template>
 
@@ -73,7 +77,20 @@
       data(){
           return{
             dialogVisible: false,
-            courses:[]
+            courses:[{
+              name:'OOAD',
+              classId:'2016-(1)'
+            },{
+              name:'J2EE',
+              classId:'2016-(2)'
+            }],
+            //背景图片
+            note:{
+              backgroundImage:"url("+require("../../assets/backpic.jpg")+")",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "100% 100%",
+
+            }
           }
       },
       created(){
@@ -116,9 +133,9 @@
             this.$router.push({
               path:'/Courses/CourseInfo',
               name:'CourseInfo',
-              query:{
-                courseId: this.course.id
-              }
+              // query:{
+              //   courseId: this.course.id
+              // }
             })
           },
           teamInfo(){
@@ -157,7 +174,7 @@
   }
 
   .pic img{
-    margin: 20px 0 20px 0;
+    margin: 20px 0 10px 0;
     border-radius: 50px;
   }
 

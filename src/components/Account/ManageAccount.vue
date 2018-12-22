@@ -1,5 +1,5 @@
 <template>
-    <div class="note" :style="note">
+    <div class="main" :style="note">
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
           <label>账户与设置</label>

@@ -1,5 +1,5 @@
 <template>
-  <div class="note" :style="note">
+  <div class="main" :style="note">
     <div class="activate-form">
       <div class="inp-title">
         <i class="el-icon-arrow-left" @click="back"></i>
@@ -34,7 +34,7 @@
         <a @click="submit">确认提交</a>
       </div>
 
-      <div style="height:210px"></div>
+      <div style="height:220px"></div>
       <div class="inp-info">
         <a>密码可包含数字、字母、下划线，长度不少于6位</a>
       </div>

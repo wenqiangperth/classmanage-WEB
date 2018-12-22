@@ -1,5 +1,5 @@
 <template>
-    <div class="note" :style="note">
+    <div class="main" :style="note">
       <div class="find-title">
         <i class="el-icon-arrow-left" @click="backToLogin"></i>
         <label>找回密码</label>
@@ -23,7 +23,7 @@
       <div class="confirm">
         <a @click="confirm">下一步</a>
       </div>
-      <div style="height:270px"></div>
+      <div style="height:300px"></div>
     </div>
 </template>
 

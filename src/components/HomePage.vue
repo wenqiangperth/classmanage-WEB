@@ -1,5 +1,5 @@
 <template>
-    <div class="note" :style="note">
+    <div class="main" :style="note">
       <header class="home-title">
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
@@ -44,7 +44,7 @@
           <label @click="account">账号安全</label>
           <i class="el-icon-d-arrow-right"></i>
         </div>
-        <div style="height:350px"></div>
+        <div style="height:370px"></div>
       </div>
     </div>
 </template>
