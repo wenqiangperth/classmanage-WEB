@@ -58,7 +58,7 @@
         -->
 
       <div class="ensure-change">
-        <a >确认修改</a>
+        <a @click="conf">确认修改</a>
       </div>
       <div style="height: 145px"></div>
     </div>
@@ -71,10 +71,10 @@
         return {
           labelPosition: 'right',
           formLabelAlign: {
-            name: '王强',
-            account: '24320162209999',
-            email: '276888@qq.com',
-            password: '12345678',
+            name: '',
+            account: '',
+            email: '',
+            password: '',
             interval: '',
             isShow: false,
             memail:'65321@163.com',
@@ -108,17 +108,18 @@
             method:'GET',
             url:'/user/information',
             headers:{
-              'token':window.localStorage['token']
+              'Authorization': window.localStorage['token']
             }
           })
             .then(res=>{
-              if(res.data.status===200){
+              console.log(res)
+              if(res.status===200){
                 let data=res.data;
                 that.formLabelAlign.name=data.name;
                 that.formLabelAlign.account=data.account;
                 that.formLabelAlign.email=data.email;
                 that.formLabelAlign.messageInterval=data.messageInterval;
-                that.formLabelAlign.password=data.password
+                that.formLabelAlign.password='无法查看'
               }
             })
             .catch(e=>{
@@ -139,10 +140,17 @@
           }
         },
         ChangePassword(){
-          this.$router.push({path:'/findkey1'});
+          this.$router.push({path:'/findkey2'});
         },
         ChangeEmail(){
           this.$router.push({path:'/Account/ChangeEmail'});
+        },
+        conf(){
+          this.$message({
+            message:'已保存您的修改',
+            type:'success'
+          });
+          this.$router.push({path:'/HomePage'});
         }
       }
     }

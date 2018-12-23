@@ -49,6 +49,7 @@
         name: "activate",
         data(){
           return {
+            token:'',
             password1:'',
             password:'',
             email:'',
@@ -59,6 +60,8 @@
             }
           }
         },
+      created(){
+      },
 
         methods:{
           back(){
@@ -72,15 +75,19 @@
               that.$axios({
                 method: 'PUT',
                 url: '/student/active',
+                headers:{
+                  token: window.localStorage['token']
+                },
                 data:{
                   password: that.password,
                   email: that.email
                 }
               })
-                .then(response => {
-                  if(response.status===200)
+                .then(res => {
+                  if(res.status===200)
+                    window.localStorage["token"]=res.headers.authorization
                     alert("激活成功")
-                  else if(response.status===400)
+                  if(res.status===400)
                     alert("信息不合法,检验邮箱是否正确！")
                 })
                 .catch(error => {

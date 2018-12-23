@@ -85,7 +85,7 @@
             -->
             <tr>
               <td style="width: 30%">冲突课程:</td>
-              <td style="text-align:center" v-for="item in defeatCourse">
+              <td style="text-align:center" v-for="(item,index) in defeatCourse">
                 {{item.name}}({{item.teacher}})</td>
             </tr>
           </table>
@@ -122,27 +122,24 @@
           let that=this;
 
           that.courseId=that.$route.query.courseId;
-          console.log(that.courseId);
 
           that.$axios({
             method:'GET',
-            url:'/course/'+that.courseId
-            // headers:{
-            //   'token':window.localStorage['token']
-            // }
+            url:'/course/'+that.courseId,
+            headers:{
+              'Authorization':window.localStorage['token']
+            }
           })
             .then(res=>{
               console.log(res);
               if(res.status===200){
+                window.localStorage["token"]=res.headers.authorization
                 that.presentationWeight=res.data.presentationPercentage
                 that.questionWeight=res.data.questionPercentage
                 that.reportWeight=res.data.reportPercentage
                 that.startTime=res.data.teamStartTime
                 that.endTime=res.data.teamEndTime
                 that.intro=res.data.introduction
-                // that.minNum=res.data.minMemberNumber
-                // that.maxNum=res.data.maxMemberNumber
-                console.log(that.startTime)
               }
               else if(res.status===404)
               {

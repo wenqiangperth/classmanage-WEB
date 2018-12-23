@@ -27,16 +27,18 @@
 
       <div class="course" v-for="(course,index) in courses">
         <el-button style="width: 90%;background-color: #66CCCC"
-          @click="dialogVisible=true">
+          @click="choose(index)">
           <i class="el-icon-document" style="font-size: 20px;color:#fff"></i>
-          <label style="font-size: 20px;color: #fff">{{course.name}}</label>
-          <el-tag style="float: right;color:#fff">{{course.classId}}</el-tag>
+          <label style="font-size: 20px;color: #fff">{{course.courseName}}</label>
+          <el-tag style="float: right;color:#fff">
+            {{course.klass.grade}}-({{course.klass.klassSerial}})
+          </el-tag>
         </el-button>
         <el-dialog
           title="课程安排"
           :visible.sync="dialogVisible"
           width="80%"
-          fullscreen="true">
+          fullscreen>
           <div style="color: #66CCCC;">
             <div class="info" style="float: left;width:33.3%;font-size: 30px;">
               <i class="el-icon-view" @click="courseInfo"></i>
@@ -64,7 +66,7 @@
           <el-tag style="float: right;color:#fff">2016-(3)</el-tag>
         </el-button>
       </div>
--->   <div style="height:280px;"></div>
+-->   <div style="height:200px;"></div>
     </div>
 </template>
 
@@ -74,21 +76,13 @@
       data(){
           return{
             dialogVisible: false,
-            courses:[{
-              courseId:1,
-              name:'OOAD',
-              classId:'2016-(1)'
-            },{
-              courseId:2,
-              name:'J2EE',
-              classId:'2016-(2)'
-            }],
+            courseId:'',
+            courses:[],
             //背景图片
             note:{
               backgroundImage:"url("+require("../../assets/backpic.jpg")+")",
               backgroundRepeat: "no-repeat",
               backgroundSize: "100% 100%",
-
             }
           }
       },
@@ -96,20 +90,22 @@
         let that = this
         that.$axios({
           method: 'GET',
-          url: '/course?userId=${localStorage.userId}',
+          url: '/course',
           headers:{
-            'token':window.localStorage['token']
+            'Authorization':window.localStorage['token']
           }
         })
           .then(response=>{
+            console.log(response)
             if(response.status===200){
+              window.localStorage["token"]=response.headers.authorization
               that.courses=response.data
-              console.log(response.data)
             }
-            else if(response.status===404)
-              alert("暂未找到课程")
-            else
-              alert("错误的ID格式")
+            if(response.status===404)
+             this.$message({
+               message:"暂未找到课程",
+               type:'warning'
+             })
           })
           .catch(e=>{
             console.log(e)
@@ -122,37 +118,38 @@
                 path:'/Courses/CoursePage'
               })
           },
+        choose(index){
+          this.dialogVisible=true;
+          this.courseId=this.courses[index].courseId;
+        },
           back(){
             this.$router.push({path:'/HomePage'});
           },
           toGrade(){
-            // let temp = courses[index].courseId;
             this.$router.push({
               path:'/Courses/AllGrade/Grade',
               name:'Grade',
               query:{
-                courseId: temp
+                courseId: this.courseId
               }
             });
+            console.log(this.courseId)
           },
-          courseInfo(index){
-            alert("你选择的课程是"+index);
-            let temp = courses[index].courseId;
+          courseInfo(){
             this.$router.push({
               path:'/Courses/CourseInfo',
               name:'ScourseInfo',
               query:{
-                courseId: temp
+                courseId: this.courseId
               }
             })
           },
           teamInfo(){
-            let temp = courses[index].courseId;
             this.$router.push({
               path:'/Courses/MyTeam/TeamInfo',
               name:'TeamInfo',
               query:{
-                courseId: temp
+                courseId: this.courseId
               }
             })
           }

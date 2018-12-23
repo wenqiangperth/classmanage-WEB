@@ -66,6 +66,7 @@ export default {
           for (let it in data) {
             ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
           }
+          console.log(ret);
          return ret
         }],
         headers:{
@@ -73,6 +74,8 @@ export default {
         }
       })
         .then(res => {
+           console.log(res);
+          window.localStorage["token"]=res.headers.authorization;
           //_this.token=res.headers.authorization;
           window.localStorage['token'] = res.headers.authorization;
           if(res.status===200){
@@ -114,8 +117,7 @@ export default {
                   this.$router.push({
                     path:'/teacher/EditPassword',
                     query:{
-                      account: this.account,
-                      token: _this.token
+                      account: this.account
                     }
                   })
                 }

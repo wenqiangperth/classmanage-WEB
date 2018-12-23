@@ -27,59 +27,47 @@
 
     <div class="main">
       <el-collapse>
-        <el-collapse-item v-for="(rounds,index) in courses"
-                          :key="index">
-          <template slot="title">
-            <div style="font-weight: bold; font-size: 15px;font-family: 微软雅黑">
+        <el-collapse-item v-for="(round,index) in roundInfo"
+                          :key="index" >
+          <template slot="title" >
+            <div @click="chooseRound(index)" style="text-align: left;font-weight: bold; font-size: 15px;font-family: 微软雅黑;width: 100%">
               <i class="iconfont icon-chengjiguanli"></i>
-              {{rounds.name}}
+              第{{round.roundSerial}}轮
             </div>
           </template>
           <div style="width: 100%">
-            <div v-for="seminar in rounds.item">
+            <div v-for="(seminar,semId) in courses">
               <el-button class="btn" type="info" plain @click="dialogTableVisible = true">
                 <i class="el-icon-document"></i>
-                {{seminar}}
+                {{seminar.seminarName}}
               </el-button>
             </div>
-            <!--<div>-->
-              <!--<el-button class="btn" type="info" plain >-->
-                <!--<i class="iconfont icon-zudui"></i>-->
-                <!--{{items.item[1]}}-->
-              <!--</el-button>-->
-            <!--</div>-->
-            <!--<div>-->
-              <!--<el-button class="btn" type="info" plain >-->
-                <!--<i class="iconfont icon-xinxi"></i>-->
-                <!--{{items.item[2]}}-->
-              <!--</el-button>-->
-            <!--</div>-->
+            <div>
+              <el-dialog
+                title="成绩"
+                :visible.sync="dialogTableVisible"
+                width="90%">
+                <el-table
+                  :data="tableData"
+                  style="width: 100%">
+                  <el-table-column
+                    prop="date"
+                    label="项目"
+                    width="180"
+                    align="center">
+                  </el-table-column>
+                  <el-table-column
+                    prop="name"
+                    label="成绩"
+                    width="180"
+                    align="center">
+                  </el-table-column>
+                </el-table>
+              </el-dialog>
+            </div>
           </div>
         </el-collapse-item>
       </el-collapse>
-      <div>
-        <el-dialog
-          title="成绩"
-          :visible.sync="dialogTableVisible"
-          width="90%">
-          <el-table
-            :data="tableData"
-            style="width: 100%">
-            <el-table-column
-              prop="date"
-              label="项目"
-              width="180"
-              align="center">
-            </el-table-column>
-            <el-table-column
-              prop="name"
-              label="成绩"
-              width="180"
-              align="center">
-            </el-table-column>
-          </el-table>
-        </el-dialog>
-      </div>
 
     </div>
 
@@ -91,7 +79,9 @@
       name: "Grade",
       data() {
         return {
-          grade:'3.3333',
+          courseId:'',
+          teamId:'',
+          roundInfo:[],
           tableData: [{
             date: 'ppt',
             name: '5.0'
@@ -105,55 +95,32 @@
             date: '总成绩',
             name: '4.8'
           }],
-          courses: [
-            {
-              name: '第一轮',
-              item: [
-                '业务流程分析',
-                '领域模型设计',
-                'myBatis'
-              ]
-            },
-            {
-              name: '第二轮',
-              item: [
-                '代码检查',
-                '对象模型设计',
-                '用例分析'
-              ]
-            }
-          ],
+          courses: [],
           dialogTableVisible: false
         };
       },
       created(){
-        //根据roundId获得队伍轮次的成绩
+        this.courseId=this.$route.query.courseId;
+        //根据courseId获得轮次
         this.$axios({
           method:'GET',
-          url:'round/'+this.$data.roundId+'/team/'+this.$data.teamId+'/roundscore',
+          url:'course/'+this.courseId+'/round',
+          headers:{
+            'Authorization':window.localStorage['token']
+          }
         })
           .then(res=>{
+            console.log(res);
             if(res.status===200){
-
+              window.localStorage["token"]=res.headers.authorization;
+              this.roundInfo = res.data;
+            }
+            else{
+              alert("wrong")
             }
           })
-          .catch(e=>{
-            console.log(e);
-          })
 
-        //按讨论课ID查找队伍讨论课的成绩
-        this.$axios({
-          method:'GET',
-          url:'seminar/'+this.$data.seminarId+'/team/'+this.$data.teamId+'/seminarscore'
-        })
-          .then(res=>{
-            if(res.status===200){
 
-            }
-          })
-          .catch(e=>{
-            console.log(e);
-          })
       },
       methods: {
         handleCommand(command) {
@@ -164,6 +131,28 @@
         },
         back(){
           this.$router.push({path:'/Courses/MyCourse'})
+        },
+        chooseRound(index){
+          let roundId = this.roundInfo[index].id;
+          console.log(roundId);
+          this.$axios({
+            method:'GET',
+            url:'round/'+roundId+'/seminar',
+            headers:{
+              'Authorization': window.localStorage['token']
+            }
+          })
+            .then(res=>{
+              console.log(res);
+              if(res.status===200){
+                this.courses=res.data;
+              }else{
+                alert("wrong")
+              }
+            })
+        },
+        checkScore(semId){
+          // let seminarId = this.courses[semId]
         }
       }
     }

@@ -42,22 +42,26 @@
         },
         methods:{
           confirm(){
-            let that = this
+            let that = this;
+            alert(that.account);
             that.$axios({
               method: 'GET',
-              url: 'user/password',
+              url: '/user/password',
               params:{
                 account: that.account
               }
             })
-              .then(response =>{
-                if(response.status===200){
+              .then(res =>{
+                console.log(res);
+                if(res.status===200){
+                  window.localStorage["token"]=res.headers.authorization
+                  this.$message({
+                    message: '邮件已发送，请注意查看密码。',
+                    type: 'success'
+                  });
                   that.$router.push({
-                    path:'/findkey2',
-                    name:'findkey2',
-                    query:{
-                      account: that.account
-                    }
+                    path:'/',
+                    name:'HelloWorld'
                   })
                 }
                 else{

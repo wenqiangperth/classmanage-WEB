@@ -40,12 +40,10 @@
             }
           }
         },
-      created(){
-          this.account = this.$route.query.account
-      },
-        methods:{
+      created(){},
+      methods:{
           back(){
-            this.$router.push({path:'/findkey1'})
+            this.$router.push({path:'/Account/ManageAccount'})
           },
           submit(){
            let that = this
@@ -55,11 +53,16 @@
               that.$axios({
                 method: 'PUT',
                 url:'/user/password',
+                headers:{
+                  'Authorization': window.localStorage['token']
+                },
                 data:{
                   password: that.password
                 }
               })
                 .then(response => {
+                  window.localStorage["token"]=response.headers.authorization
+                  console.log(response)
                   if(response.status === 200){
                     alert("已成功修改密码")
                     this.$router.push({path:'/'})

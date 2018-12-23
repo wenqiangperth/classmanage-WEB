@@ -65,18 +65,20 @@
         }
       },
       created(){
-          this.getData();
           let that=this
           that.$axios({
             method:'GET',
-            url:'/user/information?userId=${localStorage.userId}',
+            url:'/user/information',
             headers:{
-              'token': window.localStorage['token']
+              'Authorization': window.localStorage['token']
             }
           })
             .then(response=>{
+              console.log(response)
               if(response.status===200){
+                window.localStorage["token"]=response.headers.authorization
                 that.name=response.data.name
+                that.accountNumber=response.data.account
               }
             })
             .catch(e=>{
@@ -99,14 +101,10 @@
             this.$router.push({path:'/Courses/MyCourse'})
           },
 
-          getData(){
-            this.accountNumber = this.$route.query.account
-            //console.log('id',this.id)
-            console.log('accountNumber',this.accountNumber)
-          },
-
           account(){
-            this.$router.push({path:'/Account/ManageAccount'});
+            this.$router.push({
+              path:'/Account/ManageAccount',
+            });
           }
       }
     }

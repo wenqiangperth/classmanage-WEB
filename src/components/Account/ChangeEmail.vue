@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="main" :style="note">
       <header class="home-title">
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
@@ -23,8 +23,8 @@
       </header>
 
       <div class="change">
-        <label>e-mail:</label>
-        <input v-model="email" type="text" placeholder="XXXX@163.com"/>
+        <label style="font-weight: bold">e-mail:</label>
+        <input v-model="email" type="text" placeholder="输入正确的邮箱格式"/>
       </div>
 
       <div class="icon">
@@ -34,6 +34,7 @@
       <div class="confirm">
         <a @click="confirm">确认提交</a>
       </div>
+      <div style="height: 170px"></div>
     </div>
 </template>
 
@@ -42,7 +43,13 @@
         name: "ChangeEmail",
       data(){
         return{
-          email:''
+          email:'',
+          note:{
+            backgroundImage:"url("+require("../../assets/backpic.jpg")+")",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "100% 100%",
+          }
+
         }
       },
       methods:{
@@ -54,16 +61,23 @@
           that.$axios({
             method:'PUT',
             url:'/user/email',
+            headers:{
+              'Authorization':window.localStorage['token']
+            },
             data:{
               email: that.email
             }
           })
             .then(res=>{
-              if(res.data.status===200){
-                alert("邮箱修改成功！");
+              console.log(res);
+              if(res.status===200){
+                that.$message({
+                  message:"邮箱修改成功！",
+                  type:'success'
+                });
                 that.$router.push({path:'/Account/ManageAccount'})
               }
-              else if(res.data.status===400){
+              if(res.status===400){
                 alert("信息不合法")
               }
             })
@@ -80,7 +94,7 @@
     width: 100%;
     line-height: 70px;
     display: block;
-    background-color: #CCFF99;
+    background-color:#87CEEB;
     border-radius: 5px;
   }
 
