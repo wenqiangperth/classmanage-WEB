@@ -36,10 +36,17 @@
     name: "EditEmail",
     data() {
       return {
+        token:'',
         email: ''
       }
     },
+    created(){
+      this.getData();
+    },
     methods: {
+      getData(){
+        this.token=this.$route.query.token;
+      },
       returnLogin() {
         this.$router.push({path: '/'});
       },
@@ -53,22 +60,27 @@
         this.$router.push({path:'/teacher/HomePage'});
       },
       Confirm() {
-        this.$axios({
+        let that=this;
+        that.$axios({
           method: 'PUT',
           url: 'user/email',
+          headers: {
+            'Authorization': that.token
+          },
           params: {
-            email: this.email
+            email: that.email
           }
         })
           .then(res => {
-            if (res.data.status === 200) {
-              this.$message({
+            if (res.status === 200) {
+              that.token=res.headers.authorization;
+              that.$message({
                 type: 'success',
                 message: '修改成功！'
               });
-              this.$router.push({path: '/teacher/AccountManage'});
-            } else if (res.data.status === 400) {
-              this.$message({
+              that.$router.push({path: '/teacher/AccountManage'});
+            } else if (res.status === 400) {
+              that.$message({
                 type: 'error',
                 message: '信息不合法！'
               });

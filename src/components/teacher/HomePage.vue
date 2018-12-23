@@ -17,9 +17,9 @@
         <el-card>
           <fieldset>
             <legend style="font-size: 20px;color:#66cccc;">xxXX课堂管理系统XXxx </legend>
-            <span style="float: left;font-weight: bold">欢迎您: {{username}}老师！</span>
+            <span style="float: left;font-weight: bold">欢迎您: {{teacher.name}}老师！</span>
             <br>
-            <p>当前账户信息: {{account}}</p>
+            <p>当前账户信息: {{teacher.account}}</p>
             <p></p>
           </fieldset>
         </el-card>
@@ -55,8 +55,13 @@
       name: "HomePage",
       data() {
         return {
-          account: '123456789',
-          username: '邱明'
+          token:'',
+          teacher:{
+            account: '123456789',
+            name: '邱明',
+            email:''
+          },
+
         }
       },
       created() {
@@ -64,14 +69,18 @@
         let that = this;
         that.$axios({
           method: 'GET',
-          url: '/user/information?userId=${localStorage.userId}',
+          url: '/user/information',
           headers: {
-            'token': window.localStorage['token']
+            'Authorization': that.token
           }
         })
           .then(response => {
-            if (response.data.status === 200) {
-              that.name = response.data.data.name;
+            if (response.status === 200) {
+              that.teacher=response.data;
+              // that.teacher.account=response.data.account;
+              // that.teacher.name=response.data.name;
+              // that.teacher.email=response.data.email;
+              that.token=res.headers.authorization;
             }
           })
           .catch((e) => {
@@ -80,11 +89,17 @@
       },
       methods:{
         getData() {
+          this.token=this.$route.query.token;
           this.account = this.$route.query.account;
-          console.log('account', this.account);
         },
           SetAccount(){
-            this.$router.push({path:'/teacher/AccountManage'});
+            this.$router.push({
+              path:'/teacher/AccountManage',
+              query:{
+                teacher:this.teacher,
+                token:this.token
+              }
+            });
           },
         returnLogin() {
             this.$router.push({path:'/'});

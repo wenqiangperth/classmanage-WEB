@@ -16,16 +16,16 @@
       <table class="info" cellspacing="0">
         <tr class="tr0">
           <td><label>姓名</label></td>
-          <td><label>{{teacher_account.name}}</label></td>
+          <td><label>{{teacher.name}}</label></td>
         </tr>
         <tr class="tr1">
           <td><label>教工号</label></td>
-          <td><label>{{teacher_account.account}}</label></td>
+          <td><label>{{teacher.account}}</label></td>
         </tr>
         <tr class="tr0">
           <td><label>联系方式</label></td>
           <td>
-            <label style="height:45px;line-height: 45px">{{teacher_account.email}}<i
+            <label style="height:45px;line-height: 45px">{{teacher.email}}<i
               class="el-input__icon el-icon-edit el-icon0" @click="editEmail"></i></label>
           </td>
         </tr>
@@ -38,7 +38,7 @@
         </tr>
         <tr class="tr0">
           <td><label>管理员邮箱</label></td>
-          <td><label>{{teacher_account.manager_email}}</label></td>
+          <td><label>{{managerEmail}}</label></td>
         </tr>
       </table>
       <div class="footer">
@@ -55,38 +55,24 @@
     data() {
       return {
         labelPosition: 'right',
-        teacher_account: {
-          name: '邱老师',
-          account: '123456789',
-          email: '12345678@xmu.edu.cn',
-          password: '111111',
-          isShow: false,
-          manager_email:'654321@163.com'
-        }
+        teacher: {
+          name: '',
+          account: '',
+          email: '',
+          password: ''
+        },
+        managerEmail:'2280064372@qq.com',
+        isShow: false
       }
     },
     created() {
-      let that = this;
-      that.$axios({
-        method: 'GET',
-        url: 'user/information',
-        headers: {
-          'token': window.localStorage['token']
-        }
-      }).then(res => {
-        if (res.data.status === 200) {
-          let data = res.data.data;
-          that.teacher_account.name = data.name;
-          that.teacher_account.account = data.account;
-          that.teacher_account.email = data.email;
-          that.teacher_account.password = data.password;
-        }
-      })
-        .catch((e) => {
-          console.log(e);
-        })
+      this.getData();
     },
     methods: {
+      getData(){
+        this.teacher=this.$route.query.teacher;
+        this.token=this.$route.query.token;
+      },
       returnHomePage() {
         this.$router.push({path: '/teacher/HomePage'});
       },
@@ -112,7 +98,12 @@
         this.$router.push({path: '/teacher/EditPassword'})
       },
       editEmail() {
-        this.$router.push({path: '/teacher/EditEmail'});
+        this.$router.push({
+          path: '/teacher/EditEmail',
+          query:{
+            token:this.token
+          }
+        });
       }
     }
   }

@@ -55,13 +55,22 @@
     name: "editPassword",
     data() {
       return {
+        account:'',
+        token:'',
         oldPassword: '',
         newPassword: '',
         isShow1: false,
         isShow2: false
       }
     },
+    created(){
+      this.getData();
+    },
     methods: {
+      getData(){
+        this.token=this.$route.query.token;
+        this.account=this.$route.query.account;
+      },
       returnLogin() {
         this.$router.push({path: '/'});
       },

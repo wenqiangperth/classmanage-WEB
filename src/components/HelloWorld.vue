@@ -62,46 +62,39 @@ export default {
           password: _this.password
         },
         transformRequest: [function (data) {
-          // Do whatever you want to transform the data
           let ret = ''
           for (let it in data) {
             ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
           }
-          console.log(ret);
          return ret
-         // data = Qs.stringify(data);
         }],
         headers:{
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       })
         .then(res => {
-           console.log(res);
           _this.token=res.headers.authorization;
           if(res.status===200){
               let arr=res.data.split(",");
-              console.log(arr);
               if(arr[0]==="{role=ROLE_STUDENT"){
                 if(arr[1]===" isActive=1}"){
                   //学生已激活，进入主页
-                  alert("chenggong");
                   this.$router.push({
                     path:'/HomePage',
                     name:'HomePage',
                     query:{
                       account: this.account,
-                      token: this.token
+                      token: _this.token
                     }
                   })
                 }
                 if(arr[1]===" isActive=0}"){
-                  alert("ok")
                   this.$router.push({
                     path:'/activate',
                     name:'activate',
                     query:{
                       account: this.account,
-                      token: this.token
+                      token: _this.token
                     }
                   })
                 }
@@ -112,13 +105,17 @@ export default {
                     path:'/teacher/HomePage',
                     query:{
                       account: this.account,
-                      token: this.token
+                      token: _this.token
                     }
                   });
                 }
                 if(arr[1]===" isActive=0}"){
                   this.$router.push({
-                    path:'/teacher/EditPassword'
+                    path:'/teacher/EditPassword',
+                    query:{
+                      account: this.account,
+                      token: _this.token
+                    }
                   })
                 }
               }
@@ -127,7 +124,6 @@ export default {
           }
           if(res.status!==200) {
             alert("账号/密码错误！");
-            console.log(res.data);
           }
         })
         .catch(e => {
