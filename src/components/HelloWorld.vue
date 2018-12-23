@@ -57,13 +57,27 @@ export default {
         method: 'POST',
         url: '/user/login',
         data: {
-          account: _this.account,
+          username: _this.account,
           password: _this.password
+        },
+        transformRequest: [function (data) {
+          // Do whatever you want to transform the data
+          let ret = ''
+          for (let it in data) {
+            ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+          }
+          console.log(ret);
+         return ret
+         // data = Qs.stringify(data);
+        }],
+        headers:{
+          'Content-Type': 'application/x-www-form-urlencoded'
         }
       })
         .then(response => {
           console.log(response);
-          if(response.data.status===200){
+          console.log(response.headers);
+          if(response.status===200){
             let data=response.data
 
             //将token与userId存入本地
