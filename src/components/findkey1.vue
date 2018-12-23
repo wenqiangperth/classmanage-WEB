@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="main" :style="note">
       <div class="find-title">
         <i class="el-icon-arrow-left" @click="backToLogin"></i>
         <label>找回密码</label>
@@ -23,6 +23,7 @@
       <div class="confirm">
         <a @click="confirm">下一步</a>
       </div>
+      <div style="height:300px"></div>
     </div>
 </template>
 
@@ -31,7 +32,12 @@
         name: "findkey1",
         data(){
           return {
-            account: ''
+            account: '',
+            note:{
+              backgroundImage:"url("+require("../assets/backpic.jpg")+")",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "100% 100%",
+            }
           }
         },
         methods:{
@@ -74,7 +80,7 @@
   .find-title{
     line-height: 70px;
     display: block;
-    background-color: #CCFF99;
+    background-color: #87CEEB;
     margin: 0 0px 90px 0;
     border-radius: 5px;
   }

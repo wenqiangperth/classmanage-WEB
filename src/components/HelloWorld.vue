@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="main" :style="note">
     <div class="login-form">
       <div class="login-title">
 
@@ -25,11 +25,12 @@
           <a href="#/findkey1">忘记密码</a>
         </div>
 
-      </el-form>
+        <div class="divHeight" style="height:300px"></div>
 
       <div class="login-info">
         <a>初始密码为123456</a>
       </div>
+      </el-form>
     </div>
   </div>
 </template>
@@ -41,7 +42,12 @@ export default {
     return {
       msg: 'Welcome to Your Vue.js App',
       account: '',
-      password: ''
+      password: '',
+      note:{
+        backgroundImage:"url("+require("../assets/backpic.jpg")+")",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "100% 100%",
+      }
     }
   },
   methods:{
@@ -119,7 +125,7 @@ li {
 
   .login-title a{
     display: block;
-    background-color: #CCFF99;
+    background-color: #87CEEB;
     border-radius: 10px;
     font-style: inherit;
     font-family: 华文彩云;

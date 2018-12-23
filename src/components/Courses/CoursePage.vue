@@ -34,7 +34,8 @@
           text-color="#fff"
           active-text-color="#ffd04b">
           <el-menu-item
-            v-for="course in courses"
+            v-for="(course,key) in courses"
+            :key="key"
             index="1"
             @click="getCourse(course.id)"
             style="text-align: left">
@@ -63,40 +64,31 @@
         name: "CoursePage",
       data() {
         return{
-          courses:[{name:'OOAD',id:'2'}],
+          courses:[{name:'OOAD',id:'1'}],
           courseId:''
         }
       },
       created(){
           let that = this;
-          /*
-          for (let i=0;i<this.courses.length;i++)
-            console.log(this.courses[i].name);
-*/
-        that.$axios({
-            method:'GET',
-            url:'/course'
-        /*
-            headers:{
-              'token':window.localStorage['token']
-            }
-        */
-          })
-            .then(res=>{
-              if(res.data.status===200){
-                that.courses=res.data.data;
-                console.log(res.data.data);
-              }
-              else if(res.data.status===404){
-                alert("未找到课程！")
-              }
-              else{
-                alert("错误的ID格式")
-              }
+          that.$axios({
+              method:'GET',
+              url:'/course'
             })
-            .catch(e=>{
-              console.log(e)
-            })
+              .then(res=>{
+                console.log(res);
+                if(res.status===200){
+                  console.log(res.data.data);
+                }
+                else if(res.data.status===404){
+                  alert("未找到课程！")
+                }
+                else{
+                  alert("错误的ID格式")
+                }
+              })
+              .catch(e=>{
+                console.log(e)
+              })
       },
       methods:{
         back(){
@@ -129,7 +121,7 @@
     width: 100%;
     line-height: 70px;
     display: block;
-    background-color: #CCFF99;
+    background-color: #5CACEE;
     border-radius: 5px;
   }
 

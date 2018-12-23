@@ -71,6 +71,24 @@
       <div class="divHeight"></div>
 
       <el-row>
+        <el-button type="warning" size="small" @click="dialogFormVisible = true">提交审核</el-button>
+      </el-row>
+      <el-dialog
+        title="成组特例申请"
+        :visible.sync="dialogFormVisible"
+        width="90%">
+        <el-form :model="form">
+          <el-form-item label="申请理由:" :label-width="formLabelWidth">
+            <el-input v-model="reason" autocomplete="off" placeholder="单行输入"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">cancel</el-button>
+          <el-button type="primary" @click="validate">sure</el-button>
+        </div>
+      </el-dialog>
+      <div class="divHeight"></div>
+      <el-row>
         <el-button type="danger">解散小组</el-button>
         <el-button type="primary">添加</el-button>
         <el-button type="success">保存</el-button>
@@ -85,6 +103,7 @@
           return{
             teamId:'',    //记录用户所在小组的teamId并传给后端
             item:'',      //存放所有从后端传来的数据
+            reason:'',    // 成组特例申请理由
             student:'',
             teamTitle:'1-1 武林盟主',
             leader:{ Na:'王强', No: '24320162201122' } ,
@@ -112,7 +131,19 @@
             },{
               Na: '我是6号',
               No: '44444444444'
-            }]
+            }],
+            dialogFormVisible: false,
+            form: {
+              name: '',
+              region: '',
+              date1: '',
+              date2: '',
+              delivery: false,
+              type: [],
+              resource: '',
+              desc: ''
+            },
+            formLabelWidth: '80px'
           }
       },
       created(){
@@ -156,12 +187,13 @@
           this.$confirm('此操作将删除您的队友, 是否继续?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
+            width:'50%',
             type: 'warning',
             center: true
           }).then(() => {
             this.$axios({
               method:'PUT',
-              url:'team/teamId/remove',
+              url:'team/'+this.$data.teamId+'/remove',
               params:{
                 id:index,
                 teamId:this.teamId
@@ -188,8 +220,33 @@
               message: '已取消删除'
             });
           });
-
-
+        },
+        // 提交审核
+        validate(){
+          this.reason='';
+          this.$axios({
+            method:'POST',
+            url:'team/'+this.$data.teamId+'/teamvalidrequest',
+            data:{
+              teamId: this.teamId,
+              leaderId:this.leader,
+              reason:this.reason
+            }
+          })
+            .then(res=>{
+              if(res.status===201){
+                alert("申请已提交成功");
+              }else if(res.status===403){
+                alert("用户权限不足");
+              }else{
+                alert("未找到该队伍");
+              }
+              this.dialogFormVisible=false;
+            })
+            .catch(e=>{
+              console.log(e);
+              this.dialogFormVisible=false;
+            })
         }
       }
     }
@@ -200,7 +257,7 @@
     width: 100%;
     line-height: 70px;
     display: block;
-    background-color: #CCFF99;
+    background-color: #5CACEE;
     border-radius: 5px;
   }
 

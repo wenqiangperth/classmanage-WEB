@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="main" :style="note">
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
           <label>账户与设置</label>
@@ -21,7 +21,7 @@
         </div>
 
         <div style="width:100%;height:45px"></div>
-        <el-form :label-position="labelPosition" label-width="90px" :model="formLabelAlign">
+        <el-form :label-position="labelPosition" label-width="90px" :model="formLabelAlign" style="margin-right: 4px">
           <el-form-item label="姓名">
             <el-input v-model="formLabelAlign.name" :disabled="true"></el-input>
           </el-form-item>
@@ -60,7 +60,7 @@
       <div class="ensure-change">
         <a >确认修改</a>
       </div>
-
+      <div style="height: 145px"></div>
     </div>
 </template>
 
@@ -71,10 +71,10 @@
         return {
           labelPosition: 'right',
           formLabelAlign: {
-            name: '',
+            name: '王强',
             account: '24320162209999',
-            email: '',
-            password: '',
+            email: '276888@qq.com',
+            password: '12345678',
             interval: '',
             isShow: false,
             memail:'65321@163.com',
@@ -93,7 +93,13 @@
             value: '1',
             label: '1h'
           }],
-          value:''
+          value:'',
+          //图片背景
+          note:{
+            backgroundImage:"url("+require("../../assets/seminarpic2.jpg")+")",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "100% 100%",
+          }
         }
       },
       created(){
@@ -147,7 +153,7 @@
     width: 100%;
     line-height: 70px;
     display: block;
-    background-color: #CCFF99;
+    background-color: #87CEEB;
     border-radius: 5px;
   }
 

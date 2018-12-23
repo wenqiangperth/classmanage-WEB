@@ -54,12 +54,12 @@
               </template>
             </el-table-column>
             <el-table-column
-              prop="Na"
+              prop="studentName"
               label="姓名"
               width="130">
             </el-table-column>
             <el-table-column
-              prop="No"
+              prop="account"
               label="学号"
               width="130">
             </el-table-column>
@@ -83,7 +83,7 @@
         name: "MakeTeam",
       data() {
         return {
-          courseId:'',
+          courseId:'1',
           student:'',
           ruleForm: {
             name: '',
@@ -99,40 +99,23 @@
               { required: true, message: '班级名不能为空', trigger: 'change' }
             ]
           },
-          Unteam:[{
-            Na: '我是1号',
-            No: '11111111111'
-          },{
-            Na: '我是2号',
-            No: '22222222222'
-          },{
-            Na: '我是3号',
-            No: '33333333333'
-          },{
-            Na: '我是4号',
-            No: '44444444444'
-          },{
-            Na: '我是5号',
-            No: '44444444444'
-          },{
-            Na: '我是6号',
-            No: '44444444444'
-          }]
+          Unteam:[]       //未组队学生学号、姓名
         };
       },
       created(){
           let that = this;
+          //query获得上一页面的courseId
           that.$axios({
             method:'GET',
-            url:'/course/courseId/noTeam',
+            url:'/course/'+that.$data.courseId+'/noTeam',
             params:{
               courseId: that.courseId
             }
           })
             .then(res=>{
-              if(res.data.status===200){
-                let data=res.data;
-                that.Unteam=data.noTeam;
+              console.log(res);
+              if(res.status===200){
+                that.Unteam=res.data;
               }
             })
             .catch(e=>{console.log(e)})
@@ -181,7 +164,7 @@
             let j=0;
             let tableData=that.Unteam;
             for(let i in tableData){
-              if(tableData[i].No===that.student||tableData[i].Na===that.student){
+              if(tableData[i].account===that.student||tableData[i].studentName===that.student){
                 that.Unteam=[];
                 that.Unteam[j++]=tableData[i];
               }
@@ -199,7 +182,7 @@
     width: 100%;
     line-height: 70px;
     display: block;
-    background-color: #CCFF99;
+    background-color: #5CACEE;
     border-radius: 5px;
   }
 

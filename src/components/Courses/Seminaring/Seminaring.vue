@@ -76,9 +76,32 @@
         </a>
       </div>
 
+      <div class="intro"
+           style="height: 50px; background-color: #fff; display: block">
+        <label style="text-align: left; line-height: 50px">
+          PPT：
+        </label>
+        <a style="text-align: center; color: #66CCCC" @click="check">
+          已提交
+        </a>
+      </div>
+
       <div class="enter-seminar">
         <a @click="present">进入讨论课</a>
       </div>
+
+      <el-upload
+        class="upload-demo"
+        action="https://jsonplaceholder.typicode.com/posts/"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        multiple
+        :limit="3"
+        :on-exceed="handleExceed"
+        :file-list="fileList">
+        <el-button style="font-size: 19px;font-weight: bold;letter-spacing: 3px;border-radius: 25px" type="success">
+          <i class="el-icon-upload"></i> 上传书面报告</el-button>
+      </el-upload>
 
     </div>
 </template>
@@ -92,7 +115,8 @@
           order:'',
           topic:'',
           status:'',
-          intro:''
+          intro:'',
+          fileList:[]
         }
       },
       created(){
@@ -137,7 +161,19 @@
                 seminarId:this.seminarId
               }
             })
+          },
+        handleRemove(file, fileList) {
+          console.log(file, fileList);
+        },
+        handlePreview(file) {
+          console.log(file);
+        },
+        handleExceed(files, fileList) {
+          this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
         }
+        // beforeRemove(file, fileList) {
+        //   return this.$confirm(`确定移除 ${ file.name }？`);
+        // }
       }
     }
 </script>
@@ -148,7 +184,7 @@
     width: 100%;
     line-height: 70px;
     display: block;
-    background-color: #CCFF99;
+    background-color: #5CACEE;
     border-radius: 5px;
   }
 
@@ -178,6 +214,7 @@
   }
 
   .enter-seminar{
+    width:90%;
     margin:50px 10px 15px 10px;
     border:1px solid #66CCCC;
     border-radius:25px;
