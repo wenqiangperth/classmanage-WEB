@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="head" class="head">
-      <div class="title"><i class="el-icon-back icon1 icon0" @click="returnAccountManage"></i>修改密码
+      <div class="title"><i class="el-icon-back icon1 icon0" @click="Back"></i>修改密码
         <el-dropdown class="plus" trigger="click">
           <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
@@ -55,22 +55,13 @@
     name: "editPassword",
     data() {
       return {
-        account:'',
-        token:'',
         oldPassword: '',
         newPassword: '',
         isShow1: false,
         isShow2: false
       }
     },
-    created(){
-      this.getData();
-    },
     methods: {
-      getData(){
-        this.token=this.$route.query.token;
-        this.account=this.$route.query.account;
-      },
       returnLogin() {
         this.$router.push({path: '/'});
       },
@@ -80,26 +71,33 @@
       gotoSeminar() {
         this.$router.push({path: '/teacher/SeminarPage'});
       },
-      returnAccountManage() {
+      Back() {
+        //this.$router.go(-1);
         this.$router.push({path: '/teacher/AccountManage'});
       },
       modifyPassword() {
         this.$axios({
           method: 'PUT',
-          url: 'user/password',
-          params: {
+          url: '/user/password',
+          data: {
             oldPassword: this.oldPassword,
             password: this.newPassword
+          },
+          headers: {
+            'Authorization': window.localStorage['token']
           }
         })
           .then(res => {
-            if (res.data.status === 200) {
+            if (res.status === 200) {
+              window.localStorage['token'] = res.headers.authorization;
               this.$message({
                 type: 'success',
                 message: '修改成功！'
               });
-              this.$router.push({path: '/teacher/AccountManage'});
-            } else if (res.data.status === 400) {
+              this.$router.push({
+                path: '/teacher/AccountManage',
+              });
+            } else if (res.status === 400) {
               this.$message({
                 type: 'error',
                 message: '信息不合法！'

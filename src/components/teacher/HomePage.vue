@@ -71,16 +71,17 @@
           method: 'GET',
           url: '/user/information',
           headers: {
-            'Authorization': that.token
+            'Authorization': window.localStorage['token']
           }
         })
           .then(response => {
             if (response.status === 200) {
               that.teacher=response.data;
+              window.localStorage['token'] = response.headers.authorization;
               // that.teacher.account=response.data.account;
               // that.teacher.name=response.data.name;
               // that.teacher.email=response.data.email;
-              that.token=res.headers.authorization;
+              //that.token=res.headers.authorization;
             }
           })
           .catch((e) => {
@@ -97,7 +98,7 @@
               path:'/teacher/AccountManage',
               query:{
                 teacher:this.teacher,
-                token:this.token
+                //token:this.token
               }
             });
           },

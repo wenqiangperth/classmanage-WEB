@@ -66,13 +66,26 @@
       }
     },
     created() {
-      this.getData();
+      let that = this;
+      that.$axios({
+        method: 'GET',
+        url: '/user/information',
+        headers: {
+          'Authorization': window.localStorage['token']
+        }
+      })
+        .then(res => {
+          if (res.status === 200) {
+            let data = res.data;
+            window.localStorage['token'] = res.headers.authorization;
+            that.teacher = data;
+          }
+        })
+        .catch(e => {
+          console.log(e)
+        })
     },
     methods: {
-      getData(){
-        this.teacher=this.$route.query.teacher;
-        this.token=this.$route.query.token;
-      },
       returnHomePage() {
         this.$router.push({path: '/teacher/HomePage'});
       },
@@ -95,14 +108,13 @@
         this.$router.push({path: '/teacher/SeminarPage'});
       },
       editPassword() {
-        this.$router.push({path: '/teacher/EditPassword'})
+        this.$router.push({
+          path: '/teacher/EditPassword'
+        })
       },
       editEmail() {
         this.$router.push({
-          path: '/teacher/EditEmail',
-          query:{
-            token:this.token
-          }
+          path: '/teacher/EditEmail'
         });
       }
     }

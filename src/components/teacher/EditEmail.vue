@@ -36,17 +36,10 @@
     name: "EditEmail",
     data() {
       return {
-        token:'',
-        email: ''
+        email: '',
       }
     },
-    created(){
-      this.getData();
-    },
     methods: {
-      getData(){
-        this.token=this.$route.query.token;
-      },
       returnLogin() {
         this.$router.push({path: '/'});
       },
@@ -63,22 +56,24 @@
         let that=this;
         that.$axios({
           method: 'PUT',
-          url: 'user/email',
-          headers: {
-            'Authorization': that.token
-          },
-          params: {
+          url: '/user/email',
+          data: {
             email: that.email
+          },
+          headers: {
+            'Authorization': window.localStorage['token']
           }
         })
           .then(res => {
             if (res.status === 200) {
-              that.token=res.headers.authorization;
+              window.localStorage['token'] = res.headers.authorization;
               that.$message({
                 type: 'success',
                 message: '修改成功！'
               });
-              that.$router.push({path: '/teacher/AccountManage'});
+              that.$router.push({
+                path: '/teacher/AccountManage',
+              });
             } else if (res.status === 400) {
               that.$message({
                 type: 'error',

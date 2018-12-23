@@ -14,18 +14,16 @@
     </div>
     <div class="empty"></div>
     <div class="main">
-      <div class="new_course" @click="NewCourse(courses.teacherId)">
+      <div class="new_course" @click="NewCourse(courses.studentOrTeacherId)">
         <i class="el-icon-plus icon2" style="font-weight: bolder;color: #66cccc"><span
           style="color: dimgrey">新建课程</span></i>
       </div>
-      <el-collapse accordion
-                   background-color="#66CCCC">
-        <el-collapse-item v-for="(items,index) in courses"
-                          :key="index"
-        >
+      <el-collapse accordion background-color="#66CCCC" v-for="(items,index) in courses"
+                   :key="index">
+        <el-collapse-item>
           <template slot="title">
             <div style="font-weight: bold">
-              &nbsp;&nbsp;<i class="iconfont icon-kecheng"></i>&nbsp;&nbsp;{{items.name}}
+              &nbsp;&nbsp;<i class="iconfont icon-kecheng"></i>&nbsp;&nbsp;{{items.courseName}}
             </div>
           </template>
           <div style="width: 100%">
@@ -55,7 +53,7 @@
               </el-button>
             </div>
             <div>
-              <el-button class="btn_info" type="info" plain @click="setShare(items.courseId,items.name)">
+              <el-button class="btn_info" type="info" plain @click="setShare(items.courseId,items.courseName)">
                 <i class="el-icon-share el-icon0"></i>&nbsp;&nbsp;{{item[5]}}
               </el-button>
             </div>
@@ -72,15 +70,7 @@
     name: "CourseManage",
     data() {
       return {
-        courses: [
-          {
-            courseId: 2,
-            teacherId: 1,
-            name: 'OOAD',
-            teamMainCourseId: 2,
-            seminarMainCourseId: 2,
-          }
-        ],
+        courses: [],
         item: [
           '学生成绩',
           '学生组队',
@@ -95,31 +85,23 @@
       let that = this;
       that.$axios({
         method: 'GET',
-        url: '/course?userId=${localStorage.userId}',
+        url: '/course',
         headers: {
-          'token': window.localStorage['token']
+          'Authorization': window.localStorage['token']
         }
       })
         .then(response => {
-          if (response.data.status === 200) {
-            let data = response.data.data;
-            console.log(data);
-            that.courses.splice(0, that.courses.length);
-            for (let i = 0; i < data.length; i++) {
-              that.courses.push({
-                courseId: data.id,
-                teacherId: data.teacherId,
-                teamMainCourseId: data.teamMainCourseId,
-                seminarMainCourseId: data.seminarMainCourseId,
-                name: data.name,
-              })
-            }
+          if (response.status === 200) {
+            window.localStorage['token'] = response.headers.authorization;
+            let data = response.data;
+            that.courses = data;
+            console.log(that.courses);
           } else if (response.status === 404) {
             that.$message({
               type: 'error',
               message: '未找到课程'
             })
-          } else if (response.data.status === 400) {
+          } else if (response.status === 400) {
             that.$message({
               type: 'error',
               message: '错误的id格式'
