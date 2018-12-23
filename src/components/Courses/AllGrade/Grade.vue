@@ -27,33 +27,33 @@
 
     <div class="main">
       <el-collapse>
-        <el-collapse-item v-for="(items,index) in courses"
+        <el-collapse-item v-for="(rounds,index) in courses"
                           :key="index">
           <template slot="title">
             <div style="font-weight: bold; font-size: 15px;font-family: 微软雅黑">
-              &nbsp;&nbsp;<i class="iconfont icon-kecheng"></i>&nbsp;&nbsp;
-              {{items.name}}
+              <i class="iconfont icon-chengjiguanli"></i>
+              {{rounds.name}}
             </div>
           </template>
           <div style="width: 100%">
-            <div>
+            <div v-for="seminar in rounds.item">
               <el-button class="btn" type="info" plain @click="dialogTableVisible = true">
-                <i class="iconfont icon-chengjiguanli"></i>&nbsp;&nbsp;
-                {{items.item[0]}}
+                <i class="el-icon-document"></i>
+                {{seminar}}
               </el-button>
             </div>
-            <div>
-              <el-button class="btn" type="info" plain >
-                <i class="iconfont icon-zudui"></i>&nbsp;&nbsp;
-                {{items.item[1]}}
-              </el-button>
-            </div>
-            <div>
-              <el-button class="btn" type="info" plain >
-                <i class="iconfont icon-xinxi"></i>&nbsp;&nbsp;
-                {{items.item[2]}}
-              </el-button>
-            </div>
+            <!--<div>-->
+              <!--<el-button class="btn" type="info" plain >-->
+                <!--<i class="iconfont icon-zudui"></i>-->
+                <!--{{items.item[1]}}-->
+              <!--</el-button>-->
+            <!--</div>-->
+            <!--<div>-->
+              <!--<el-button class="btn" type="info" plain >-->
+                <!--<i class="iconfont icon-xinxi"></i>-->
+                <!--{{items.item[2]}}-->
+              <!--</el-button>-->
+            <!--</div>-->
           </div>
         </el-collapse-item>
       </el-collapse>
@@ -126,6 +126,35 @@
           dialogTableVisible: false
         };
       },
+      created(){
+        //根据roundId获得队伍轮次的成绩
+        this.$axios({
+          method:'GET',
+          url:'round/'+this.$data.roundId+'/team/'+this.$data.teamId+'/roundscore',
+        })
+          .then(res=>{
+            if(res.status===200){
+
+            }
+          })
+          .catch(e=>{
+            console.log(e);
+          })
+
+        //按讨论课ID查找队伍讨论课的成绩
+        this.$axios({
+          method:'GET',
+          url:'seminar/'+this.$data.seminarId+'/team/'+this.$data.teamId+'/seminarscore'
+        })
+          .then(res=>{
+            if(res.status===200){
+
+            }
+          })
+          .catch(e=>{
+            console.log(e);
+          })
+      },
       methods: {
         handleCommand(command) {
           if (command === "course")
@@ -145,7 +174,8 @@
     width: 100%;
     line-height: 70px;
     display: block;
-    background-color: #CCFF99;
+    background-color: #5CACEE;
+    opacity: 0.8;
     border-radius: 5px;
   }
 
