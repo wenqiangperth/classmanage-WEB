@@ -116,7 +116,7 @@
     name: "NewSeminar",
     data() {
       return {
-        courseId: 1,
+        courseId: 0,
         seminarName: '',
         introduction: '',
         isVisible: true,
@@ -150,7 +150,9 @@
     methods: {
       getParams() {
         this.courseId = this.$route.params.courseId;
-        this.roundInfo = this.$route.params.rounds;
+        this.roundInfo = this.$route.params.roundInfo;
+        console.log("courseId" + this.courseId);
+        console.log("roundInfo" + this.roundInfo[0].seminars[0].topic);
       },
       returnSeminarPage() {
         this.$router.push({path: '/teacher/SeminarPage'});

@@ -2,15 +2,13 @@
   <div>
     <div id="head" class="head">
       <div class="title">
-        <router-link :to="{name:'ReportPage'}"><i class="el-icon-back icon1 icon0" style="color: black"></i></router-link>
+        <i class="el-icon-back icon1 icon0" style="color: black" @click="Back"></i>
         OOAD--书面报告
         <el-dropdown class="plus" trigger="click">
           <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
-            <el-dropdown-item><i class="el-icon-service" @click="gotoSeminar">&nbsp;&nbsp;讨论课</i></el-dropdown-item>
-            <el-dropdown-item>
-              <router-link :to="{name:'Login'}"><i class="el-icon-back">&nbsp;&nbsp;退 出</i></router-link>
+            <el-dropdown-item><i class="el-icon-service" @click="gotoTotalSeminar">&nbsp;&nbsp;讨论课</i>
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -80,11 +78,14 @@
       }
     },
     methods: {
+      Back() {
+        this.$router.go(-1);
+      },
       updateSuccess() {
         this.$router.push({path: '/teacher/AfterSeminar'});
       },
-      gotoSeminar() {
-        this.$router.push({path: '/teacher/SeminarPage'});
+      gotoTotalSeminar() {
+        this.$router.push({path: '/teacher/TotalSeminar'});
       },
       gotoHomePage(){
         this.$router.push({path:'/teacher/HomePage'});

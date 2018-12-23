@@ -12,174 +12,79 @@
         </el-dropdown>
       </div>
     </div>
-    <div class="empty"></div>
     <div class="main">
-      <el-tree
-        node-key="id"
-        :data="data"
-        :props="defaultProps"
-        accordion
-        @node-click="handleNodeClick"
-        style="width: 100%;font-weight: bold">
-      </el-tree>
+      <el-collapse accordion
+                   background-color="#66CCCC">
+        <el-collapse-item v-for="(items,index) in roundInfo"
+                          :key="index"
+        >
+          <template slot="title">
+            <div style="font-weight: bold">
+              &nbsp;&nbsp;<i class="el-icon-service el-icon0"></i>&nbsp;&nbsp;第{{items.roundSerial}}轮
+            </div>
+          </template>
+          <div style="width: 100%">
+            <el-button class="btn" type="info" plain @click="setRound(items.id)">该轮轮次设置</el-button>
+          </div>
+          <div style="width:100%" v-for="(item,index0) in items.seminars" :key="index0">
+            <el-card style="width:100%">
+              <div slot="header">
+                <span style="float:left;font-weight: bold;color: #616161">{{item.topic}}</span>
+                <i class="el-icon-edit el-icon0" style="float: right" v-if="true"
+                   @click="updateSeminarInfo(item.seminarId,roundInfo)"></i>
+                <i v-else-if="false"></i><!--接口后换isMaster -->
+              </div>
+              <div style="width: 100%" v-for="(class1,index1) in classInfo" :key="index1">
+                <div class="div0" @click="checkClassSeminar(class1.classId,item.seminarId,items.roundSerial)">
+                  <i class="iconfont icon-xinxi"></i>{{class1.grade}}-{{class1.classSerial}}
+                </div>
+              </div>
+            </el-card>
+          </div>
 
-
-      <el-dialog
-        title="选择要修改的讨论课"
-        :visible.sync="dialogTableVisible"
-        width="90%">
-        <el-select v-model="option" placeholder="请选择"
-                   style="margin-bottom: 60px">
-          <el-option
-            v-for="(item,index) in data"
-            :key="index"
-            :label="item.children.label"
-          >
-          </el-option>
-        </el-select>
-        <el-button type="info" size="small" plain @click="gotoUpdate">确定</el-button>
-
-      </el-dialog>
-      <div class="new">
-        <div>
-          <el-button class="btn" type="success" plain @click="NewSeminar(courseId,rounds)"
-                     style="margin-top: 10px"><i class="el-icon-plus" style="font-weight: bolder"></i>&nbsp;&nbsp;新建讨论课
-          </el-button>
-        </div>
+        </el-collapse-item>
+      </el-collapse>
+      <div style="width: 100%" v-if="true"><!-- 接口后换成isMaster-->
+        <el-button class="btn" type="success" plain @click="NewSeminar(courseId,roundInfo)"
+                   style="margin-top: 10px"><i class="el-icon-plus" style="font-weight: bolder"></i>&nbsp;&nbsp;新建讨论课
+        </el-button>
       </div>
+      <div style="width: 100%" v-else-if="!isMaster"></div>
+
     </div>
   </div>
 </template>
 
 <script>
   export default {
-    name: "SeminarPage",
+    name: "temp",
     data() {
       return {
         courseId: 1,
-        courseName: '',
-        rounds: [
-          {id: 1, roundSerial: 1},
-        ],
-        classes: [
+        courseName: 'OOAD',
+        isMaster: true,
+        classInfo: [
           {classId: 1, grade: 2016, classSerial: 1},
+          {classId: 2, grade: 2016, classSerial: 1},
+          {classId: 3, grade: 2016, classSerial: 1},
         ],
-        roundsInfo: [
+        roundInfo: [{
+          id: 1,
+          roundSerial: 1,
+          seminars: [
+            {seminarId: 1, topic: '业务流程分析', order: 2},
+            {seminarId: 2, topic: '邻域模型分析', order: 1},
+          ],
+        },
           {
-            roundId: 1,
-            topics: [
+            id: 2,
+            roundSerial: 2,
+            seminars: [
               {seminarId: 1, topic: '业务流程分析', order: 2},
               {seminarId: 2, topic: '邻域模型分析', order: 1},
-            ]
-          }
-        ],
-        dialogTableVisible: false,
-        data: [{
-          id: 1,
-          label: '第1轮',
-          children: [{
-            id: 11,
-            label: '该轮轮次设置',
-          },
-            {
-              id: 12,
-              label: '修改讨论课'
-            },
-            {
-              id: 13,
-              label: '业务流程分析',
-              children: [{
-                id: 131,
-                label: '2016--1'
-              }, {
-                id: 132,
-                label: '2016--2'
-              }, {
-                id: 133,
-                label: '2016--3'
-              }]
-            },
-            {
-              id: 14,
-              label: '领域模型设计',
-              children: [{
-                id: 141,
-                label: '2016--1'
-              }, {
-                id: 142,
-                label: '2016--2'
-              }, {
-                id: 142,
-                label: '2016--3'
-              }]
-            }]
-        }, {
-          label: '第2轮',
-          children: [{
-            label: '该轮轮次设置',
-          },
-            {
-              label: '业务流程分析',
-              children: [{
-                label: '2016--1'
-              }, {
-                label: '2016--2'
-              }, {
-                label: '2016--3'
-              }]
-            },
-            {
-              label: '领域模型设计',
-              children: [{
-                label: '2016--1'
-              }, {
-                label: '2016--2'
-              }, {
-                label: '2016--3'
-              }]
-            }]
-        }],
-        defaultProps: {
-          children: 'children',
-          label: 'label'
-        },
-        options: [
-          {
-            value: '选项1',
-            label: 'OOAD'
-          }, {
-            value: '选项2',
-            label: 'J2EE'
-          }
-        ],
-        value: '',
-        options2: [
-          {
-            value: '选项1',
-            label: '2016--1'
-          }, {
-            value: '选项2',
-            label: '2016--2'
-          }
-        ],
-        value2: '',
-        options3: [
-          {
-            value: '选项1',
-            label: '界面'
-          }, {
-            value: '选项2',
-            label: '模型'
-          }
-        ],
-        value3: '',
-        seminar: [{
-          id: '1',
-          name: '用例分析',
-          course: 'OOAD',
-          desc: '界面导航图，每组要求15分组'
-        }],
-        option: ''
+            ],
+          }],
+        currentClassInfo: {},
 
       }
     },
@@ -194,8 +99,11 @@
           if (res.data.status === 200) {
             let data = res.data.data;
             console.log(data);
-            that.rounds.splice(0, that.rounds.length);
-            that.rounds = data;
+            that.roundInfo = [];
+            for (let i = 0; i < data.size; i++) {
+              that.roundInfo[i].id = data[i].id;
+              that.roundInfo[i].roundSerial = data[i].roundSerial;
+            }
 
           } else if (res.data.status === 400) {
             that.$message({
@@ -219,9 +127,9 @@
           if (res.data.status === 200) {
             let data = res.data.data;
             console.log(data);
-            that.classes.splice(0, that.rounds.length);
-            for (let i = 0; i < data.length; i++) {
-              that.classes.push({
+            that.classInfo = [];
+            for (let i = 0; i < data.size; i++) {
+              that.classInfo.push({
                 classId: data[i].id,
                 grade: data[i].grade,
                 classSerial: data[i].classSerial
@@ -241,17 +149,17 @@
         }).catch(e => {
         console.log(e);
       });
-      for (let i = 0; i < that.rounds.length; i++) {
+      for (let i = 0; i < that.roundInfo.size; i++) {
         that.$axios({
           method: 'GET',
-          url: '/course/' + that.data.rounds[i].id + '/seminar'
+          url: '/course/' + that.data.roundInfo[i].id + '/seminar'
         })
           .then(res => {
             if (res.data.status === 200) {
               let data_ = res.data.data;
               console.log(data_);
-              that.roundsInfo.splice(0, that.roundsInfo.length);
-              that.roundsInfo[i].topics = data_;
+              that.roundInfo[i].seminars = [];
+              that.roundInfo[i].seminars = data_;
             } else if (res.data.status === 400) {
               that.$message({
                 message: '错误的ID格式',
@@ -266,69 +174,61 @@
           }).catch(e => {
           console.log(e);
         });
-        for (let i = 0; i < that.rounds.length; i++) {
-          data[i].label = '第' + that.rounds[i].roundSerial + '轮';
-          //data[i].id=i+1;
-          data[i].children[0].label = '该轮轮次设置';
-          data[i].children[1].label = '修改讨论课';
-          data[i].children[0].id = that.rounds[i].roundId;
-          data[i].children[1].id = that.rounds[i].roundId * 10;
-          for (let k = 2; k < that.roundsInfo[i].topics.length; k++) {
-            data[i].children[k].label = that.roundsInfo[i].topics[k - 2].topic;
-            //data[i].children[k].id = (i+1)*10+k+1;
-            for (let m = 0; m < that.classes.length; m++) {
-              data[i].children[k].children[m].label = that.classes.grade + '-' + that.classes.classSerial;
-              data[i].children[k].children[m].id = that.classes.classId * 100;
-            }
-          }
-        }
       }
     },
     methods: {
       getParams() {
         this.courseId = this.$route.params.courseId;
         this.courseName = this.$route.params.courseName;
+        this.isMaster = this.$route.params.isMaster;
       },
-      handleNodeClick(data) {
-        if (data.label === '该轮轮次设置') {
-          this.$router.push({
-            path: '/teacher/SetRound',
-            name: 'SetRound',
-            params: {
-              roundId: data.id
-            }
-          });
-        }
-        if (data.label === '修改讨论课') {
-          this.dialogTableVisible = true;
-          let roundId = data.id / 10;
-
-        }
-        if (data.label === '2016--1')
-          this.$router.push({path: '/teacher/BeforeSeminar'});
-        if (data.label === '2016--2')
-          this.$router.push({path: '/teacher/AfterSeminar'});
-
+      Back() {
+        this.$router.go(-1);
       },
-      NewSeminar(courseId, rounds) {
+      setRound(roundId) {
+        this.$router.push({
+          path: '/teacher/SetRound',
+          name: 'SetRound',
+          params: {
+            roundId: roundId
+          }
+        })
+      },
+      NewSeminar(courseId, roundInfo) {
+        console.log("courseId" + courseId);
+        console.log("roundInfo" + roundInfo);
         this.$router.push({
           path: '/teacher/NewSeminar',
           name: 'NewSeminar',
           params: {
             courseId: courseId,
-            rounds: rounds
+            roundInfo: roundInfo
           }
-        });
+        })
       },
-      Back() {
-        this.$router.go(-1);
+      updateSeminarInfo(seminarId, roundInfo) {
+        this.$router.push({
+          path: '/teacher/UpdateSeminarInfo',
+          name: 'UpdateSeminarInfo',
+          params: {
+            seminarId: seminarId,
+            roundInfo: roundInfo
+          }
+        })
       },
-      gotoStartSeminar() {
-        this.$router.push({path: '/teacher/OngoingSeminar'});
-      },
-      gotoUpdate() {
-        this.dialogTableVisible = false;
-        this.$router.push({path: '/teacher/UpdateSeminarInfo'});
+      checkClassSeminar(classId, seminarId, roundId) {
+        console.log("classId" + classId);
+        console.log("seminarId" + seminarId);
+        this.$router.push({
+          path: '/teacher/BeforeSeminar',
+          name: 'beforeSeminar',
+          params: {
+            classId: classId,
+            seminarId: seminarId,
+            roundId: roundId
+          }
+        })
+
       },
       gotoTotalSeminar() {
         this.$router.push({path: '/teacher/TotalSeminar'});
@@ -336,7 +236,6 @@
       gotoHomePage() {
         this.$router.push({path: '/teacher/HomePage'});
       }
-
     },
     watch: {
       '$route': 'getParams'
@@ -345,17 +244,10 @@
 </script>
 
 <style scoped>
-
-  .empty {
+  .div0 {
     width: 100%;
-    height: 30px;
+    height: 45px;
+    border-radius: 5px;
+    background-color: rgba(102, 204, 204, 0.2);
   }
-
-  .new {
-    width: 100%;
-    margin-top: 250px;
-  }
-
-
 </style>
-

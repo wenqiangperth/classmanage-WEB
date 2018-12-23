@@ -100,6 +100,7 @@
         name: "CourseInfo",
       data() {
         return {
+            courseId:'',
             defeatCourse: [{
               name: '.net',
               teacher: 'Lin'
@@ -120,8 +121,8 @@
       created(){
           let that=this;
 
-          //that.courseId=this.$route.query.courseId
-          that.courseId=1;
+          that.courseId=that.$route.query.courseId;
+          console.log(that.courseId);
 
           that.$axios({
             method:'GET',

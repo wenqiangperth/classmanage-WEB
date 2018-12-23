@@ -30,27 +30,27 @@
           </template>
           <div style="width: 100%">
             <div>
-              <el-button class="btn_info" type="info" plain @click="viewGrades(items.courseId,items.name)">
+              <el-button class="btn_info" type="info" plain @click="viewGrades(items)">
                 <i class="iconfont icon-chengjiguanli"></i>&nbsp;&nbsp;{{item[0]}}
               </el-button>
             </div>
             <div>
-              <el-button class="btn_info" type="info" plain @click="viewGroups(items.courseId,items.name)">
+              <el-button class="btn_info" type="info" plain @click="viewGroups(items)">
                 <i class="iconfont icon-zudui"></i>&nbsp;&nbsp;{{item[1]}}
               </el-button>
             </div>
             <div>
-              <el-button class="btn_info" type="info" plain @click="viewCourseInfo(items.courseId,items.name)">
+              <el-button class="btn_info" type="info" plain @click="viewCourseInfo(items)">
                 <i class="iconfont icon-xinxi1"></i>&nbsp;&nbsp;{{item[2]}}
               </el-button>
             </div>
             <div>
-              <el-button class="btn_info" type="info" plain @click="viewClassInfo(items.courseId,items.name)">
+              <el-button class="btn_info" type="info" plain @click="viewClassInfo(items)">
                 <i class="iconfont icon-xinxi"></i>&nbsp;&nbsp;{{item[3]}}
               </el-button>
             </div>
             <div>
-              <el-button class="btn_info" type="info" plain @click="gotoSeminar(items.courseId,items.name)">
+              <el-button class="btn_info" type="info" plain @click="gotoSeminar(items)">
                 <i class="iconfont icon-guanlianguize"></i>&nbsp;&nbsp;{{item[4]}}
               </el-button>
             </div>
@@ -150,35 +150,49 @@
           }
         });
       },
-      viewGrades(courseId, courseName) {
+      viewGrades(course) {
         this.$router.push({
           path: '/teacher/StudentGrades',
           name: 'StudentGrades',
           params: {
-            courseId: courseId,
-            courseName: courseName
+            courseId: course.courseId,
+            courseName: course.courseName
           }
         });
       },
-      viewGroups(courseId, courseName) {
+      viewGroups(course) {
         this.$router.push({
           path: '/teacher/StudentGroups',
           name: 'StudentGroups',
           params: {
-            courseId: courseId,
-            courseName: courseName
+            courseId: course.courseId,
+            courseName: course.courseName
           }
         });
       },
-      viewCourseInfo(courseId, courseName) {
-        this.$router.push({
-          path: '/teacher/CourseInfo',
-          name: 'CourseInfo',
-          params: {
-            courseId: courseId,
-            courseName: courseName
-          }
-        });
+      viewCourseInfo(course) {
+        if (course.courseId !== course.seminarMainCourseId) {
+          this.$router.push({
+            path: '/teacher/CourseInfo',
+            name: 'CourseInfo',
+            params: {
+              courseId: course.courseId,
+              courseName: course.courseName,
+              isMaster: false
+            }
+          });
+        } else {
+          this.$router.push({
+            path: '/teacher/CourseInfo',
+            name: 'CourseInfo',
+            params: {
+              courseId: courseId,
+              courseName: courseName,
+              idMaster: true
+            }
+          });
+        }
+
       },
       viewClassInfo(courseId, courseName) {
         this.$router.push({
