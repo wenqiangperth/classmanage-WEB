@@ -25,7 +25,7 @@
         <img src="../../assets/3.jpg">
       </div>
 
-      <div class="course" v-for="course in courses">
+      <div class="course" v-for="(course,index) in courses">
         <el-button style="width: 90%;background-color: #66CCCC"
           @click="dialogVisible=true">
           <i class="el-icon-document" style="font-size: 20px;color:#fff"></i>
@@ -37,10 +37,7 @@
           :visible.sync="dialogVisible"
           width="80%"
           fullscreen="true">
-          <div
-            style="color: #66CCCC;
-                   background: url(../../assets/cartoon1.jpg)no-repeat;
-                   background-size: 100% 100%">
+          <div style="color: #66CCCC;">
             <div class="info" style="float: left;width:33.3%;font-size: 30px;">
               <i class="el-icon-view" @click="courseInfo"></i>
             </div>
@@ -78,9 +75,11 @@
           return{
             dialogVisible: false,
             courses:[{
+              courseId:1,
               name:'OOAD',
               classId:'2016-(1)'
             },{
+              courseId:2,
               name:'J2EE',
               classId:'2016-(2)'
             }],
@@ -127,19 +126,35 @@
             this.$router.push({path:'/HomePage'});
           },
           toGrade(){
-            this.$router.push({path:'/Courses/AllGrade/Grade'});
+            // let temp = courses[index].courseId;
+            this.$router.push({
+              path:'/Courses/AllGrade/Grade',
+              name:'Grade',
+              query:{
+                courseId: temp
+              }
+            });
           },
-          courseInfo(){
+          courseInfo(index){
+            alert("你选择的课程是"+index);
+            let temp = courses[index].courseId;
             this.$router.push({
               path:'/Courses/CourseInfo',
-              name:'CourseInfo',
-              // query:{
-              //   courseId: this.course.id
-              // }
+              name:'ScourseInfo',
+              query:{
+                courseId: temp
+              }
             })
           },
           teamInfo(){
-            this.$router.push({path:'/Courses/MyTeam/TeamInfo'})
+            let temp = courses[index].courseId;
+            this.$router.push({
+              path:'/Courses/MyTeam/TeamInfo',
+              name:'TeamInfo',
+              query:{
+                courseId: temp
+              }
+            })
           }
       }
     }
@@ -151,6 +166,7 @@
     line-height: 70px;
     display: block;
     background-color: #5CACEE;
+    opacity: 0.8;
     border-radius: 5px;
   }
 
