@@ -41,6 +41,7 @@ export default {
   data () {
     return {
       msg: 'Welcome to Your Vue.js App',
+      token:'',
       account: '',
       password: '',
       note:{
@@ -74,48 +75,65 @@ export default {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       })
-        .then(response => {
-          console.log(response);
-          console.log(response.headers);
-          if(response.status===200){
-            let data=response.data
-
-            //将token与userId存入本地
-            window.localStorage["token"]=response.data.data.token;
-            window.localStorage["userId"]=response.data.data.user.userId;
-
-            //有token说明有此用户
-            if(localStorage.getItem('token')){
-              if(response.data.role==="student" && response.data.isActived===1){
-                //已激活，进入主页
-                _this.$router.push({
-                  path:'/HomePage',
-                  name:'HomePage',
-                  query:{
-                    account: response.data.account
-                  }
-                }),
-                  console.log(response)
-              }else if(response.data.role==="teacher" && response.data.isActived===1){
-                _this.$router.push({path:'/teacher/HomePage'});
-                console.log(response.data);
-              }else if(response.data.role==="student" && response.data.isActived===0){
-                //激活
-                _this.router.push({
-                  path:'/activate',
-                  name:'activate',
-                  account: response.data.account
-                })
+        .then(res => {
+           console.log(res);
+          _this.token=res.headers.authorization;
+          if(res.status===200){
+              let arr=res.data.split(",");
+              console.log(arr);
+              if(arr[0]==="{role=ROLE_STUDENT"){
+                if(arr[1]===" isActive=1}"){
+                  //学生已激活，进入主页
+                  alert("chenggong");
+                  this.$router.push({
+                    path:'/HomePage',
+                    name:'HomePage',
+                    query:{
+                      account: this.account,
+                      token: this.token
+                    }
+                  })
+                }
+                if(arr[1]===" isActive=0}"){
+                  alert("ok")
+                  this.$router.push({
+                    path:'/activate',
+                    name:'activate',
+                    query:{
+                      account: this.account,
+                      token: this.token
+                    }
+                  })
+                }
               }
-            }
+              if(arr[0]==="{role=ROLE_TEACHER"){
+                if(arr[1]===" isActive=1}"){
+                  this.$router.push({
+                    path:'/teacher/HomePage',
+                    query:{
+                      account: this.account,
+                      token: this.token
+                    }
+                  });
+                }
+                if(arr[1]===" isActive=0}"){
+                  this.$router.push({
+                    path:'/teacher/EditPassword'
+                  })
+                }
+              }
+
+
           }
-          else {
+          if(res.status!==200) {
             alert("账号/密码错误！");
-            console.log(response.data);
+            console.log(res.data);
           }
         })
-        .catch(error => {
-          console.log(error);
+        .catch(e => {
+          alert("账号/密码错误！");
+          console.log(e);
+          _this.password='';
         });
     }
 
