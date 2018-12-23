@@ -9,7 +9,7 @@
           <tr>
             <td style="width: 28%">主题</td>
             <td>
-              <el-input v-model="name">
+              <el-input v-model="seminarName">
                 <i slot="suffix" class="el-input__icon el-icon-edit icon0"></i>
               </el-input>
             </td>
@@ -21,7 +21,7 @@
                         type="textarea"
                         placeholder="讨论课详情"
                         :autosize="{ minRows: 2, maxRows: 9}"
-                        v-model="textarea1">
+                        v-model="introduction">
               </el-input>
             </td>
           </tr>
@@ -90,12 +90,12 @@
           <tr>
             <td style="width: 26%">round</td>
             <td style="text-align: right">
-              <el-select v-model="value" placeholder="请选择">
+              <el-select v-model="roundId" placeholder="请选择">
                 <el-option
-                  v-for="item in rounds"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
+                  v-for="item in roundsInfo"
+                  :key="item.id"
+                  :label="item.roundSerial"
+                  :value="item.id">
                 </el-option>
               </el-select>
             </td>
@@ -116,9 +116,9 @@
     name: "NewSeminar",
     data() {
       return {
-        name: '',
-        description: '',
-        textarea1: '',
+        courseId: 1,
+        seminarName: '',
+        introduction: '',
         isVisible: true,
         startTime: '',
         endTime: '',
@@ -132,27 +132,67 @@
             value: '选项2',
             label: '默认'
           }],
-        rounds: [{
+        value: '',
+        /*rounds: [{
           value: '选项1',
           label: '无(默认新建)'
         }, {
           value: '选项2',
           label: '第一轮'
-        }],
-        value: ''
+        }],*/
+        roundInfo: [],
+        roundId: ''
       }
     },
+    created() {
+      this.getParams();
+    },
     methods: {
+      getParams() {
+        this.courseId = this.$route.params.courseId;
+        this.roundInfo = this.$route.params.rounds;
+      },
       returnSeminarPage() {
         this.$router.push({path: '/teacher/SeminarPage'});
       },
       NewSuccess() {
-        this.$message({
-          message: '发布成功！',
-          type: 'success'
-        });
-        this.$router.push({path: '/teacher/seminarPage'});
+        this.$axios({
+          method: 'POST',
+          url: '/seminar',
+          data: {
+            seminarName: this.seminarName,
+            introduction: this.introduction,
+            seminarSerial: this.orderNum,
+            isVisible: this.isVisible,
+            enrollStartTime: this.startTime,
+            enrollEndTime: this.endTime,
+            maxTeam: this.signUpNum,
+            roundId: this.roundId,
+            courseId: this.courseId
+          }
+        })
+          .then(res => {
+            if (res.data.status === 201) {
+              this.$message({
+                message: '发布成功！',
+                type: 'success'
+              });
+              this.$router.push({path: '/teacher/seminarPage'});
+            } else if (res.data.status === 403) {
+              this.$message({
+                message: '用户权限不足！',
+                type: 'error'
+              });
+            }
+          })
+          .catch(e => {
+            console.log(e);
+          })
+
       }
+    },
+    watch: {
+      '$route': 'getParams'
     }
   }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="head" class="head">
-      <div class="title"><i class="el-icon-back icon1 icon0" @click="returnCourseManage"></i>班级信息
+      <div class="title"><i class="el-icon-back icon1 icon0" @click="returnCourseManage"></i>{{courseName}}
         <el-dropdown class="plus" trigger="click">
           <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="main">
-      <div class="new_course" @click="addClass" style="width: 100%;height: 50px">
+      <div class="new_course" @click="addClass(courseId)" style="width: 100%;height: 50px">
         <i class="el-icon-plus icon2" style="font-weight: bolder;color: #66cccc"><span
           style="color: dimgrey">新建班级</span></i>
       </div>
@@ -21,16 +21,16 @@
            :key="index">
         <el-card>
           <div slot="header">
-            <span style="font-weight: bold">{{item.classId}}</span>
+            <span style="font-weight: bold">{{item.grade}}-{{item.classSerial}}</span>
           </div>
           <table style="width: 100%;font-weight: bold;color: dimgrey">
             <tr>
               <td style="width: 35%">讨论课时间:</td>
-              <td>{{item.time}}</td>
+              <td>{{item.classTime}}</td>
             </tr>
             <tr>
               <td style="width: 35%">讨论课地点:</td>
-              <td>{{item.address}}</td>
+              <td>{{item.classLocation}}</td>
             </tr>
             <tr>
               <td style="width: 35%">学生名单:</td>
@@ -60,7 +60,7 @@
                 <el-button type="success" plain size="small" style="width: 40%" @click="Submit">提交</el-button>
               </td>
               <td>
-                <el-button type="info" size="small" style="width: 40%" @click="DeleteClass">删除</el-button>
+                <el-button type="info" size="small" style="width: 40%" @click="DeleteClass(item.id)">删除</el-button>
               </td>
             </tr>
             <tr style="height: 20px">
@@ -82,41 +82,69 @@
     name: "ClassInfo",
     data() {
       return {
+        courseId: 1,
+        courseName: '',
         classInfo: [
           {
-            classId: '2016--1',
-            time: '周三7，8节',
-            address: '海韵教学楼',
+            id: 1,
+            grade: 2016,
+            classSerial: 1,
+            classTime: '周三7，8节',
+            classLocation: '海韵教学楼',
             nameList:
               {
                 name: 'student.xlsx',
-                url: 'E:/name.xlsx'
-              }
-          },
-          {
-            classId: '2016--2',
-            time: '周三7，8节',
-            address: '海韵教学楼',
-            nameList:
-              {
-                name: 'student.xlsx',
-                url: 'E:/name.xlsx'
-              }
-          },
-          {
-            classId: '2016--3',
-            time: '周三7，8节',
-            address: '海韵教学楼',
-            nameList:
-              {
-                name: '当前无名单',
                 url: 'E:/name.xlsx'
               }
           }
         ]
       }
     },
+    created() {
+      this.getParams();
+      let that = this;
+      that.$axios({
+        method: 'GET',
+        url: '/course/' + this.$data.classInfo.courseId + '/class'
+      })
+        .then(res => {
+          if (res.data.status === 200) {
+            let data = res.data.data;
+            that.classInfo.splice(0, that.classInfo.length);
+            that.courseId = data[0].courseId;
+            for (let i = 0; i < data.length; i++) {
+              that.classInfo.push(
+                {
+                  id: data[i].id,
+                  grade: data[i].grade,
+                  classSerial: data[i].classSerial,
+                  classTime: data[i].classTime,
+                  classLocation: data[i].classLocation
+                }
+              )
+            }
+          } else if (res.data.status === 400) {
+            that.$message({
+              type: 'error',
+              message: '错误的ID格式'
+            })
+          } else if (res.data.status === 404) {
+            that.$message({
+              type: 'error',
+              message: '未找到班级'
+            })
+          }
+        })
+        .catch(e => {
+          console.log(e);
+        })
+    }
+    ,
     methods: {
+      getParams() {
+        this.classInfo.courseId = this.$route.params.courseId;
+        this.classInfo.courseName = this.$route.params.courseName;
+      },
       gotoHomePage(){
         this.$router.push({path:'/teacher/HomePage'});
       },
@@ -132,27 +160,58 @@
       handleExceed(files, fileList) {
         this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
       },
-      addClass() {
-        this.$router.push({path: '/teacher/NewClass'});
+      addClass(courseId) {
+        this.$router.push({
+          path: '/teacher/NewClass',
+          name: 'NewClass',
+          params: {
+            courseId: courseId
+          }
+        });
       },
       Submit() {
+
         this.$message({
           message: '提交成功！',
           type: 'success'
         });
 
       },
-      DeleteClass() {
+      DeleteClass(classId) {
         MessageBox.confirm('此操作将永久删除该班级?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-          this.$router.push({path: '/teacher/CourseManage'});
+          this.$axios({
+            method: 'DELETE',
+            url: '/class/' + classId
+          })
+            .then(res => {
+              if (res.data.status === 204) {
+                this.$message({
+                  type: 'success',
+                  message: '删除成功!'
+                });
+              } else if (res.data.status === 400) {
+                this.$message({
+                  type: 'error',
+                  message: '错误的ID格式!'
+                });
+              } else if (res.data.status === 403) {
+                this.$message({
+                  type: 'error',
+                  message: '用户的权限不足!'
+                });
+              } else if (res.data.status === 404) {
+                this.$message({
+                  type: 'error',
+                  message: '未找到该班级!'
+                });
+              }
+            }).catch(e => {
+            console.log(e);
+          })
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -160,6 +219,9 @@
           });
         });
       }
+    },
+    watch: {
+      '$route': 'getParams'
     }
   }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="head" class="head">
-      <div class="title"><i class="el-icon-back icon1 icon0" @click="returnHomePage"></i>OOAD
+      <div class="title"><i class="el-icon-back icon1 icon0" @click="Back"></i>OOAD
         <el-dropdown class="plus" trigger="click">
           <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
@@ -67,8 +67,8 @@
       }
     },
     methods: {
-      returnHomePage() {
-        this.$router.push({path: '/teacher/HomePage'});
+      Back() {
+        this.$router.go(-1);
       },
       gotoSeminar() {
         this.$router.push({path: '/teacher/SeminarPage'});

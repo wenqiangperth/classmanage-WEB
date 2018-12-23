@@ -9,8 +9,11 @@
           <table style="width: 100%">
             <tr>
               <td style="width: 35%"><span>班级名:</span></td>
+              <td style="width: 35%">
+                <el-input v-model="classInfo.grade" placeholder="年级"></el-input>
+              </td>
               <td>
-                <el-input v-model="classInfo.classId"></el-input>
+                <el-input v-model="classInfo.classSerial" placeholder="班级"></el-input>
               </td>
             </tr>
           </table>
@@ -19,13 +22,13 @@
           <tr>
             <td style="width: 35%">上课时间:</td>
             <td>
-              <el-input v-model="classInfo.time" placeholder="周三1,2节"></el-input>
+              <el-input v-model="classInfo.classTime" placeholder="周三1,2节"></el-input>
             </td>
           </tr>
           <tr>
             <td style="width: 35%">上课地点:</td>
             <td>
-              <el-input v-model="classInfo.address" placeholder="海韵教学楼101"></el-input>
+              <el-input v-model="classInfo.classLocation" placeholder="海韵教学楼101"></el-input>
             </td>
           </tr>
           <tr style="height: 50px">
@@ -55,10 +58,13 @@
     name: "NewClass",
     data() {
       return {
+        courseId: 1,
         classInfo: {
           classId: '',
-          time: '',
-          address: '',
+          grade: '',
+          classSerial: '',
+          classTime: '',
+          classLocation: '',
           nameList:
             {
               name: 'student.xlsx',
@@ -67,17 +73,53 @@
         }
       }
     },
+    created() {
+      this.getParams();
+    },
     methods: {
+      getParams() {
+        this.courseId = this.$route.params.courseId;
+      },
       returnClassInfo() {
         this.$router.push({path: '/teacher/ClassInfo'});
       },
       NewSuccess() {
-        this.$message({
-          message: '新建成功！',
-          type: 'success'
-        });
-        this.$router.push({path: '/teacher/ClassInfo'});
+        this.$axios({
+          method: 'POST',
+          url: '/course/' + this.$data.courseId + '/class',
+          data: {
+            grade: this.classInfo.grade,
+            classSerial: this.classInfo.classSerial,
+            classTime: this.classInfo.classTime,
+            classLocation: this.classInfo.classLocation
+          }
+        })
+          .then(res => {
+            if (res.data.status === 201) {
+              this.$message({
+                message: '新建成功！',
+                type: 'success'
+              });
+              this.$router.push({path: '/teacher/ClassInfo'});
+            } else if (res.data.status === 403) {
+              this.$message({
+                message: '用户权限不足！',
+                type: 'error'
+              });
+            } else if (res.data.status === 404) {
+              this.$message({
+                message: '未找到课程！',
+                type: 'error'
+              });
+            }
+          })
+          .catch(e => {
+            console.log(e);
+          });
       }
+    },
+    watch: {
+      '$route': 'getParams'
     }
   }
 </script>

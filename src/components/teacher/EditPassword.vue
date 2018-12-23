@@ -17,18 +17,18 @@
       <table class="table0">
         <tr>
           <td class="td0">
-            <el-tooltip class="item" effect="dark" content="密码长度8-32位，须包含数字字母符号至少两种或以上" placement="bottom">
-              <el-input id="pass" type="password" placeholder="新密码">
-                <i slot="suffix" class="el-input__icon el-icon-view icon2 icon0" @click="showPassword"></i>
-              </el-input>
-            </el-tooltip>
+            <el-input id="pass2" type="password" v-model="oldPassword" placeholder="原密码">
+              <i slot="suffix" class="el-input__icon el-icon-view icon2 icon0" @click="showPassword2"></i>
+            </el-input>
           </td>
         </tr>
         <tr>
           <td class="td0">
-            <el-input id="pass2" type="password" placeholder="确认密码">
-              <i slot="suffix" class="el-input__icon el-icon-view icon2 icon0" @click="showPassword2"></i>
-            </el-input>
+            <el-tooltip class="item" effect="dark" content="密码长度8-32位，须包含数字字母符号至少两种或以上" placement="bottom">
+              <el-input id="pass" type="password" v-model="newPassword" placeholder="新密码">
+                <i slot="suffix" class="el-input__icon el-icon-view icon2 icon0" @click="showPassword"></i>
+              </el-input>
+            </el-tooltip>
           </td>
         </tr>
         <tr>
@@ -43,7 +43,7 @@
 
       </table>
       <div class="footer">
-        <el-button class="btn" type="success" plain @click="returnAccountManage">确认修改</el-button>
+        <el-button class="btn" type="success" plain @click="modifyPassword">确认修改</el-button>
       </div>
     </div>
 
@@ -55,6 +55,8 @@
     name: "editPassword",
     data() {
       return {
+        oldPassword: '',
+        newPassword: '',
         isShow1: false,
         isShow2: false
       }
@@ -71,6 +73,33 @@
       },
       returnAccountManage() {
         this.$router.push({path: '/teacher/AccountManage'});
+      },
+      modifyPassword() {
+        this.$axios({
+          method: 'PUT',
+          url: 'user/password',
+          params: {
+            oldPassword: this.oldPassword,
+            password: this.newPassword
+          }
+        })
+          .then(res => {
+            if (res.data.status === 200) {
+              this.$message({
+                type: 'success',
+                message: '修改成功！'
+              });
+              this.$router.push({path: '/teacher/AccountManage'});
+            } else if (res.data.status === 400) {
+              this.$message({
+                type: 'error',
+                message: '信息不合法！'
+              });
+            }
+          })
+          .catch(e => {
+            console.log(e);
+          })
       },
       showPassword() {
         this.isShow1 = !this.isShow1;

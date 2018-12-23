@@ -53,20 +53,25 @@
         this.$router.push({path:'/teacher/HomePage'});
       },
       Confirm() {
-        let that = this;
-        that.$axios({
+        this.$axios({
           method: 'PUT',
           url: 'user/email',
-          data: {
-            email: that.email
+          params: {
+            email: this.email
           }
         })
           .then(res => {
             if (res.data.status === 200) {
-              alert('邮箱修改成功！');
-              that.$router.push({path: '/teacher/AccountManage'});
+              this.$message({
+                type: 'success',
+                message: '修改成功！'
+              });
+              this.$router.push({path: '/teacher/AccountManage'});
             } else if (res.data.status === 400) {
-              alert("信息不合法");
+              this.$message({
+                type: 'error',
+                message: '信息不合法！'
+              });
             }
           })
           .catch(e => {

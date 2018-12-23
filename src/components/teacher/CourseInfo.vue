@@ -1,7 +1,7 @@
 <template>
   <div class="body0">
     <div id="head" class="head">
-      <div class="title"><i class="el-icon-back icon1 icon0" @click="returnCourseManage"></i>课程信息
+      <div class="title"><i class="el-icon-back icon1 icon0" @click="returnCourseManage"></i>{{courseName}}
         <el-dropdown class="plus" trigger="click">
           <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
@@ -18,14 +18,14 @@
         <div slot="header" style="float: left">
           <span style="font-weight: bold;color: #616161">课程要求</span>
         </div>
-        <p style="font-size: 13px">{{courseInfo.description}}</p>
+        <p style="font-size: 13px">{{description}}</p>
       </el-card>
       <el-card class="box-card">
         <div slot="header" style="float: left">
           <span style="font-weight: bold;color: #616161">成绩计算规则</span>
         </div>
         <table
-          v-for="(item,index) in courseInfo.tableData1"
+          v-for="(item,index) in tableData1"
           :key="index"
           style="width: 100%;font-size: 13px">
           <tr style="height: 30px">
@@ -42,30 +42,30 @@
           <tr style="height: 30px">
             <td style="width:30%">小组人数:</td>
             <td>
-              {{courseInfo.minNum}}~{{courseInfo.maxNum}}
+              {{minNum}}~{{maxNum}}
             </td>
           </tr>
           <tr style="height: 30px">
             <td style="width: 30%">组队开始:</td>
-            <td>{{courseInfo.startTime}}</td>
+            <td>{{startTime}}</td>
           </tr>
           <tr style="height: 30px">
             <td style="width: 30%">组队截止:</td>
-            <td>{{courseInfo.endTime}}</td>
+            <td>{{endTime}}</td>
           </tr>
           <tr style="height: 30px">
             <td style="width: 30%">性别要求:</td>
-            <td>男:{{courseInfo.maleNum}} 女:{{courseInfo.femaleNum}}</td>
+            <td>男:{{maleNum}} 女:{{femaleNum}}</td>
           </tr>
           <tr style="height: 30px">
             <td style="width: 30%">冲突课程:</td>
-            <td v-for="item in courseInfo.defeatCourse">
+            <td v-for="item in defeatCourse">
               {{item.name}}({{item.teacher}})
             </td>
           </tr>
         </table>
       </el-card>
-      <div style="width: 100%;margin-top: 20px">
+      <div id="el-btn" style="width: 100%;margin-top: 20px">
         <el-button type="success"
                    @click="deleteCourse" plain
                    style="float: right;margin-bottom: 20px">
@@ -84,8 +84,9 @@
     name: "CourseInfo",
     data() {
       return {
-        courseInfo: {
-          name: '',
+
+        courseId: 1,
+        courseName: '',
           description: '翻转课堂形式上课，学生自由组队，以小组形式每周做汇报，每组汇报时间15分钟',
           tableData1: [{
             make_up: '课堂展示',
@@ -99,8 +100,8 @@
               make_up: '书面报告',
               percentage: '3',
             }],
-          startTime: '2018-12-01 12:00:00',
-          endTime: '2018-12-06 12:00:00',
+        startTeamTime: '2018-12-01 12:00:00',
+        endTeamTime: '2018-12-06 12:00:00',
           minNum: 6,
           maxNum: 8,
           maleNum: '2-4',
@@ -108,31 +109,31 @@
           defeatCourse: [{
             name: '.net',
             teacher: 'Lin'
-          }]
-        }
+          }],
+        teamMainCourseId: 1,
+        seminarMainCourseId: 1
       }
     },
     created() {
+      this.getParams();
       let that = this;
-      that.courseId = this.$route.query.courseId;
       that.$axios({
         method: 'GET',
-        url: '/course/courseId?userId=${localStorage.userId}',
-        headers: {
-          'token': window.localStorage['token']
-        }
+        url: '/course/' + that.$data.courseId,
       })
         .then(res => {
           if (res.data.status === 200) {
             console.log(res.data.data);
             let data = res.data.data;
-            that.courseInfo.tableData1[0].percentage = data.presentationWeight;
-            that.courseInfo.tableData1[1].percentage = data.questionWeight;
-            that.courseInfo.tableData1[2].percentage = data.reportWeight;
-            that.courseInfo.startTime = data.startTeamTime;
-            that.courseInfo.endTime = data.endTeamTime;
-            that.courseInfo.minNum = data.MinMemberNumber;
-            that.courseInfo.maxNum = data.MaxMemberNumber;
+            that.tableData1[0].percentage = data.presentationPercentage;
+            that.tableData1[1].percentage = data.questionPercentage;
+            that.tableData1[2].percentage = data.reportPercentage;
+            that.startTeamTime = data.startTeamTime;
+            that.endTeamTime = data.endTeamTime;
+            that.minNum = data.MinMemberNumber;
+            that.maxNum = data.MaxMemberNumber;
+            that.teamMainCourseId = data.teamMainCourseId;
+            that.seminarMainCourseId = data.seminarMainCourseId;
           } else if (res.data.status === 404) {
             alert("未找到指定课程");
           } else {
@@ -141,9 +142,14 @@
         })
         .catch((e) => {
           console.log(e);
-        })
+        });
+      this.isMasterCourse();
     },
     methods: {
+      getParams() {
+        this.courseId = this.$route.params.courseId;
+        this.courseName = this.$route.params.courseName;
+      },
       returnLogin() {
         this.$router.push({path: '/'});
       },
@@ -156,17 +162,51 @@
       gotoSeminar() {
         this.$router.push({path: '/teacher/SeminarPage'});
       },
+      isMasterCourse() {
+        var btn = document.getElementById("el-btn");
+        if ((teamMainCourseId !== courseId) || (seminarMainCourseId !== courseId)) {
+          btn.style.display = "none";
+        }
+      },
       deleteCourse() {
         MessageBox.confirm('此操作将永久删除该课程?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-          this.$router.push({path:'/teacher/CourseManage'});
+          this.$axios({
+            method: 'DELETE',
+            url: '/course/' + this.$data.courseId
+          })
+            .then(res => {
+              if (res.data.status === 204) {
+                this.$message({
+                  type: 'success',
+                  message: '删除成功!'
+                });
+                this.$router.push({path: '/teacher/CourseManage'});
+              } else if (res.data.status === 400) {
+                this.$message({
+                  type: 'error',
+                  message: '错误的ID格式'
+                });
+              } else if (res.data.status === 403) {
+                this.$message({
+                  type: 'warning',
+                  message: '用户权限不足'
+                });
+              } else if (res.data.status === 404) {
+                this.$message({
+                  type: 'error',
+                  message: '未找到课程'
+                });
+              }
+            })
+            .catch(e => {
+              console.log(e);
+            })
+
+
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -174,7 +214,10 @@
           });
         });
       }
-      }
+    },
+    watch: {
+      '$route': 'getParams'
+    }
   }
 </script>
 

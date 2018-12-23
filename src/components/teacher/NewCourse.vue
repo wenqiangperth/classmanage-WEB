@@ -9,7 +9,7 @@
           <tr>
             <td style="width: 28%;" class="font_style">课程名称</td>
             <td>
-              <el-input v-model="course.name">
+              <el-input v-model="course.courseName">
                 <i slot="suffix" class="el-input__icon el-icon-edit icon0"></i>
               </el-input>
             </td>
@@ -20,7 +20,7 @@
               <el-input class="textArea"
                         type="textarea"
                         :autosize="{ minRows: 2, maxRows: 6}"
-                        v-model="course.description">
+                        v-model="course.introduction">
               </el-input>
             </td>
           </tr>
@@ -167,8 +167,9 @@
     data() {
       return {
         course: {
-          name: '',
-          description: '',
+          id: 0,
+          courseName: '',
+          introduction: '',
           tableData1: [{
             make_up: '课堂展示',
             percentage: '10',
@@ -185,6 +186,7 @@
           endTime: '',
           minNum: '',
           maxNum: '',
+          teacherId: 1,
           isGenderRequired:false,
           isGroupByConstellation:false,
           minBoyNum:'',
@@ -202,16 +204,47 @@
         data0: [],
       }
     },
+    created() {
+      this.getParams();
+    },
     methods: {
+      getParams() {
+        this.course.teacherId = this.$route.params.teacherId;
+      },
       returnCourseManage() {
         this.$router.push({path: '/teacher/CourseManage'});
       },
       NewSuccess() {
-        this.$message({
-          message: '发布成功！',
-          type: 'success'
-        });
-        this.$router.push({path: '/teacher/CourseManage'});
+        this.$axios({
+          method: 'POST',
+          url: '/course',
+          data: {
+            name: this.course.courseName,
+            introduction: this.course.introduction,
+            presentationPercentage: this.course.tableData1[0].percentage,
+            questionPercentage: this.course.tableData1[1].percentage,
+            reportPercentage: this.course.tableData1[2].percentage,
+            teamStartTime: this.course.startTime,
+            teamEndTime: this.course.endTime
+          }
+        })
+          .then(res => {
+            if (res.data.status === 201) {
+              this.$message({
+                type: 'success',
+                message: '创建成功，课程ID为' + res.data.data.courseId
+              });
+              this.$router.push({path: '/teacher/CourseManage'});
+            } else if (res.data.status === 403) {
+              this.$message({
+                type: 'error',
+                message: '用户权限不足'
+              })
+            }
+          })
+          .catch(e => {
+            console.log(e);
+          })
       },
       addObject(){
         this.data0.push({});
@@ -230,6 +263,9 @@
         }}
 */
 
+    },
+    watch: {
+      '$route': 'getParams'
     }
   }
 </script>

@@ -59,6 +59,8 @@ import Backlog from "../components/teacher/Backlog";
 import OngoingSeminar from "../components/teacher/OngoingSeminar";
 import CheckInformation from "../components/teacher/CheckInformation";
 import DownloadPPT from "../components/teacher/DownloadPPT";
+import TotalSeminar from "../components/teacher/TotalSeminar";
+import temp from "../components/teacher/temp";
 
 
 
@@ -350,6 +352,16 @@ export default new Router({
       name: 'DownloadPPT',
       path: '/teacher/DownloadPPT',
       component: DownloadPPT
+    },
+    {
+      name: 'TotalSeminar',
+      path: '/teacher/TotalSeminar',
+      component: TotalSeminar
+    },
+    {
+      name: 'temp',
+      path: '/teacher/temp',
+      component: temp
     }
 
   ]

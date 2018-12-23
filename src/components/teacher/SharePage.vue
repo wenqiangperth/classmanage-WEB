@@ -16,7 +16,7 @@
       <el-card class="pause" id="pause">
         <i class="el-icon-warning icon0" style="color:red;font-size: 25px"></i>
         <br><br>
-        <br>是否取消与**老师的 共享
+        <br>是否取消本次共享
         <br><br><br>
         <el-button type="text" style="float: right;color: #99CC00" @click="successCancel">
           SURE
@@ -24,7 +24,8 @@
         <el-button type="text" style="float:right;margin-right: 5px;color:#99CC00" @click="cancel">CANCEL</el-button>
       </el-card>
       <div style="width: 100%;height:60px">
-        <el-button type="success" size="small" plain style="float: right;margin-top: 20px" @click="addShare"><i
+        <el-button type="success" size="small" plain style="float: right;margin-top: 20px" @click="addShare(courseId)">
+          <i
           class="el-icon-plus" style="font-weight: bolder"></i> 新增共享
         </el-button>
       </div>
@@ -61,6 +62,7 @@
     name: "SharePage",
     data() {
       return {
+        courseId: 1,
         shares: [
           {
             courseName: 'J2EE',
@@ -77,7 +79,15 @@
         ]
       }
     },
+    created() {
+      this.getParams();
+    },
     methods: {
+      getParams() {
+        var routerParams = this.$route.params.courseId;
+        this.courseId = routerParams;
+        console.log(this.courseId);
+      },
       returnLogin() {
         this.$router.push({path: '/'});
       },
@@ -87,8 +97,14 @@
       gotoSeminar() {
         this.$router.push({path: '/teacher/SeminarPage'});
       },
-      addShare() {
-        this.$router.push({path: '/teacher/AddShare'});
+      addShare(courseId) {
+        this.$router.push({
+          path: '/teacher/AddShare',
+          name: 'AddShare',
+          params: {
+            courseId: courseId
+          }
+        });
       },
       cancelShare() {
         var share = document.getElementById("pause");
@@ -110,6 +126,9 @@
         var share = document.getElementById("pause");
         share.style.display = "none";
       }
+    },
+    watch: {
+      '$route': 'getParams'
     }
   }
 </script>

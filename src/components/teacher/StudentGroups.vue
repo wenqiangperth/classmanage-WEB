@@ -19,8 +19,8 @@
         <el-collapse-item>
           <template slot="title">
             <div style="font-weight: bold">
-              &nbsp;&nbsp;<i class="header-icon el-icon-star-off el-icon0"></i>&nbsp;&nbsp;{{item.groupId}}&nbsp;&nbsp;{{item.groupName}}
-              <span v-show="item.status==='Invaild'" style="color: red;"><i class="el-icon-warning"></i></span>
+              &nbsp;&nbsp;<i class="header-icon el-icon-star-off el-icon0"></i>&nbsp;&nbsp;{{item.name}}
+              <span v-show="item.valid===false" style="color: red;"><i class="el-icon-warning"></i></span>
             </div>
           </template>
           <el-table
@@ -58,119 +58,93 @@
     name: "StudentGroups",
     data() {
       return {
+        courseId: '',
+        courseName: '',
         groups: [
           {
-            groupId: '1-1',
-            groupName: 'Untitled',
-            status:'Invaild',
+            name: '1-1 Untitled',
+            valid: false,
             members: [
               {
+                id: 1,
                 account: '24320162202xxx',
                 name: 'bbbbbb',
-                isLeader:'Yes'
+                isLeader: true
               },
               {
+                id: 2,
                 account: '24320162202xxx',
                 name: 'bbbbbb',
-                isLeader:''
+                isLeader: false
               },
               {
+                id: 3,
                 account: '24320162202xxx',
                 name: 'bbbbbb',
-                isLeader:''
+                isLeader: false
               },
               {
+                id: 4,
                 account: '24320162202xxx',
                 name: 'bbbbbb',
-                isLeader:''
-              }
-            ]
-          },
-          {
-            groupId: '1-2',
-            groupName: 'Untitled',
-            status:'Invaild',
-            members: [
-              {
-                account: '24320162202xxx',
-                name: 'bbbbbb',
-                isLeader:'Yes'
-              },
-              {
-                account: '24320162202xxx',
-                name: 'bbbbbb',
-                isLeader:''
-              },
-              {
-                account: '24320162202xxx',
-                name: 'bbbbbb',
-                isLeader:''
-              },
-              {
-                account: '24320162202xxx',
-                name: 'bbbbbb',
-                isLeader:''
-              }
-            ]
-          },
-          {
-            groupId: '1-3',
-            groupName: 'Untitled',
-            status:'success',
-            members: [
-              {
-                account: '24320162202xxx',
-                name: 'bbbbbb',
-                isLeader:'Yes'
-              },
-              {
-                account: '24320162202xxx',
-                name: 'bbbbbb',
-                isLeader:''
-              },
-              {
-                account: '24320162202xxx',
-                name: 'bbbbbb',
-                isLeader:''
-              },
-              {
-                account: '24320162202xxx',
-                name: 'bbbbbb',
-                isLeader:''
-              }
-            ]
-          },
-          {
-            groupId: '1-4',
-            groupName: 'Untitled',
-            status:'success',
-            leader: {
-              account: '24320162202xxx',
-              name: 'yyyyyy'
-            },
-            members: [
-              {
-                account: '24320162202xxx',
-                name: 'bbbbbb'
-              },
-              {
-                account: '24320162202xxx',
-                name: 'bbbbbb'
-              },
-              {
-                account: '24320162202xxx',
-                name: 'bbbbbb'
-              },
-              {
-                account: '24320162202xxx',
-                name: 'bbbbbb'
+                isLeader: false
+
               }
             ]
           }
         ]
       }
     },
+    created() {
+      this.getParams();
+      let that = this;
+      that.$axios({
+        method: 'GET',
+        url: '/course/' + that.$data.courseId + '/team',
+      })
+        .then(res => {
+          if (res.data.status === 200) {
+            let data = res.data.data;
+            that.groups.splice(0, that.groups.length);
+            for (let i = 0; i < data.length; i++) {
+              data[i].members.unshift(
+                {
+                  id: data[i].leader.id,
+                  account: data[i].leader.account,
+                  name: data[i].leader.name,
+                  isLeader: true
+                }
+              );
+              that.groups.push(
+                {
+                  name: data[i].name,
+                  valid: data[i].valid,
+                  members: data[i].members
+                }
+              )
+            }
+          } else if (res.data.status === 400) {
+            this.$message({
+              type: 'error',
+              message: '错误的ID格式'
+            })
+          } else if (res.data.status === 404) {
+            this.$message({
+              type: 'error',
+              message: '未找到组队信息'
+            })
+          }
+        })
+        .catch(e => {
+          console.log(e);
+        })
+    },
     methods: {
+      getParams() {
+        var routerParams = this.$route.params.courseId;
+        this.courseId = routerParams;
+        this.courseName = this.$route.params.courseName;
+      },
       gotoBacklog() {
         this.$router.push({path: '/teacher/Backlog'});
       },
@@ -184,6 +158,9 @@
         this.$router.push({path:'teacher/HomePage'});
       }
 
+    },
+    watch: {
+      '$route': 'getParams'
     }
   }
 </script>

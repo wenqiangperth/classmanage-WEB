@@ -80,10 +80,8 @@
       },
       methods:{
         getData() {
-          this.id = this.$route.query.account;
-          console.log('id', this.id);
+          this.account = this.$route.query.account;
           console.log('account', this.account);
-
         },
           SetAccount(){
             this.$router.push({path:'/teacher/AccountManage'});
@@ -95,11 +93,14 @@
           this.$router.push({path: '/teacher/CourseManage'});
         },
         gotoSeminar() {
-          this.$router.push({path: '/teacher/SeminarPage'});
+          this.$router.push({path: '/teacher/TotalSeminar'});
         },
         gotoBacklog(){
           this.$router.push({path:'/teacher/Backlog'});
         }
+      },
+      watch: {
+        '$route': 'getData'
       }
     }
 </script>
