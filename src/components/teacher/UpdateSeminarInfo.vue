@@ -10,7 +10,7 @@
           <tr>
             <td style="width: 28%">主题</td>
             <td>
-              <el-input v-model="name">
+              <el-input v-model="seminarName">
                 <i slot="suffix" class="el-input__icon el-icon-edit icon0"></i>
               </el-input>
             </td>
@@ -22,14 +22,14 @@
                         type="textarea"
                         placeholder="讨论课详情"
                         :autosize="{ minRows: 2, maxRows: 9}"
-                        v-model="textarea1">
+                        v-model="introduction">
               </el-input>
             </td>
           </tr>
           <tr style="height:50px">
             <td style="width: 28%">次序号:</td>
             <td style="text-align: right">
-              <el-input-number size="mini" v-model="orderNum"></el-input-number>
+              <el-input-number size="mini" v-model="seminarSerial"></el-input-number>
             </td>
           </tr>
           <tr>
@@ -37,8 +37,8 @@
             <td style="text-align: right">
               <el-switch
                 v-model="isVisible"
-                active-color="#13ce66"
-                inactive-color="#ff4949">
+                active-color="#66cccc"
+                inactive-color="#616161">
               </el-switch>
             </td>
           </tr>
@@ -93,10 +93,10 @@
             <td style="text-align: right">
               <el-select v-model="value1" placeholder="请选择">
                 <el-option
-                  v-for="item in rounds"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
+                  v-for="item in roundInfo"
+                  :key="item.id"
+                  :label="item.seminarSerial"
+                  :value="item.id">
                 </el-option>
               </el-select>
             </td>
@@ -131,14 +131,14 @@
     name: "UpdateSeminarInfo",
     data() {
       return {
-        name: '业务流程分析',
-        description: '',
-        textarea1: '界面导航图和所有界面原型设计课堂讨论每个小组15分组',
+        seminarId: 1,
+        seminarName: '业务流程分析',
+        introduction: '界面导航图和所有界面原型设计课堂讨论每个小组15分组',
         isVisible: true,
         startTime: '2018-12-02 08:19:53',
         endTime: '2018-12-06 08:19:53',
         signUpNum: 6,
-        orderNum: 1,
+        seminarSerial: 1,
         signUpOrder: [{
           value: '选项1',
           label: '自定'
@@ -147,27 +147,63 @@
             value: '选项2',
             label: '默认'
           }],
+        roundInfo: [],
         rounds: [{
           value: '选项1',
-          label: '无(默认新建)'
+          label: ''
         }, {
           value: '选项2',
           label: '第一轮'
         }],
         value: '默认',
-        value1: '1'
+        value1: '无(默认新建)'
       }
     },
+    created() {
+      this.getParams();
+    },
     methods: {
+      getParams() {
+        this.seminarId = this.$route.params.seminarId;
+      },
       returnSeminarPage() {
         this.$router.push({path: '/teacher/SeminarPage'});
       },
       NewSuccess() {
-        this.$message({
-          message: '修改成功！',
-          type: 'success'
-        });
-        this.$router.push({path: '/teacher/seminarPage'});
+        this.$axios({
+          method: 'PUT',
+          url: '/seminar/' + this.$data.seminarId,
+          data: {
+            seminarId: this.seminarId,
+            seminarName: this.seminarName,
+            introduction: this.introduction,
+            seminarSerial: this.seminarSerial,
+            isVisible: this.isVisible,
+            roundId: this.value1,
+            enrollStartTime: this.startTime,
+            enrollEndTime: this.endTime,
+            maxTeam: this.signUpNum
+          }
+        }).then(res => {
+          if (res.data.status === 204) {
+            this.$message({
+              message: '修改成功！',
+              type: 'success'
+            });
+            this.$router.push({path: '/teacher/seminarPage'});
+          } else if (res.data.status === 400) {
+            this.$message({
+              message: '错误的ID格式！',
+              type: 'error'
+            });
+          } else if (res.data.status === 403) {
+            this.$message({
+              message: '权限不足！',
+              type: 'error'
+            });
+          }
+        })
+
       },
       deleteSeminar() {
         MessageBox.confirm('此操作将永久删除该讨论课?', '提示', {
@@ -175,11 +211,36 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-          this.$router.push({path: '/teacher/SeminarPage'});
+          this.$axios({
+            method: 'DELETE',
+            url: '/seminar/' + this.$data.seminarId
+          })
+            .then(res => {
+              if (res.data.status === 204) {
+                this.$message({
+                  type: 'success',
+                  message: '删除成功!'
+                });
+                this.$router.push({path: '/teacher/SeminarPage'});
+              } else if (res.data.status === 400) {
+                this.$message({
+                  type: 'error',
+                  message: '错误的ID格式!'
+                });
+              } else if (res.data.status === 403) {
+                this.$message({
+                  type: 'error',
+                  message: '用户权限不足!'
+                });
+              } else if (res.data.status === 404) {
+                this.$message({
+                  type: 'error',
+                  message: '未找到!'
+                });
+              }
+            }).catch(e => {
+            console.log(e);
+          })
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -187,6 +248,9 @@
           });
         });
       }
+    },
+    watch: {
+      '$route': 'getParams'
     }
   }
 </script>

@@ -60,7 +60,6 @@ import OngoingSeminar from "../components/teacher/OngoingSeminar";
 import CheckInformation from "../components/teacher/CheckInformation";
 import DownloadPPT from "../components/teacher/DownloadPPT";
 import TotalSeminar from "../components/teacher/TotalSeminar";
-import temp from "../components/teacher/temp";
 
 
 
@@ -269,7 +268,7 @@ export default new Router({
       component: SuspendSeminar
     },
     {
-      name: 'BeforeSeminar',
+      name: 'beforeSeminar',
       path: '/teacher/BeforeSeminar',
       component: BeforeSeminar
     },
@@ -357,12 +356,6 @@ export default new Router({
       name: 'TotalSeminar',
       path: '/teacher/TotalSeminar',
       component: TotalSeminar
-    },
-    {
-      name: 'temp',
-      path: '/teacher/temp',
-      component: temp
     }
-
   ]
 })

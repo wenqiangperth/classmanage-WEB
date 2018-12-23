@@ -41,10 +41,10 @@
           </td>
         </tr>
       </table>
-      <el-button type="info" size="mini"
+      <!--<el-button type="info" size="mini"
                  style="float: right;margin-top: 20px" @click="deleteSeminar">
         删除讨论课
-      </el-button>
+      </el-button>-->
       <div>
         <el-button type="success" class="btn" plain @click="startSeminar" style="margin-top: 100px">进入讨论课</el-button>
       </div>
