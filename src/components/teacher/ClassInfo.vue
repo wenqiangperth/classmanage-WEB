@@ -105,12 +105,17 @@
       let that = this;
       that.$axios({
         method: 'GET',
-        url: '/course/' + this.$data.classInfo.courseId + '/class'
+        url: '/course/' + this.$data.classInfo.courseId + '/class',
+        headers: {
+          'Authorization': window.localStorage['token']
+        }
       })
         .then(res => {
-          if (res.data.status === 200) {
-            let data = res.data.data;
-            that.classInfo.splice(0, that.classInfo.length);
+          if (res.status === 200) {
+            window.localStorage['token'] = res.headers.authorization;
+            let data = res.data;
+            console.log(data);
+            /*that.classInfo=[];
             that.courseId = data[0].courseId;
             for (let i = 0; i < data.length; i++) {
               that.classInfo.push(
@@ -122,13 +127,13 @@
                   classLocation: data[i].classLocation
                 }
               )
-            }
-          } else if (res.data.status === 400) {
+            }*/
+          } else if (res.status === 400) {
             that.$message({
               type: 'error',
               message: '错误的ID格式'
             })
-          } else if (res.data.status === 404) {
+          } else if (res.status === 404) {
             that.$message({
               type: 'error',
               message: '未找到班级'

@@ -13,41 +13,37 @@
     </div>
     <div class="empty"></div>
     <div class="main">
-      <el-collapse accordion v-for="(item,index) in groups"
+      <el-collapse accordion v-for="(item,index) in info"
                    :key="index">
         <el-collapse-item>
           <template slot="title">
-            <div style="font-weight: bold">
-              &nbsp;&nbsp;<i class="header-icon el-icon-star-off el-icon0"></i>&nbsp;&nbsp;{{item.name}}
-              <span v-show="item.valid===false" style="color: red;"><i class="el-icon-warning"></i></span>
+            <div style="font-weight: bold" v-for="cid in classInfo">
+              &nbsp;&nbsp<span v-show="cid.id===item.klassId"><i class="header-icon el-icon-star-off el-icon0"></i>&nbsp;&nbsp;{{cid.klassSerial}}-{{item.teamSerial}}-{{item.teamName}}</span>
+              <span v-if="item.status===0" style="color: red;"><i class="el-icon-warning"></i></span>
+              <span v-else-if="item.status===2" style="color: red;"><i class="el-icon-time"></i></span>
             </div>
           </template>
           <el-card style="width:100%">
-            <div slot="header">
-              <!--<span>组长:{{item.leaderId}}</span>-->
+            <div slot="header" v-for="leader in item.students">
+              <span v-show="leader.id===item.leaderId"
+                    style="font-weight:bold;color: #616161">组长:{{leader.studentName}}</span>
             </div>
             <el-table
-              :data="item.members"
+              :data="item.students"
               style="width: 100%;margin: auto"
             >
               <el-table-column
                 prop="account"
                 label="学号"
-                width="130"
+                style="width: 50%"
                 align="center">
               </el-table-column>
               <el-table-column
-                prop="name"
+                prop="studentName"
                 label="姓名"
-                width="130"
+                style="width: 50%"
                 align="center">
               </el-table-column>
-              <!--<el-table-column
-                prop="isLeader"
-                label="是否组长"
-                width="80"
-                align="center">
-              </el-table-column>-->
             </el-table>
           </el-card>
         </el-collapse-item>
@@ -64,8 +60,26 @@
       return {
         courseId: '',
         courseName: '',
-        info: [{}],
-        classInfo: [],
+        info: [{
+          klassId: '',
+          teamName: '',
+          teamSerial: '',
+          leaderId: '',
+          students: [
+            {
+              id: '',
+              account: '',
+              studentName: ''
+            }
+          ],
+          status: ''
+        }],
+        classInfo: [
+          {
+            id: '',
+            klassSerial: ''
+          }
+        ],
         groups: [
           {
             name: '1-1 Untitled',
@@ -116,25 +130,8 @@
           if (res.status === 200) {
             window.localStorage['token'] = res.headers.authorization;
             let data = res.data;
-            console.log(data);
+            //console.log(data);
             that.info = data;
-            /* that.groups=[];
-             for (let i = 0; i < data.length; i++) {
-               that.data[i].members.push(
-                 {
-                   id: data[i].leader.id,
-                   account: data[i].leader.account,
-                   name: data[i].leader.name,
-                 }
-               );
-               that.groups.push(
-                 {
-                   name: data[i].name,
-                   valid: data[i].valid,
-                   members: data[i].members
-                 }
-               )
-             }*/
           } else if (res.status === 400) {
             this.$message({
               type: 'error',

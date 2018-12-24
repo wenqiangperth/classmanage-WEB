@@ -18,7 +18,7 @@
         <div slot="header" style="float: left">
           <span style="font-weight: bold;color: #616161">课程要求</span>
         </div>
-        <p style="font-size: 13px">{{description}}</p>
+        <p style="font-size: 13px">{{introduction}}</p>
       </el-card>
       <el-card class="box-card">
         <div slot="header" style="float: left">
@@ -47,11 +47,11 @@
           </tr>
           <tr style="height: 30px">
             <td style="width: 30%">组队开始:</td>
-            <td>{{startTime}}</td>
+            <td>{{teamStartTime}}</td>
           </tr>
           <tr style="height: 30px">
             <td style="width: 30%">组队截止:</td>
-            <td>{{endTime}}</td>
+            <td>{{teamEndTime}}</td>
           </tr>
           <tr style="height: 30px">
             <td style="width: 30%">性别要求:</td>
@@ -65,7 +65,8 @@
           </tr>
         </table>
       </el-card>
-      <div id="el-btn" style="width: 100%;margin-top: 20px">
+      <div id="el-btn" style="width: 100%;margin-top: 20px"
+           v-show="(((teamMainCourseId===null)&&(seminarMainCourseId===null))||(teamMainCourseId!==null)&&(teamMainCourseId===courseId)||(seminarMainCourseId!==null)&&(seminarMainCourseId==courseId))">
         <el-button type="success"
                    @click="deleteCourse" plain
                    style="float: right;margin-bottom: 20px">
@@ -87,7 +88,7 @@
 
         courseId: 1,
         courseName: '',
-          description: '翻转课堂形式上课，学生自由组队，以小组形式每周做汇报，每组汇报时间15分钟',
+        introduction: '翻转课堂形式上课，学生自由组队，以小组形式每周做汇报，每组汇报时间15分钟',
           tableData1: [{
             make_up: '课堂展示',
             percentage: '1',
@@ -100,8 +101,8 @@
               make_up: '书面报告',
               percentage: '3',
             }],
-        startTeamTime: '2018-12-01 12:00:00',
-        endTeamTime: '2018-12-06 12:00:00',
+        teamStartTime: '2018-12-01 12:00:00',
+        teamEndTime: '2018-12-06 12:00:00',
           minNum: 6,
           maxNum: 8,
           maleNum: '2-4',
@@ -120,30 +121,41 @@
       that.$axios({
         method: 'GET',
         url: '/course/' + that.$data.courseId,
+        headers: {
+          'Authorization': window.localStorage['token']
+        }
       })
         .then(res => {
-          if (res.data.status === 200) {
-            console.log(res.data.data);
-            let data = res.data.data;
+          if (res.status === 200) {
+            window.localStorage['token'] = res.headers.authorization;
+            console.log(res.data);
+            let data = res.data;
+            that.introduction = data.introduction;
             that.tableData1[0].percentage = data.presentationPercentage;
             that.tableData1[1].percentage = data.questionPercentage;
             that.tableData1[2].percentage = data.reportPercentage;
-            that.startTeamTime = data.startTeamTime;
-            that.endTeamTime = data.endTeamTime;
-            that.minNum = data.MinMemberNumber;
-            that.maxNum = data.MaxMemberNumber;
+            that.teamStartTime = data.teamStartTime.substring(0, 10) + ' ' + data.teamStartTime.substring(11, 19);
+            that.teamEndTime = data.teamEndTime.substring(0, 10) + ' ' + data.teamEndTime.substring(11, 19);
+            // that.minNum = data.MinMemberNumber;
+            // that.maxNum = data.MaxMemberNumber;
             that.teamMainCourseId = data.teamMainCourseId;
             that.seminarMainCourseId = data.seminarMainCourseId;
-          } else if (res.data.status === 404) {
-            alert("未找到指定课程");
-          } else {
-            alert("错误的ID格式");
+          } else if (res.status === 404) {
+            this.$message({
+              type: 'error',
+              message: '未找到课程信息'
+            })
+          } else if (res.status === 400) {
+            this.$message({
+              type: 'error',
+              message: '错误的ID格式'
+            })
           }
         })
         .catch((e) => {
           console.log(e);
         });
-      this.isMasterCourse();
+      //this.isMasterCourse();
     },
     methods: {
       getParams() {
@@ -162,12 +174,12 @@
       gotoSeminar() {
         this.$router.push({path: '/teacher/SeminarPage'});
       },
-      isMasterCourse() {
+      /*isMasterCourse() {
         var btn = document.getElementById("el-btn");
-        if ((teamMainCourseId !== courseId) || (seminarMainCourseId !== courseId)) {
-          btn.style.display = "none";
+        if ((this.teamMainCourseId !== this.courseId) || (this.seminarMainCourseId !== this.courseId)) {
+          btn.style.display = 'none';
         }
-      },
+      },*/
       deleteCourse() {
         MessageBox.confirm('此操作将永久删除该课程?', '提示', {
           confirmButtonText: '确定',
@@ -176,26 +188,30 @@
         }).then(() => {
           this.$axios({
             method: 'DELETE',
-            url: '/course/' + this.$data.courseId
+            url: '/course/' + this.$data.courseId,
+            headers: {
+              'Authorization': window.localStorage['token']
+            }
           })
             .then(res => {
-              if (res.data.status === 204) {
+              if (res.status === 204) {
+                window.localStorage['token'] = res.headers.authorization;
                 this.$message({
                   type: 'success',
                   message: '删除成功!'
                 });
                 this.$router.push({path: '/teacher/CourseManage'});
-              } else if (res.data.status === 400) {
+              } else if (res.status === 400) {
                 this.$message({
                   type: 'error',
                   message: '错误的ID格式'
                 });
-              } else if (res.data.status === 403) {
+              } else if (res.status === 403) {
                 this.$message({
                   type: 'warning',
                   message: '用户权限不足'
                 });
-              } else if (res.data.status === 404) {
+              } else if (res.status === 404) {
                 this.$message({
                   type: 'error',
                   message: '未找到课程'
