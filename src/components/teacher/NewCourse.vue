@@ -204,13 +204,13 @@
         data0: [],
       }
     },
-    created() {
-      this.getParams();
-    },
+    //created() {
+    //  this.getParams();
+    // },
     methods: {
-      getParams() {
-        this.course.teacherId = this.$route.params.teacherId;
-      },
+      /*  getParams() {
+          this.course.teacherId = this.$route.params.teacherId;
+        },*/
       returnCourseManage() {
         this.$router.push({path: '/teacher/CourseManage'});
       },
@@ -219,23 +219,28 @@
           method: 'POST',
           url: '/course',
           data: {
-            name: this.course.courseName,
+            courseName: this.course.courseName,
             introduction: this.course.introduction,
             presentationPercentage: this.course.tableData1[0].percentage,
             questionPercentage: this.course.tableData1[1].percentage,
             reportPercentage: this.course.tableData1[2].percentage,
             teamStartTime: this.course.startTime,
             teamEndTime: this.course.endTime
+          },
+          headers: {
+            'Authorization': window.localStorage['token']
           }
         })
           .then(res => {
-            if (res.data.status === 201) {
+            console.log(res.data);
+            if (res.status === 200) {
+              window.localStorage['token'] = res.headers.authorization;
               this.$message({
                 type: 'success',
-                message: '创建成功，课程ID为' + res.data.data.courseId
+                message: '创建成功'
               });
               this.$router.push({path: '/teacher/CourseManage'});
-            } else if (res.data.status === 403) {
+            } else if (res.status === 403) {
               this.$message({
                 type: 'error',
                 message: '用户权限不足'

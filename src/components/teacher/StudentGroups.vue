@@ -5,7 +5,6 @@
         <el-dropdown class="plus" trigger="click">
           <i class="el-icon-plus icon1 icon0"></i>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item><i class="el-icon-date" @click="gotoBacklog">&nbsp;&nbsp;待 办</i></el-dropdown-item>
             <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
             <el-dropdown-item><i class="el-icon-service" @click="gotoSeminar">&nbsp;&nbsp;讨论课</i></el-dropdown-item>
           </el-dropdown-menu>
@@ -23,29 +22,34 @@
               <span v-show="item.valid===false" style="color: red;"><i class="el-icon-warning"></i></span>
             </div>
           </template>
-          <el-table
-            :data="item.members"
-            style="width: 100%;margin: auto"
-          >
-            <el-table-column
-              prop="account"
-              label="学号"
-              width="130"
-              align="center">
-            </el-table-column>
-            <el-table-column
-              prop="name"
-              label="姓名"
-              width="130"
-              align="center">
-            </el-table-column>
-            <el-table-column
-              prop="isLeader"
-              label="是否组长"
-              width="80"
-              align="center">
-            </el-table-column>
-          </el-table>
+          <el-card style="width:100%">
+            <div slot="header">
+              <!--<span>组长:{{item.leaderId}}</span>-->
+            </div>
+            <el-table
+              :data="item.members"
+              style="width: 100%;margin: auto"
+            >
+              <el-table-column
+                prop="account"
+                label="学号"
+                width="130"
+                align="center">
+              </el-table-column>
+              <el-table-column
+                prop="name"
+                label="姓名"
+                width="130"
+                align="center">
+              </el-table-column>
+              <!--<el-table-column
+                prop="isLeader"
+                label="是否组长"
+                width="80"
+                align="center">
+              </el-table-column>-->
+            </el-table>
+          </el-card>
         </el-collapse-item>
       </el-collapse>
     </div>
@@ -60,6 +64,8 @@
       return {
         courseId: '',
         courseName: '',
+        info: [{}],
+        classInfo: [],
         groups: [
           {
             name: '1-1 Untitled',
@@ -101,34 +107,40 @@
       that.$axios({
         method: 'GET',
         url: '/course/' + that.$data.courseId + '/team',
+        headers: {
+          'Authorization': window.localStorage['token']
+        }
       })
         .then(res => {
-          if (res.data.status === 200) {
-            let data = res.data.data;
-            that.groups.splice(0, that.groups.length);
-            for (let i = 0; i < data.length; i++) {
-              data[i].members.unshift(
-                {
-                  id: data[i].leader.id,
-                  account: data[i].leader.account,
-                  name: data[i].leader.name,
-                  isLeader: true
-                }
-              );
-              that.groups.push(
-                {
-                  name: data[i].name,
-                  valid: data[i].valid,
-                  members: data[i].members
-                }
-              )
-            }
-          } else if (res.data.status === 400) {
+          console.log(res.data);
+          if (res.status === 200) {
+            window.localStorage['token'] = res.headers.authorization;
+            let data = res.data;
+            console.log(data);
+            that.info = data;
+            /* that.groups=[];
+             for (let i = 0; i < data.length; i++) {
+               that.data[i].members.push(
+                 {
+                   id: data[i].leader.id,
+                   account: data[i].leader.account,
+                   name: data[i].leader.name,
+                 }
+               );
+               that.groups.push(
+                 {
+                   name: data[i].name,
+                   valid: data[i].valid,
+                   members: data[i].members
+                 }
+               )
+             }*/
+          } else if (res.status === 400) {
             this.$message({
               type: 'error',
               message: '错误的ID格式'
             })
-          } else if (res.data.status === 404) {
+          } else if (res.status === 404) {
             this.$message({
               type: 'error',
               message: '未找到组队信息'
@@ -137,7 +149,36 @@
         })
         .catch(e => {
           console.log(e);
+        });
+      that.$axios({
+        method: 'GET',
+        url: '/course/' + that.$data.courseId + '/class',
+        headers: {
+          'Authorization': window.localStorage['token']
+        }
+      })
+        .then(res => {
+          console.log(res.data);
+          if (res.status === 200) {
+            window.localStorage['token'] = res.headers.authorization;
+            let data = res.data;
+            console.log(data);
+            this.classInfo = data;
+          } else if (res.status === 400) {
+            this.$message({
+              type: 'error',
+              message: '错误的ID格式'
+            })
+          } else if (res.status === 404) {
+            this.$message({
+              type: 'error',
+              message: '未找到组队信息'
+            })
+          }
         })
+        .catch(e => {
+          console.log(e);
+        });
     },
     methods: {
       getParams() {
@@ -155,7 +196,7 @@
         this.$router.push({path: '/teacher/SeminarPage'});
       },
       gotoHomePage(){
-        this.$router.push({path:'teacher/HomePage'});
+        this.$router.push({path: '/teacher/HomePage'});
       }
 
     },
