@@ -44,7 +44,7 @@
                  @open="handleOpen" @close="handleClose" :collapse="isCollapse">
           <el-submenu index="1">
             <template slot="title">
-              <i class="el-icon-loading"></i>
+              <i class="iconfont icon-huatong"></i>
               <span slot="title">导航一</span>
             </template>
             <el-menu-item-group>
@@ -59,7 +59,7 @@
           </el-submenu>
           <el-submenu index="2">
             <template slot="title">
-              <i class="el-icon-question el-icon0"></i>
+              <i class="iconfont icon-jushou"></i>
               <span slot="title">导航二</span>
             </template>
             <el-menu-item-group>

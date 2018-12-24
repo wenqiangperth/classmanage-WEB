@@ -101,8 +101,8 @@
         method: 'GET',
         url: '/seminar/' + that.$data.seminarId + '/class/' + that.$data.classId
       }).then(res => {
-        if (res.data.status === 200) {
-          let data_ = res.data.data;
+        if (res.data === 200) {
+          let data_ = res.data;
           that.currentSeminarInfo.seminarId = seminarId;
           that.currentSeminarInfo.seminarName = data_.seminarName;
           that.currentSeminarInfo.introduction = data_.introduction;
@@ -125,10 +125,19 @@
         this.roundId = this.$route.params.roundId;
       },
       gotoHomePage(){
-        this.$router.push({path:'/teacher/HomePage'});
+        this.$router.push({
+          path: '/teacher/HomePage',
+        });
       },
       startSeminar() {
-        this.$router.push({path: '/teacher/StartSeminar'});
+        this.$router.push({
+          path: '/teacher/StartSeminar',
+          name: 'StartSeminar',
+          query: {
+            classId: this.classId,
+            seminarId: this.seminarId
+          }
+        });
       },
       gotoOngoingSeminar() {
         this.$router.push({path: '/teacher/StartSeminar'});
