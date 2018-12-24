@@ -42,6 +42,9 @@
     data() {
       return {
         attendanceId: '',
+        classId: '',
+        seminarId: '',
+        ppt: [],
         groupInfo: [
           '1-1.ppt',
           '1-2.ppt',
@@ -73,6 +76,10 @@
 
     },
     methods: {
+      getParams() {
+        this.classId = this.$route.params.classId;
+        this.seminarId = this.$route.params.seminarId;
+      },
       returnHomePage() {
         this.$router.push({path: '/teacher/HomePage'});
       },
@@ -128,13 +135,12 @@
           .then(() => {
             that.$axios({
               method: 'GET',
-              url: '/seminar/{seminarId}/class/{classId}/ppt',
-              params: {
-                ppt: that.groupInfo
-              }
+              url: '/seminar/' + this.$data.seminarId + '/class/' + this.$data.classId + '/ppt',
             })
               .then(res => {
-                if (res.data.status === 200) {
+                if (res.status === 200) {
+                  console.log(res.data);
+                  that.ppt = res.data;
                   this.$message({
                     type: 'success',
                     message: '下载成功!'
@@ -148,7 +154,7 @@
           .catch(() => {
             this.$message({
               type: 'info',
-              message: '已取消删除'
+              message: '已取消下载'
             });
           });
       }

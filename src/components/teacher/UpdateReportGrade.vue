@@ -2,7 +2,7 @@
   <div>
     <div id="head" class="head">
       <div class="title">
-        <i class="el-icon-back icon1 icon0" style="color: black" @click="Back"></i>
+        <i class="el-icon-back icon1 icon0" @click="Back"></i>
         OOAD--书面报告
         <el-dropdown class="plus" trigger="click">
           <i class="el-icon-plus icon0"></i>

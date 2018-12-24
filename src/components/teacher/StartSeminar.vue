@@ -200,7 +200,6 @@
             score: ''
           }
         ],
-
       }
     },
     methods: {
@@ -234,10 +233,9 @@
         this.group++;
         if ((this.count > 0) && (this.count < this.groups.length - 1)) {
           this.$router.push({path: '/teacher/StartSeminar'});
-            var next_ = document.getElementById("nextGroup");
+          var next_ = document.getElementById("nextGroup");
           next_.innerHTML = "下组展示";
-
-          } else if (this.count === this.groups.length - 1) {
+        } else if (this.count === this.groups.length - 1) {
           var next0_ = document.getElementById("nextGroup");
           next0_.innerHTML = "结束展示";
         }
@@ -278,7 +276,6 @@
         ques_.style.display = "none";
         var update_ = document.getElementById("update");
         update_.style.display = "block";
-
       },
       updateQuesScore() {
         var pre_ = document.getElementById("pre");
@@ -289,7 +286,7 @@
         update_.style.display = "none";
         var update1_ = document.getElementById("update1");
         update1_.style.display = "block";
-        }
+      }
     }
   }
 </script>
@@ -301,14 +298,12 @@
     float: left;
     margin-top: 10px;
   }
-
   .right {
     width: 79%;
     min-height: 50px;
     float: left;
     margin-top: 10px;
   }
-
   .el-menu-vertical-demo:not(.el-menu--collapse) {
     width: 200px;
     min-height: 400px;
@@ -327,28 +322,22 @@
     font-size: 14px;
     display: none;
   }
-
-
 </style>
 <style>
   .el-menu-item.is-active {
     color: #66cccc;
   }
-
   .el-menu-item, .el-submenu__title {
     height: 45px;
     line-height: 45px;
   }
-
   .el-menu--collapse .el-menu .el-submenu,
   .el-menu--popup {
     min-width: 100px;
   }
-
   .el-submenu__title i {
     color: #66cccc;
   }
-
   .el-submenu [class^=el-icon-] {
     font-size: 25px;
   }

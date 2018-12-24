@@ -36,7 +36,8 @@
           <td class="td1"><label>课程情况:</label></td>
           <td>
             <label>{{currentSeminarInfo.status}}
-              <el-button type="text" size="small" style="color:#66cccc;" @click="checkInfo(currentSeminarInfo.status)">
+              <el-button type="text" size="small" style="color:#66cccc;"
+                         @click="checkInfo(currentSeminarInfo.status,classId,seminarId)">
                 查看信息
               </el-button>
             </label>
@@ -52,7 +53,9 @@
       </div>
       <div style="width: 100%" v-else-if="currentSeminarInfo.status===2">
         <div style="width: 100%">
-          <el-button type="success" class="btn" plain @click="checkReport" style="margin-top: 160px">书面报告</el-button>
+          <el-button type="success" class="btn" plain @click="checkReport(seminarId,classId)" style="margin-top: 160px">
+            书面报告
+          </el-button>
         </div>
         <div style="width: 100%;margin-top: 10px">
           <el-button type="success" class="btn" plain @click="checkGrades" style="margin-top: 160px">查看成绩报告</el-button>
@@ -136,11 +139,38 @@
       gotoTotalSeminar() {
         this.$router.push({path: '/teacher/TotalSeminar'});
       },
-      checkInfo() {
-        this.$router.push({path: '/teacher/CheckInformation'});
+      checkInfo(status, classId, seminarId) {
+        if (status === 2) {
+          this.$router.push({
+            path: '/teacher/DownloadPPT',
+            name: 'DownloadPPT',
+            params: {
+              status: status,
+              seminarId: seminarId,
+              classId: classId
+            }
+          })
+        } else if ((status === 0) || (status === 1)) {
+          this.$router.push({
+            path: '/teacher/CheckInformation',
+            name: 'CheckInformation',
+            params: {
+              status: status,
+              seminarId: seminarId,
+              classId: classId
+            }
+          });
+        }
       },
-      checkReport() {
-
+      checkReport(seminarId, classId) {
+        this.$router.push({
+          path: '/teacher/ReportPage',
+          name: 'ReportPage',
+          params: {
+            seminarId: seminarId,
+            classId: classId
+          }
+        })
       },
       checkGrades() {
 

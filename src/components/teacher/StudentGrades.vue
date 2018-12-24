@@ -72,7 +72,17 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-button type="info" plain @click="UpdateGrades" style="margin-top: 5px">修改</el-button>
+          <table style="width: 100%">
+            <tr style="width: 100%">
+              <td style="width: 40%">本轮总成绩</td>
+              <td>
+                <el-input v-model="groupScore.finalScore"></el-input>
+              </td>
+            </tr>
+          </table>
+          <el-button type="info" plain @click="UpdateGrades" style="margin-top: 5px;float: right;margin-bottom: 5px">
+            修改
+          </el-button>
         </el-dialog>
       </div>
 
@@ -87,6 +97,7 @@
       return {
         groupScore:{
           groupId:'1-1',
+          finalScore: 5.0,
           item:[
             {
               name: '用例分析',
@@ -158,5 +169,10 @@
     height: 40px;
   }
 
+</style>
+<style>
+  .el-dialog__body {
+    padding: 10px 20px 50px 20px;
+  }
 </style>
 

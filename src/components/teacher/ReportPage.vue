@@ -2,13 +2,14 @@
   <div>
     <div id="head" class="head">
       <div class="title">
-        <i class="el-icon-back icon1 icon0" @click="returnAfterSeminar"></i>
+        <i class="el-icon-back icon1 icon0" @click="Back"></i>
         书面报告
         <el-dropdown class="plus" trigger="click">
           <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
-            <el-dropdown-item><i class="el-icon-service" @click="gotoSeminar">&nbsp;&nbsp;讨论课</i></el-dropdown-item>
+            <el-dropdown-item><i class="el-icon-service" @click="gotoTotalSeminar">&nbsp;&nbsp;讨论课</i>
+            </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -16,11 +17,11 @@
     <div class="main">
       <el-card>
         <table style="width: 100%"
-               v-for="(item,index) in reports"
+               v-for="(item,index) in files"
                :key="index">
           <tr id="tr0">
-            <td style="width: 20%">{{item.groupId}}</td>
-            <td style="width: 55%;"><a href="#" style="text-decoration: none">{{item.reportUrl}}</a></td>
+            <td style="width: 20%">{{item.attendanceId}}</td>
+            <td style="width: 55%;"><span style="color: #66cccc" @click="downloadReport1">{{item.file}}</span></td>
             <td>
               <el-input placeholder="成绩" v-model="item.result"></el-input>
             </td>
@@ -36,7 +37,7 @@
       <div>
         <el-button type="success" class="btn" plain
                    style="margin-top: 10px"
-                   @click="editResults">确认
+                   @click="editResults">修改
         </el-button>
       </div>
     </div>
@@ -45,10 +46,14 @@
 </template>
 
 <script>
+  import {MessageBox} from 'mint-ui';
   export default {
     name: "ReportPage",
     data() {
       return {
+        seminarId: '',
+        classId: '',
+        files: [],
         reports: [
           {
             groupId: '3-1',
@@ -82,23 +87,66 @@
         ]
       }
     },
+    created() {
+      this.getParams();
+    }
+    ,
     methods: {
-      returnAfterSeminar() {
-        this.$router.push({path: '/teacher/AfterSeminar'});
+      getParams() {
+        this.seminarId = this.$route.params.seminarId;
+        this.classId = this.$route.params.classId;
+      },
+      Back() {
+        this.$router.go(-1);
       },
       gotoHomePage(){
         this.$router.push({path:'/teacher/HomePage'});
       },
-      gotoSeminar(){
-        this.$router.push({path:'/teacher/SeminarPage'});
+      gotoTotalSeminar() {
+        this.$router.push({path: '/teacher/TotalSeminar'});
+      },
+      downloadReport1() {
+
       },
       downloadReport() {
+        MessageBox.confirm('确定下载所有报告吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'info'
+        })
+          .then(() => {
+            this.$axios({
+              method: 'GET',
+              url: '/seminar/' + this.$data.seminarId + '/class/' + this.$data.classId + '/report'
+            })
+              .then(res => {
+                if (res.status === 200) {
+                  console.log(res.data);
+                  this.files = res.data;
+                  this.$message({
+                    type: 'success',
+                    message: '下载成功!'
+                  });
+                }
+              })
+              .catch(e => {
+                console.log(e);
+              })
+          }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        })
 
       },
       editResults() {
         this.$router.push({path: '/teacher/AfterSeminar'});
       },
 
+    },
+    watch: {
+      '$route': 'getParams'
     }
   }
 </script>
