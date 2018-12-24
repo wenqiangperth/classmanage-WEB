@@ -65,7 +65,7 @@
         }
       },
       created(){
-          let that=this
+          let that=this;
           that.$axios({
             method:'GET',
             url:'/user/information',
@@ -74,10 +74,10 @@
             }
           })
             .then(response=>{
-              console.log(response)
+              console.log(response);
               if(response.status===200){
-                window.localStorage["token"]=response.headers.authorization
-                that.name=response.data.name
+                window.localStorage["token"]=response.headers.authorization;
+                that.name=response.data.name;
                 that.accountNumber=response.data.account
               }
             })

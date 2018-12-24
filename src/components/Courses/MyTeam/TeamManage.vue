@@ -107,31 +107,8 @@
             student:'',
             teamTitle:'1-1 武林盟主',
             leader:{ Na:'王强', No: '24320162201122' } ,
-            members:[
-              { Na:'赵某',No:'24320162200000'  },
-              { Na:'高某',No:'24232001213213' },
-              { Na:'方某',No:'24323425233232' },
-              { Na:'叶某',No:'24329753973845' }
-              ],
-            Unteam:[{
-              Na: '我是1号',
-              No: '11111111111'
-            },{
-              Na: '我是2号',
-              No: '22222222222'
-            },{
-              Na: '我是3号',
-              No: '33333333333'
-            },{
-              Na: '我是4号',
-              No: '44444444444'
-            },{
-              Na: '我是5号',
-              No: '44444444444'
-            },{
-              Na: '我是6号',
-              No: '44444444444'
-            }],
+            members:[],
+            Unteam:[],
             dialogFormVisible: false,
             form: {
               name: '',
@@ -148,19 +125,20 @@
       },
       created(){
         let that = this;
+        that.teamId=that.$route.query.teamId;
         that.$axios({
           method:'GET',
-          url:'/team/teamId',
-          params:{
-            teamId:that.teamId
+          url:'/team/'+that.teamId,
+          headers:{
+            'Authorization': window.localStorage['token']
           }
         })
           .then(res=>{
-            if(res.data.status===200){
-              let data = res.data;
-              that.item=data.data;
+            if(res.status===200){
+              console.log(res);
+              that.item=res.data;
             }
-            else if(res.data.status===404){
+            else if(res.status===404){
               alert("未找到！")
             }
           })

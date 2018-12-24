@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="main" :style="note">
       <header class="home-title">
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
@@ -24,38 +24,26 @@
       <div>
         <img src="../../assets/3.jpg"/>
       </div>
-
       <div class="divHeight"></div>
       <el-col :span="24">
         <el-menu
           default-active="2"
           class="el-menu-vertical-demo"
-          background-color="#66CCCC"
-          text-color="#fff"
+          background-color="#f0f0f0"
           active-text-color="#ffd04b">
           <el-menu-item
-            v-for="(course,key) in courses"
-            :key="key"
+            v-for="(course,index) in courses"
+            :key="index"
             index="1"
-            @click="getCourse(course.id)"
+            @click="getCourse(index)"
             style="text-align: left">
             <i class="el-icon-menu"></i>
-            <span slot="title">{{course.name}}</span>
+            <span slot="title">{{course.courseName}} </span>
+            <span style="float: right">({{course.klass.grade}}--{{course.klass.klassSerial}})</span>
           </el-menu-item>
-          <div class="line"></div>
-          <!--
-          <el-menu-item index="3" style="text-align: left" @click="getCourse">
-            <i class="el-icon-document"></i>
-            <span slot="title">OOAD</span>
-          </el-menu-item>
-          <div class="line"></div>
-          <el-menu-item index="4" style="text-align: left">
-            <i class="el-icon-setting"></i>
-            <span slot="title">J2EE</span>
-          </el-menu-item>
-          -->
         </el-menu>
       </el-col>
+      <div style="height: 500px;"></div>
     </div>
 </template>
 
@@ -64,44 +52,52 @@
         name: "CoursePage",
       data() {
         return{
-          courses:[{name:'OOAD',id:'1'}],
-          courseId:''
+          courses:[],
+          courseId:'',
+          courseName:'',
+          klassId:'',
+          //背景图片
+          note:{
+            backgroundImage:"url("+require("../../assets/backpic.jpg")+")",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "100% 100%"
+          }
         }
       },
       created(){
-          let that = this;
-          that.$axios({
-              method:'GET',
-              url:'/course'
-            })
-              .then(res=>{
-                console.log(res);
-                if(res.status===200){
-                  console.log(res.data.data);
-                }
-                else if(res.data.status===404){
-                  alert("未找到课程！")
-                }
-                else{
-                  alert("错误的ID格式")
-                }
-              })
-              .catch(e=>{
-                console.log(e)
-              })
+        this.$axios({
+          method:'GET',
+          url:'/course',
+          headers:{
+            'Authorization':window.localStorage['token']
+          }
+        })
+          .then(res=>{
+            console.log(res);
+            if(res.status===200){
+              this.courses=res.data;
+            }
+          })
+          .catch(e=>{
+            console.log(e);
+          })
       },
       methods:{
         back(){
           this.$router.push({path:'/HomePage'});
         },
-        getCourse(value){
-          this.courseId=value;
-          console.log(this.courseId);
+        getCourse(index){
+          this.courseId=this.courses[index].courseId;
+          this.courseName=this.courses[index].courseName;
+          this.klassId=this.courses[index].klassId;
+          console.log('klassId:'+this.klassId);
           this.$router.push({
             path:'/Courses/TotalSeminars',
             name:'TotalSeminars',
             query:{
-              courseId: this.courseId
+              courseId: this.courseId,
+              courseName: this.courseName,
+              klassId: this.klassId,
             }
           });
         }
@@ -146,7 +142,7 @@
 
   .line{
     background-color: #fff;
-    height: 1px;
+    height: 2px;
   }
 
 

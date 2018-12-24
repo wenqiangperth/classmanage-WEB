@@ -112,16 +112,16 @@
           })
       },
       methods:{
-        handleCommand(command){
-            if(command === "course")
-              this.$router.push({
-                path:'/Courses/CoursePage'
-              })
+          handleCommand(command){
+              if(command === "course")
+                this.$router.push({
+                  path:'/Courses/CoursePage'
+                })
+            },
+          choose(index){
+            this.dialogVisible=true;
+            this.courseId=this.courses[index].courseId;
           },
-        choose(index){
-          this.dialogVisible=true;
-          this.courseId=this.courses[index].courseId;
-        },
           back(){
             this.$router.push({path:'/HomePage'});
           },

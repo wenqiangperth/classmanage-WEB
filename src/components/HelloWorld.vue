@@ -62,7 +62,7 @@ export default {
           password: _this.password
         },
         transformRequest: [function (data) {
-          let ret = ''
+          let ret = '';
           for (let it in data) {
             ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
           }
@@ -76,8 +76,6 @@ export default {
         .then(res => {
            console.log(res);
           window.localStorage["token"]=res.headers.authorization;
-          //_this.token=res.headers.authorization;
-          window.localStorage['token'] = res.headers.authorization;
           if(res.status===200){
               let arr=res.data.split(",");
               if(arr[0]==="{role=ROLE_STUDENT"){

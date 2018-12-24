@@ -99,15 +99,18 @@
               { required: true, message: '班级名不能为空', trigger: 'change' }
             ]
           },
-          Unteam:[]       //未组队学生学号、姓名
+          Unteam:[],       //未组队学生学号、姓名
+          members:[]
         };
       },
       created(){
-          let that = this;
           //query获得上一页面的courseId
+          let that = this;
+          that.courseId = that.$route.query.courseId;
+          console.log(that.courseId)
           that.$axios({
             method:'GET',
-            url:'/course/'+that.$data.courseId+'/noTeam',
+            url:'/course/'+that.courseId+'/noTeam',
             params:{
               courseId: that.courseId
             }
@@ -115,17 +118,22 @@
             .then(res=>{
               console.log(res);
               if(res.status===200){
-                that.Unteam=res.data;
+
               }
             })
             .catch(e=>{console.log(e)})
       },
       methods:{
           back(){
-            this.$router.push({path:'/Courses/MyTeam/TeamInfo'})
+            this.$router.push({
+              path:'/Courses/MyTeam/TeamInfo',
+              name:'TeamInfo',
+              query:{
+                courseId: this.courseId
+              }
+            })
           },
           submitForm(ruleForm) {
-            //console.log(this.ruleForm.region);
             this.$refs[ruleForm].validate((valid) => {
               if (valid) {
                 alert('submit!');
@@ -144,7 +152,7 @@
                 leader:{
                   id:window.localStorage['userId']
                 },
-                members:[]
+                members:this.members
               }
             })
               .then(res=>{

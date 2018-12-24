@@ -22,8 +22,15 @@
         </div>
       </header>
 
+      <div>
+        <el-button style="width: 90%;margin:10px 0 10px 0;background-color: #f0f0f0" @click="EnterTeam">进入我的小组</el-button>
+      </div>
+
+      <div style="width: 100%;background-color: #fff">
+        <el-tag>小组信息总览</el-tag>
+      </div>
       <el-collapse v-model="activeName" class="team" accordion>
-        <el-collapse-item v-for="(team,index) in teams" :key="index">
+        <el-collapse-item v-for="(team,index) in teams" :key="index" :class="{'active':index%2!=1}">
           <template slot="title">
             <div style="font-size: 17px;font-weight: bold">
               <i class="header-icon el-icon-search"></i>
@@ -67,7 +74,7 @@
         name: "TeamInfo",
       data(){
         return{
-          courseId:1,
+          courseId:'',
           activeName: '1',
           activeName2: '2',
           leaderName:'',
@@ -79,24 +86,20 @@
       created(){
           let that = this;
           //先获得上个页面的courseId
+          that.courseId=that.$route.query.courseId;
+          console.log(that.courseId);
           that.$axios({
             method:'GET',
-            url:'course/'+that.$data.courseId+'/team',
-            // params:{
-            //   courseId: that.courseId
-            // }
+            url:'course/'+that.courseId+'/team',
+            headers:{
+              'Authorization':window.localStorage['token']
+            }
           })
             .then(res=>{
               console.log(res);
               if(res.status===200){
-                that.teams = res.data;
-                // for(let i=0;i<res.data.students.length;i++){
-                //   if(that.teams.leaderId===res.data.students[i].id){
-                //     that.leaderName=res.data.students[i].studentName;
-                //     that.leaderAccount=res.data.students[i].account;
-                //     console.log(that.leaderName);
-                //   }
-                // }
+                window.localStorage['token']=res.headers.authorization;
+                this.teams=res.data;
               }
               else if(res.status===404){
                 alert("尚未有队伍信息！")
@@ -109,15 +112,15 @@
           that.$axios({
             method:'GET',
             url:'course/'+that.$data.courseId+'/noTeam',
-            // params:{
-            //   courseId: that.courseId
-            // }
+            headers:{
+              'Authorization':window.localStorage['token']
+            }
           })
             .then(res=>{
               console.log(res);
               if(res.status===200){
+                window.localStorage['token']=res.headers.authorization;
                 that.Unteam =res.data;
-                console.log(that.Unteam);
               }
               else if(res.data.status===404){
                 alert("未找到未组队学生！")
@@ -139,6 +142,24 @@
                 courseId:this.courseId
               }
             })
+          },
+          EnterTeam(){
+            this.$axios({
+              method:'course/'+this.$data.courseId+'/myteam',
+              headers:{
+                'Authorization': window.localStorage['token']
+              }
+            })
+              .then(res=>{
+                console.log('判断身份');
+                console.log(res);
+                if(res.status===200){
+                  //
+                }
+              })
+              .catch(e=>{
+                console.log(e);
+              })
           }
       }
     }
@@ -197,5 +218,9 @@
     font-size: 17px;
     letter-spacing: 5px;
     border-radius: 25px;
+  }
+
+  .team {
+    background-color: #f0f0f0;
   }
 </style>

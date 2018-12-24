@@ -55,6 +55,32 @@
 <script>
     export default {
         name: "WithDraw",
+      data(){
+        return{
+          teamId:'',
+          courseId:'',
+          klass: '2016-(1)',
+          tableData2:[
+            { Na:'王强',No: '24320162201122'},
+            { Na:'赵某',No:'24320162200000' },
+            { Na:'高某',No:'24232001213213' },
+            { Na:'方某',No:'24323425233232' },
+            { Na:'叶某',No:'24329753973845' }
+          ]
+        }
+      },
+      created(){
+        this.teamId=this.$route.query.teamId;
+        this.courseId=this.$route.query.courseId;
+        console.log(this.teamId);
+        this.$axios({
+          method:'GET',
+          url:'course/'+this.courseId+'/myteam',
+          headers:{
+            'Authorization':window.localStorage['token']
+          }
+        })
+      },
       methods:{
           tableRowClassName({row,rowIndex}){
             if (rowIndex === 0) {
@@ -71,13 +97,13 @@
             }).then(() => {
               this.$axios({
                 method:'PUT',
-                url:'/team/teamId/remove',
-                params:{
-                  id:window.localStorage['userId']
+                url:'/team/'+this.$data.teamId+'/remove',
+                headers:{
+                  'Authorization':window.localStorage['token']
                 }
               }).then(res=>{
-                let data=res.data;
-                if(data.status===204){
+                console.log(res);
+                if(res.status===204){
                   this.$message({
                     type: 'success',
                     message: '退出成功!'
@@ -96,19 +122,8 @@
               });
             });
           }
-      },
-      data(){
-          return{
-            klass: '2016-(1)',
-            tableData2:[
-              { Na:'王强',No: '24320162201122'} ,
-              { Na:'赵某',No:'24320162200000' },
-              { Na:'高某',No:'24232001213213' },
-              { Na:'方某',No:'24323425233232' },
-              { Na:'叶某',No:'24329753973845' }
-            ]
-          }
       }
+
     }
 </script>
 

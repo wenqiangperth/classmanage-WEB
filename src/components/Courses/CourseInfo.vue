@@ -74,16 +74,6 @@
               <td style="text-align: center">{{endTime}}</td>
             </tr>
             <tr>
-              <td style="width: 30%">性别要求:</td>
-              <td style="text-align: center">男:{{maleNum}}  女:{{femaleNum}}</td>
-            </tr>
-            <!--
-            <tr>
-              <td style="width: 30%">星座要求:</td>
-              <td style="text-align: center">{{courseInfo.star}}</td>
-            </tr>
-            -->
-            <tr>
               <td style="width: 30%">冲突课程:</td>
               <td style="text-align:center" v-for="(item,index) in defeatCourse">
                 {{item.name}}({{item.teacher}})</td>
@@ -133,13 +123,13 @@
             .then(res=>{
               console.log(res);
               if(res.status===200){
-                window.localStorage["token"]=res.headers.authorization
-                that.presentationWeight=res.data.presentationPercentage
-                that.questionWeight=res.data.questionPercentage
-                that.reportWeight=res.data.reportPercentage
-                that.startTime=res.data.teamStartTime
-                that.endTime=res.data.teamEndTime
-                that.intro=res.data.introduction
+                window.localStorage["token"]=res.headers.authorization;
+                that.presentationWeight=res.data.presentationPercentage;
+                that.questionWeight=res.data.questionPercentage;
+                that.reportWeight=res.data.reportPercentage;
+                that.startTime=res.data.teamStartTime;
+                that.endTime=res.data.teamEndTime;
+                that.intro=res.data.introduction;
               }
               else if(res.status===404)
               {

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="main" :style="note">
       <header class="home-title">
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
@@ -26,65 +26,67 @@
         <img src="../../../assets/2.jpg" style="border-radius: 50px"/>
       </div>
 
-      <div class="intro"
-           style="height: 50px; background-color: #F0F0F0; display: block">
-        <label style="text-align: left; line-height: 50px">
-          轮次：
-        </label>
-        <label style="text-align: center">
-          第1{{order}}轮
-        </label>
-      </div>
+     <div style="opacity: 0.8">
+       <div class="intro"
+            style="height: 50px; background-color: #F0F0F0; display: block">
+         <label style="text-align: left; line-height: 50px">
+           轮次：
+         </label>
+         <label style="text-align: center">
+           第{{courseInfo.roundSerial}}轮
+         </label>
+       </div>
 
-      <div class="intro"
-           style="height: 50px; background-color: #fff; display: block">
-        <label style="text-align: left; line-height: 50px">
-          主题：
-        </label>
-        <label style="text-align: center">
-          领域模型{{topic}}
-        </label>
-      </div>
+       <div class="intro"
+            style="height: 50px; background-color: #fff; display: block">
+         <label style="text-align: left; line-height: 50px">
+           主题：
+         </label>
+         <label style="text-align: center">
+           {{courseInfo.seminarName}}
+         </label>
+       </div>
 
-      <div class="intro"
-           style="height: 50px; background-color: #F0F0F0; display: block">
-        <label style="text-align: left; line-height: 50px">
-          课次序号：
-        </label>
-        <label style="text-align: center">
-          第1次
-        </label>
-      </div>
+       <div class="intro"
+            style="height: 50px; background-color: #F0F0F0; display: block">
+         <label style="text-align: left; line-height: 50px">
+           课次序号：
+         </label>
+         <label style="text-align: center">
+           第{{courseInfo.seminarSerial}}次
+         </label>
+       </div>
 
-      <div class="intro"
-           style="height: 50px; background-color: #fff; display: block">
-        <label style="text-align: left; line-height: 50px">
-          课程情况：
-        </label>
-        <label style="text-align: center; color: #66CCCC">
-          正在进行{{status}}
-        </label>
-      </div>
+       <div class="intro"
+            style="height: 50px; background-color: #fff; display: block">
+         <label style="text-align: left; line-height: 50px">
+           课程情况：
+         </label>
+         <label style="text-align: center; color: #66CCCC">
+           {{status}}
+         </label>
+       </div>
 
-      <div class="intro"
-           style="height: 50px; background-color: #F0F0F0; display: block">
-        <label style="text-align: left; line-height: 50px">
-          展示材料：
-        </label>
-        <a style="text-align: center; color: #66CCCC" @click="check">
-          查看信息
-        </a>
-      </div>
+       <div class="intro"
+            style="height: 50px; background-color: #F0F0F0; display: block">
+         <label style="text-align: left; line-height: 50px">
+           展示材料：
+         </label>
+         <a style="text-align: center; color: #66CCCC;text-decoration: underline" @click="check">
+           查看信息
+         </a>
+       </div>
 
-      <div class="intro"
-           style="height: 50px; background-color: #fff; display: block">
-        <label style="text-align: left; line-height: 50px">
-          PPT：
-        </label>
-        <a style="text-align: center; color: #66CCCC" @click="check">
-          已提交
-        </a>
-      </div>
+       <div class="intro"
+            style="height: 50px; background-color: #fff; display: block">
+         <label style="text-align: left; line-height: 50px">
+           PPT：
+         </label>
+         <a style="text-align: center; color: #66CCCC" @click="check">
+           已提交
+         </a>
+       </div>
+     </div>
 
       <div class="enter-seminar">
         <a @click="present">进入讨论课</a>
@@ -103,6 +105,8 @@
           <i class="el-icon-upload"></i> 上传书面报告</el-button>
       </el-upload>
 
+      <div style="height: 50px;"></div>
+
     </div>
 </template>
 
@@ -112,34 +116,36 @@
       data(){
         return{
           seminarId:'',
-          order:'',
-          topic:'',
-          status:'',
-          intro:'',
-          fileList:[]
+          courseId:'',
+          courseName:'',
+          klassId:'',
+          seminarInfo:[],
+          status:'正在进行',
+          fileList:[],
+          note:{
+            backgroundImage:"url("+require("../../../assets/backpic.jpg")+")",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "100% 100%"
+          }
         }
       },
       created(){
         let that = this;
-        //传入正在进行的seminarId
+        that.seminarId=that.$route.query.seminarId;
+        that.courseId=that.$route.query.courseId;
+        that.courseName=that.$route.query.courseName;
+        that.klassId=that.$route.query.klassId;
         that.$axios({
           method:'GET',
-          url:'/seminar/seminarId',
+          url:'/seminar/'+that.seminarId,
           headers:{
-            'token':window.localStorage['token']
-          },
-          params:{
-            seminarId:that.seminarId
+            'Authorization':window.localStorage['token']
           }
         })
           .then(res=>{
-            if(res.data.status===200){
-              console.log(res.data.data);
-              let data=res.data.data;
-              that.order=data.order;
-              that.topic=data.topic;
-              that.status=data.status;
-              // that.teamNumLimit=data.teamNumLimit;
+            console.log(res);
+            if(res.status===200){
+              this.seminarInfo=res.data;
             }
           })
           .catch(e=>{

@@ -26,7 +26,7 @@
     </div>
 
     <div class="main">
-      <el-collapse>
+      <el-collapse accordion>
         <el-collapse-item v-for="(round,index) in roundInfo"
                           :key="index" >
           <template slot="title" >
@@ -37,12 +37,11 @@
           </template>
           <div style="width: 100%">
             <div v-for="(seminar,semId) in courses">
-              <el-button class="btn" type="info" plain @click="dialogTableVisible = true">
+              <el-button class="btn" type="info" plain @click="checkScore(semId)">
                 <i class="el-icon-document"></i>
                 {{seminar.seminarName}}
               </el-button>
-            </div>
-            <div>
+
               <el-dialog
                 title="成绩"
                 :visible.sync="dialogTableVisible"
@@ -51,13 +50,13 @@
                   :data="tableData"
                   style="width: 100%">
                   <el-table-column
-                    prop="date"
+                    prop="name"
                     label="项目"
                     width="180"
                     align="center">
                   </el-table-column>
                   <el-table-column
-                    prop="name"
+                    prop="data"
                     label="成绩"
                     width="180"
                     align="center">
@@ -82,20 +81,21 @@
           courseId:'',
           teamId:'',
           roundInfo:[],
-          tableData: [{
-            date: 'ppt',
-            name: '5.0'
-          }, {
-            date: '书面报告',
-            name: '4.5'
-          }, {
-            date: '提问',
-            name: '5.0'
-          }, {
-            date: '总成绩',
-            name: '4.8'
-          }],
           courses: [],
+          tableData: [{
+            name:'展示',
+            data:''
+          },{
+            name:'提问',
+            data:''
+          },{
+            name:'书面报告',
+            data:''
+          },{
+            name:'总成绩',
+            data:''
+          }],
+          temp:[],
           dialogTableVisible: false
         };
       },
@@ -118,6 +118,25 @@
             else{
               alert("wrong")
             }
+          });
+
+        //根据courseId获得teamId
+        this.$axios({
+          method:'GET',
+          url:'course/'+this.courseId+'/myteam',
+          headers:{
+            'Authorization':window.localStorage['token']
+          }
+        })
+          .then(res=>{
+            console.log(res);
+            if(res.status===200){
+              this.teamId=res.data.id;
+              console.log('teamId :'+this.teamId);
+            }
+          })
+          .catch(e=>{
+            console.log(e);
           })
 
 
@@ -152,7 +171,30 @@
             })
         },
         checkScore(semId){
-          // let seminarId = this.courses[semId]
+           this.dialogTableVisible=true;
+           let seminarId = this.courses[semId].id;
+           console.log(seminarId);
+           this.$axios({
+             method:'GET',
+             url:'seminar/'+seminarId+'/team/'+this.$data.teamId+'/seminarscore',
+             headers:{
+               'Authorization': window.localStorage['token']
+             }
+           })
+             .then(res=>{
+               console.log(res);
+               if(res.status===200){
+                 this.temp=res.data.score;
+                 this.tableData[0].data=this.temp.presentationScore;
+                 this.tableData[1].data=this.temp.questionScore;
+                 this.tableData[2].data=this.temp.reportScore;
+                 this.tableData[3].data=this.temp.totalScore;
+                 console.log(this.tableData);
+               }
+             })
+             .catch(e=>{
+               console.log(e);
+             })
         }
       }
     }

@@ -43,10 +43,13 @@
         methods:{
           confirm(){
             let that = this;
-            alert(that.account);
+            console.log(window.localStorage['token']);
             that.$axios({
               method: 'GET',
               url: '/user/password',
+              headers:{
+                'Authorization':window.localStorage['token']
+              },
               params:{
                 account: that.account
               }

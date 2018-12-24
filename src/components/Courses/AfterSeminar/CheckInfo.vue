@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="main" :style="note">
     <header class="home-title">
       <div class="homeTitle">
         <i class="el-icon-arrow-left" @click="back"></i>
@@ -23,13 +23,14 @@
     </header>
     <div class="divHeight"></div>
 
-    <ul id="Files">
+    <ul id="Files" style="opacity: 0.85">
       <li v-for="(value,key) in items" @click="open2(key)">
         <a>第{{key+1}}组：</a>
         <i class="el-icon-document"></i>
         {{value.message}}
       </li>
     </ul>
+    <div style="height: 280px;"></div>
   </div>
 </template>
 
@@ -38,18 +39,22 @@
     name: "download",
     data(){
       return {
+        seminarId:'',
         attendanceId:'',
-        items:[
-          {message: '1-1'},
-          {message: '1-2'},
-          {message: '1-3'},
-          {message: '1-4'},
-          {message: '1-5'},
-          {message: '1-6'}
-        ]}
+        items:[{},{},{},{},{},{}],
+        note:{
+          backgroundImage:"url("+require("../../../assets/cartoon1.jpg")+")",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "100% 100%"
+        }
+      }
     },
     created(){
-      let that = this;
+      let that=this;
+      that.seminarId=that.$route.query.seminarId;
+      that.courseId=that.$route.query.courseId;
+      that.courseName=that.$route.query.courseName;
+      that.klassId=that.$route.query.klassId;
       //先获取展示的Id,展示顺序
 
       that.$axios({
@@ -60,8 +65,7 @@
         }
       })
         .then(res=>{
-          if(res.data.status===200){
-            let data = res.data.data;
+          if(res.status===200){
             that.items=data.order; //需要返回此次讨论课的展示顺序和对应ID
           }
         })
@@ -71,7 +75,16 @@
     },
     methods:{
       back(){
-        this.$router.push({path:'/Courses/AfterSeminar/SeminarInfo'})
+        this.$router.push({
+          path:'/Courses/AfterSeminar/SeminarInfo',
+          name:'SeminarInfo',
+          query:{
+            seminarId: this.seminarId,
+            courseId: this.courseId,
+            courseName: this.courseName,
+            klassId: this.klassId
+          }
+        })
       },
       open2(key) {
         let that = this;
@@ -120,7 +133,7 @@
     width: 100%;
     line-height: 70px;
     display: block;
-    background-color: #CCFF99;
+    background-color: #5CACEE;
     border-radius: 5px;
   }
 
