@@ -28,32 +28,32 @@
           </template>
           <div style="width: 100%">
             <div>
-              <el-button class="btn_info" type="info" plain @click="viewGrades(items)">
+              <el-button class="btn_info" type="info" plain @click="viewGrades(index)">
                 <i class="iconfont icon-chengjiguanli"></i>&nbsp;&nbsp;{{item[0]}}
               </el-button>
             </div>
             <div>
-              <el-button class="btn_info" type="info" plain @click="viewGroups(items)">
+              <el-button class="btn_info" type="info" plain @click="viewGroups(index)">
                 <i class="iconfont icon-zudui"></i>&nbsp;&nbsp;{{item[1]}}
               </el-button>
             </div>
             <div>
-              <el-button class="btn_info" type="info" plain @click="viewCourseInfo(items)">
+              <el-button class="btn_info" type="info" plain @click="viewCourseInfo(index)">
                 <i class="iconfont icon-xinxi1"></i>&nbsp;&nbsp;{{item[2]}}
               </el-button>
             </div>
             <div>
-              <el-button class="btn_info" type="info" plain @click="viewClassInfo(items)">
+              <el-button class="btn_info" type="info" plain @click="viewClassInfo(index)">
                 <i class="iconfont icon-xinxi"></i>&nbsp;&nbsp;{{item[3]}}
               </el-button>
             </div>
             <div>
-              <el-button class="btn_info" type="info" plain @click="gotoSeminar(items)">
+              <el-button class="btn_info" type="info" plain @click="gotoSeminar(index)">
                 <i class="iconfont icon-guanlianguize"></i>&nbsp;&nbsp;{{item[4]}}
               </el-button>
             </div>
             <div>
-              <el-button class="btn_info" type="info" plain @click="setShare(items.courseId,items.courseName)">
+              <el-button class="btn_info" type="info" plain @click="setShare(index)">
                 <i class="el-icon-share el-icon0"></i>&nbsp;&nbsp;{{item[5]}}
               </el-button>
             </div>
@@ -78,7 +78,7 @@
           '班级信息',
           '讨论课设置',
           '共享设置'
-        ]
+        ],
       }
     },
     created() {
@@ -132,7 +132,8 @@
           }
         });
       },
-      viewGrades(course) {
+      viewGrades(index) {
+        let course = this.courses[index];
         this.$router.push({
           path: '/teacher/StudentGrades',
           name: 'StudentGrades',
@@ -142,7 +143,7 @@
           }
         });
       },
-      viewGroups(course) {
+      viewGroups(index) {
         this.$router.push({
           path: '/teacher/StudentGroups',
           name: 'StudentGroups',
@@ -152,63 +153,51 @@
           }
         });
       },
-      viewCourseInfo(course) {
-        if (course.courseId !== course.seminarMainCourseId) {
+      viewCourseInfo(index) {
+        let course = this.courses[index];
           this.$router.push({
             path: '/teacher/CourseInfo',
             name: 'CourseInfo',
             params: {
-              courseId: course.courseId,
-              courseName: course.courseName,
-              isMaster: false
+              course: course
             }
           });
-        } else {
-          this.$router.push({
-            path: '/teacher/CourseInfo',
-            name: 'CourseInfo',
-            params: {
-              courseId: courseId,
-              courseName: courseName,
-              idMaster: true
-            }
-          });
-        }
-
       },
-      viewClassInfo(courseId, courseName) {
+      viewClassInfo(index) {
+        let course = this.courses[index];
         this.$router.push({
           path: '/teacher/ClassInfo',
           name: 'ClassInfo',
-          params: {
-            courseId: courseId,
-            courseName: courseName
+          query: {
+            courseId: course.courseId,
+            courseName: course.courseName
           }
         });
       },
-      gotoSeminar(courseId, courseName) {
+      gotoSeminar(index) {
+        let course = this.courses[index];
         this.$router.push({
           path: '/teacher/SeminarPage',
           name: 'SeminarPage',
           params: {
-            courseId: courseId,
-            courseName: courseName
+            course: course
           }
         });
       },
-      setShare(courseId, courseName) {
+      setShare(index) {
+        let course = this.courses[index];
         this.$router.push({
           path: '/teacher/SharePage',
           name: 'SharePage',
           params: {
-            courseId: courseId,
-            courseName: courseName
+            courseId: course.courseId,
+            courseName: course.courseName
           }
         });
       },
 
+      },
 
-    }
   }
 </script>
 

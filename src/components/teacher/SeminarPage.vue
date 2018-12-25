@@ -16,27 +16,26 @@
       <el-collapse accordion
                    background-color="#66CCCC">
         <el-collapse-item v-for="(items,index) in roundInfo"
-                          :key="index"
-        >
+                          :key="index">
           <template slot="title">
-            <div style="font-weight: bold">
-              &nbsp;&nbsp;<i class="el-icon-service el-icon0"></i>&nbsp;&nbsp;第{{items.roundSerial}}轮
+            <div style="font-weight: bold;width:100%;text-align: left;" @click="chooseRound(index)">
+              &nbsp;&nbsp;<i class="el-icon-service el-icon0"></i><span>&nbsp;&nbsp;第{{items.roundSerial}}轮</span>
             </div>
           </template>
           <div style="width: 100%">
             <el-button class="btn" type="info" plain @click="setRound(items.id)">该轮轮次设置</el-button>
           </div>
-          <div style="width:100%" v-for="(item,index0) in items.seminars" :key="index0">
+          <div style="width:100%" v-for="(item,index0) in seminars" :key="index0">
             <el-card style="width:100%">
               <div slot="header">
-                <span style="float:left;font-weight: bold;color: #616161">{{item.topic}}</span>
-                <i class="el-icon-edit el-icon0" style="float: right" v-if="true"
-                   @click="updateSeminarInfo(item.seminarId,roundInfo)"></i>
-                <i v-else-if="false"></i><!--接口后换isMaster -->
+                <span style="float:left;font-weight: bold;color: #616161">{{item.seminarName}}</span>
+                <i v-if="(seminarMainCourseId!==0)&&(courseId !== seminarMainCourseId)"></i>
+                <i class="el-icon-edit el-icon0" style="float: right" v-else
+                   @click="updateSeminarInfo(index0,index)"></i>
               </div>
               <div style="width: 100%" v-for="(class1,index1) in classInfo" :key="index1">
-                <div class="div0" @click="checkClassSeminar(class1.classId,item.seminarId,items.roundSerial)">
-                  <i class="iconfont icon-xinxi"></i>{{class1.grade}}-{{class1.classSerial}}
+                <div class="div0" @click="checkClassSeminar(class1.id,item.id,items.roundSerial)">
+                  <i class="iconfont icon-xinxi"></i>{{class1.grade}}-{{class1.klassSerial}}
                 </div>
               </div>
             </el-card>
@@ -44,12 +43,12 @@
 
         </el-collapse-item>
       </el-collapse>
-      <div style="width: 100%" v-if="true"><!-- 接口后换成isMaster-->
+      <div style="width: 100%" v-if="(seminarMainCourseId!==0)&&(courseId !== seminarMainCourseId)"></div>
+      <div style="width: 100%" v-else>
         <el-button class="btn" type="success" plain @click="NewSeminar(courseId,roundInfo)"
                    style="margin-top: 10px"><i class="el-icon-plus" style="font-weight: bolder"></i>&nbsp;&nbsp;新建讨论课
         </el-button>
       </div>
-      <div style="width: 100%" v-else-if="!isMaster"></div>
 
     </div>
   </div>
@@ -62,55 +61,47 @@
       return {
         courseId: 1,
         courseName: 'OOAD',
-        isMaster: true,
-        classInfo: [
-          {classId: 1, grade: 2016, classSerial: 1},
-          {classId: 2, grade: 2016, classSerial: 1},
-          {classId: 3, grade: 2016, classSerial: 1},
-        ],
+        isMaster: '',
+        classInfo: [],
+        seminars: [],
         roundInfo: [{
           id: 1,
           roundSerial: 1,
-          seminars: [
-            {seminarId: 1, topic: '业务流程分析', order: 2},
-            {seminarId: 2, topic: '邻域模型分析', order: 1},
-          ],
         },
-          {
-            id: 2,
-            roundSerial: 2,
-            seminars: [
-              {seminarId: 1, topic: '业务流程分析', order: 2},
-              {seminarId: 2, topic: '邻域模型分析', order: 1},
-            ],
-          }],
+        ],
         currentClassInfo: {},
+        teamMainCourseId: '',
+        seminarMainCourseId: ''
 
       }
     },
     created() {
-      this.getParams();
+      this.courseId = this.$route.params.course.courseId;
+      this.courseName = this.$route.params.course.courseName;
+      this.teamMainCourseId = this.$route.params.course.teamMainCourseId;
+      this.seminarMainCourseId = this.$route.params.course.seminarMainCourseId;
+
       let that = this;
       that.$axios({
         method: 'GET',
-        url: '/course/' + that.$data.courseId + '/round'
+        url: '/course/' + that.courseId + '/round',
+        headers: {
+          'Authorization': window.localStorage['token']
+        }
       })
         .then(res => {
-          if (res.data.status === 200) {
-            let data = res.data.data;
-            console.log(data);
-            that.roundInfo = [];
-            for (let i = 0; i < data.size; i++) {
-              that.roundInfo[i].id = data[i].id;
-              that.roundInfo[i].roundSerial = data[i].roundSerial;
-            }
+          if (res.status === 200) {
+            window.localStorage['token'] = res.headers.authorization;
+            let data = res.data;
+            that.roundInfo = data;
+            console.log(that.roundInfo);
 
-          } else if (res.data.status === 400) {
+          } else if (res.status === 400) {
             that.$message({
               message: '错误的ID格式',
               type: 'error'
             })
-          } else if (res.data.status === 404) {
+          } else if (res.status === 404) {
             that.$message({
               message: '未找到轮次',
               type: 'error'
@@ -121,26 +112,23 @@
       });
       that.$axios({
         method: 'GET',
-        url: '/course/' + that.$data.courseId + '/class'
+        url: '/course/' + that.courseId + '/class',
+        headers: {
+          'Authorization': window.localStorage['token']
+        }
       })
         .then(res => {
-          if (res.data.status === 200) {
-            let data = res.data.data;
-            console.log(data);
-            that.classInfo = [];
-            for (let i = 0; i < data.size; i++) {
-              that.classInfo.push({
-                classId: data[i].id,
-                grade: data[i].grade,
-                classSerial: data[i].classSerial
-              });
-            }
-          } else if (res.data.status === 400) {
+          if (res.status === 200) {
+            window.localStorage['token'] = res.headers.authorization;
+            let data = res.data;
+            that.classInfo = data;
+            //console.log(that.classInfo[0].grade);
+          } else if (res.status === 400) {
             that.$message({
               message: '错误的ID格式',
               type: 'error'
             })
-          } else if (res.data.status === 404) {
+          } else if (res.status === 404) {
             that.$message({
               message: '未找到班级',
               type: 'error'
@@ -149,39 +137,9 @@
         }).catch(e => {
         console.log(e);
       });
-      for (let i = 0; i < that.roundInfo.size; i++) {
-        that.$axios({
-          method: 'GET',
-          url: '/course/' + that.data.roundInfo[i].id + '/seminar'
-        })
-          .then(res => {
-            if (res.data.status === 200) {
-              let data_ = res.data.data;
-              console.log(data_);
-              that.roundInfo[i].seminars = [];
-              that.roundInfo[i].seminars = data_;
-            } else if (res.data.status === 400) {
-              that.$message({
-                message: '错误的ID格式',
-                type: 'error'
-              })
-            } else if (res.data.status === 404) {
-              that.$message({
-                message: '未找到讨论课',
-                type: 'error'
-              })
-            }
-          }).catch(e => {
-          console.log(e);
-        });
-      }
+
     },
     methods: {
-      getParams() {
-        this.courseId = this.$route.params.courseId;
-        this.courseName = this.$route.params.courseName;
-        this.isMaster = this.$route.params.isMaster;
-      },
       Back() {
         this.$router.go(-1);
       },
@@ -195,8 +153,8 @@
         })
       },
       NewSeminar(courseId, roundInfo) {
-        console.log("courseId" + courseId);
-        console.log("roundInfo" + roundInfo);
+        //console.log("courseId" + courseId);
+        //console.log("roundInfo" + roundInfo);
         this.$router.push({
           path: '/teacher/NewSeminar',
           name: 'NewSeminar',
@@ -206,13 +164,15 @@
           }
         })
       },
-      updateSeminarInfo(seminarId, roundInfo) {
+      updateSeminarInfo(index0, index) {
+        var seminar = this.seminars[index0];
+        var roundSerial = this.roundInfo[index].roundSerial;
         this.$router.push({
           path: '/teacher/UpdateSeminarInfo',
           name: 'UpdateSeminarInfo',
           params: {
-            seminarId: seminarId,
-            roundInfo: roundInfo
+            seminar: seminar,
+            roundSerial: roundSerial
           }
         })
       },
@@ -235,8 +195,41 @@
       },
       gotoHomePage() {
         this.$router.push({path: '/teacher/HomePage'});
-      }
+      },
+      chooseRound(index) {
+        let roundId = this.roundInfo[index].id;
+        let that = this;
+        that.$axios({
+          method: 'GET',
+          url: '/round/' + roundId + '/seminar',
+          headers: {
+            'Authorization': window.localStorage['token']
+          }
+        })
+          .then(res => {
+            if (res.status === 200) {
+              window.localStorage['token'] = res.headers.authorization;
+              let data_ = res.data;
+              that.seminars = data_;
+              console.log(that.seminars);
+            } else if (res.status === 400) {
+              that.$message({
+                message: '错误的ID格式',
+                type: 'error'
+              })
+            } else if (res.status === 404) {
+              that.$message({
+                message: '未找到讨论课',
+                type: 'error'
+              })
+            }
+          }).catch(e => {
+          console.log(e);
+        });
+      },
+
     },
+
     watch: {
       '$route': 'getParams'
     }

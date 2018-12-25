@@ -35,9 +35,11 @@
             <td style="width: 28%;height: 35px">是否可见:</td>
             <td style="text-align: right">
               <el-switch
-                v-model="isVisible"
-                active-color="#13ce66"
-                inactive-color="#ff4949">
+                :active-value=1
+                :inactive-value=0
+                v-model=isVisible
+                active-color="#66cccc"
+                inactive-color="#616161">
               </el-switch>
             </td>
           </tr>
@@ -92,7 +94,7 @@
             <td style="text-align: right">
               <el-select v-model="roundId" placeholder="请选择">
                 <el-option
-                  v-for="item in roundsInfo"
+                  v-for="item in roundInfo"
                   :key="item.id"
                   :label="item.roundSerial"
                   :value="item.id">
@@ -119,7 +121,7 @@
         courseId: 0,
         seminarName: '',
         introduction: '',
-        isVisible: true,
+        isVisible: '',
         startTime: '',
         endTime: '',
         signUpNum: 1,
@@ -152,7 +154,6 @@
         this.courseId = this.$route.params.courseId;
         this.roundInfo = this.$route.params.roundInfo;
         console.log("courseId" + this.courseId);
-        console.log("roundInfo" + this.roundInfo[0].seminars[0].topic);
       },
       returnSeminarPage() {
         this.$router.push({path: '/teacher/SeminarPage'});
@@ -171,16 +172,20 @@
             maxTeam: this.signUpNum,
             roundId: this.roundId,
             courseId: this.courseId
+          },
+          headers: {
+            'Authorization': window.localStorage['token']
           }
         })
           .then(res => {
-            if (res.data.status === 201) {
+            if (res.status === 200) {
+              window.localStorage['token'] = res.headers.authorization;
               this.$message({
                 message: '发布成功！',
                 type: 'success'
               });
               this.$router.push({path: '/teacher/seminarPage'});
-            } else if (res.data.status === 403) {
+            } else if (res.status === 403) {
               this.$message({
                 message: '用户权限不足！',
                 type: 'error'

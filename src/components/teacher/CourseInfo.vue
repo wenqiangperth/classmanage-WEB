@@ -6,7 +6,8 @@
           <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
-            <el-dropdown-item><i class="el-icon-service" @click="gotoSeminar">&nbsp;&nbsp;讨论课</i></el-dropdown-item>
+            <el-dropdown-item><i class="el-icon-service" @click="gotoTotalSeminar">&nbsp;&nbsp;讨论课</i>
+            </el-dropdown-item>
             <el-dropdown-item><i class="el-icon-back" @click="returnLogin">&nbsp;&nbsp;退 出</i></el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -66,7 +67,7 @@
         </table>
       </el-card>
       <div id="el-btn" style="width: 100%;margin-top: 20px"
-           v-show="(((teamMainCourseId===null)&&(seminarMainCourseId===null))||(teamMainCourseId!==null)&&(teamMainCourseId===courseId)||(seminarMainCourseId!==null)&&(seminarMainCourseId==courseId))">
+           v-show="(((teamMainCourseId===0)&&(seminarMainCourseId===0))||(teamMainCourseId!==0)&&(teamMainCourseId===courseId)||(seminarMainCourseId!==0)&&(seminarMainCourseId==courseId))">
         <el-button type="success"
                    @click="deleteCourse" plain
                    style="float: right;margin-bottom: 20px">
@@ -103,8 +104,8 @@
             }],
         teamStartTime: '2018-12-01 12:00:00',
         teamEndTime: '2018-12-06 12:00:00',
-          minNum: 6,
-          maxNum: 8,
+        minNum: 0,
+        maxNum: 0,
           maleNum: '2-4',
           femaleNum: '2-4',
           defeatCourse: [{
@@ -159,8 +160,8 @@
     },
     methods: {
       getParams() {
-        this.courseId = this.$route.params.courseId;
-        this.courseName = this.$route.params.courseName;
+        this.courseId = this.$route.params.course.courseId;
+        this.courseName = this.$route.params.course.courseName;
       },
       returnLogin() {
         this.$router.push({path: '/'});
@@ -171,15 +172,9 @@
       returnCourseManage() {
         this.$router.push({path: '/teacher/CourseManage'});
       },
-      gotoSeminar() {
+      gotoTotalSeminar() {
         this.$router.push({path: '/teacher/SeminarPage'});
       },
-      /*isMasterCourse() {
-        var btn = document.getElementById("el-btn");
-        if ((this.teamMainCourseId !== this.courseId) || (this.seminarMainCourseId !== this.courseId)) {
-          btn.style.display = 'none';
-        }
-      },*/
       deleteCourse() {
         MessageBox.confirm('此操作将永久删除该课程?', '提示', {
           confirmButtonText: '确定',
@@ -194,13 +189,15 @@
             }
           })
             .then(res => {
-              if (res.status === 204) {
-                window.localStorage['token'] = res.headers.authorization;
+              if (res.status === 200) {
+                this.$router.push({path: '/teacher/CourseManage'});
+                console.log("删除成功");
                 this.$message({
                   type: 'success',
                   message: '删除成功!'
                 });
-                this.$router.push({path: '/teacher/CourseManage'});
+                window.localStorage['token'] = res.headers.authorization;
+
               } else if (res.status === 400) {
                 this.$message({
                   type: 'error',

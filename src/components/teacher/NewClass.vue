@@ -89,24 +89,28 @@
           url: '/course/' + this.$data.courseId + '/class',
           data: {
             grade: this.classInfo.grade,
-            classSerial: this.classInfo.classSerial,
-            classTime: this.classInfo.classTime,
-            classLocation: this.classInfo.classLocation
+            klassSerial: this.classInfo.classSerial,
+            klassTime: this.classInfo.classTime,
+            klassLocation: this.classInfo.classLocation
+          },
+          headers: {
+            'Authorization': window.localStorage['token']
           }
         })
           .then(res => {
-            if (res.data.status === 201) {
+            if (res.status === 200) {
+              window.localStorage['token'] = res.headers.authorization;
               this.$message({
                 message: '新建成功！',
                 type: 'success'
               });
               this.$router.push({path: '/teacher/ClassInfo'});
-            } else if (res.data.status === 403) {
+            } else if (res.status === 403) {
               this.$message({
                 message: '用户权限不足！',
                 type: 'error'
               });
-            } else if (res.data.status === 404) {
+            } else if (res.status === 404) {
               this.$message({
                 message: '未找到课程！',
                 type: 'error'

@@ -29,7 +29,7 @@
           class="el-icon-plus" style="font-weight: bolder"></i> 新增共享
         </el-button>
       </div>
-      <el-collapse accordion v-for="(item,index) in shares"
+      <el-collapse accordion v-for="(item,index) in sharesTeam"
                    :key="index">
         <el-collapse-item>
           <template slot="title">
@@ -63,24 +63,52 @@
     data() {
       return {
         courseId: 1,
-        shares: [
+        sharesTeam: [
           {
-            courseName: 'J2EE',
-            teacher: '邱明',
-            shareType: '共享讨论课',
-            courseType: '主课程'
-          },
+            teamSharedId: '',
+            masterCourse: {
+              masterCourseId: '',
+              masterCourseName: '',
+              teacherName: ''
+            },
+            receiveCourse: [{
+              receiveCourseId: '',
+              receiveCourseName: '',
+              teacherName: ''
+            }]
+          }
+        ],
+        shareSeminar: [
           {
-            courseName: '软件工程',
-            teacher: '王梅红',
-            shareType: '共享分组',
-            courseType: '从课程'
+            seminarSharedId: '',
+            masterCourse: {
+              masterCourseId: '',
+              masterCourseName: '',
+              teacherName: ''
+            },
+            receiveCourse: [{
+              receiveCourseId: '',
+              receiveCourseName: '',
+              teacherName: ''
+            }]
           }
         ]
       }
     },
     created() {
       this.getParams();
+      this.$axios({
+        method: 'GET',
+        url: '/course/' + this.$data.courseId + '/share',
+        headers: {
+          'Authorization': window.localStorage['token']
+        }
+      })
+        .then(res => {
+          if (res.status === 200) {
+
+          }
+        })
     },
     methods: {
       getParams() {

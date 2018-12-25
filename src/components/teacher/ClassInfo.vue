@@ -21,23 +21,20 @@
            :key="index">
         <el-card>
           <div slot="header">
-            <span style="font-weight: bold">{{item.grade}}-{{item.classSerial}}</span>
+            <span style="font-weight: bold">{{item.grade}}-{{item.klassSerial}}</span>
           </div>
           <table style="width: 100%;font-weight: bold;color: dimgrey">
             <tr>
               <td style="width: 35%">讨论课时间:</td>
-              <td>{{item.classTime}}</td>
+              <td>{{item.klassTime}}</td>
             </tr>
             <tr>
               <td style="width: 35%">讨论课地点:</td>
-              <td>{{item.classLocation}}</td>
+              <td>{{item.klassLocation}}</td>
             </tr>
             <tr>
               <td style="width: 35%">学生名单:</td>
-              <td>{{item.nameList.name}}</td>
-            </tr>
-            <tr>
-              <td style="width: 35%"></td>
+              <!--<td>{{item.nameList.name}}</td>-->
               <td>
                 <el-upload
                   class="upload-demo"
@@ -46,9 +43,13 @@
                   :limit="3"
                   :on-exceed="handleExceed">
                   <el-button size="mini" type="info" plain>点击上传</el-button>
-                  <div slot="tip" class="el-upload__tip" style="float:right">未选择任何文件</div>
+                  <!--<div slot="tip" class="el-upload__tip" style="float:right">未选择任何文件</div>-->
                 </el-upload>
               </td>
+            </tr>
+            <tr>
+              <td style="width: 35%"></td>
+              <td></td>
             </tr>
           </table>
           <table style="width: 100%;text-align: center">
@@ -82,30 +83,27 @@
     name: "ClassInfo",
     data() {
       return {
-        courseId: 1,
+        courseId: 2,
         courseName: '',
         classInfo: [
           {
-            id: 1,
+            courseId: '',
+            id: 2,
             grade: 2016,
-            classSerial: 1,
-            classTime: '周三7，8节',
-            classLocation: '海韵教学楼',
-            nameList:
-              {
-                name: 'student.xlsx',
-                url: 'E:/name.xlsx'
-              }
+            klassSerial: 1,
+            klassTime: '周三7，8节',
+            klassLocation: '海韵教学楼',
           }
         ]
       }
     },
     created() {
       this.getParams();
+      console.log(this.courseId);
       let that = this;
       that.$axios({
         method: 'GET',
-        url: '/course/' + this.$data.classInfo.courseId + '/class',
+        url: '/course/' + that.$data.courseId + '/class',
         headers: {
           'Authorization': window.localStorage['token']
         }
@@ -115,19 +113,7 @@
             window.localStorage['token'] = res.headers.authorization;
             let data = res.data;
             console.log(data);
-            /*that.classInfo=[];
-            that.courseId = data[0].courseId;
-            for (let i = 0; i < data.length; i++) {
-              that.classInfo.push(
-                {
-                  id: data[i].id,
-                  grade: data[i].grade,
-                  classSerial: data[i].classSerial,
-                  classTime: data[i].classTime,
-                  classLocation: data[i].classLocation
-                }
-              )
-            }*/
+            that.classInfo = data;
           } else if (res.status === 400) {
             that.$message({
               type: 'error',
@@ -147,8 +133,8 @@
     ,
     methods: {
       getParams() {
-        this.classInfo.courseId = this.$route.params.courseId;
-        this.classInfo.courseName = this.$route.params.courseName;
+        this.courseId = this.$route.query.courseId;
+        this.courseName = this.$route.query.courseName;
       },
       gotoHomePage(){
         this.$router.push({path:'/teacher/HomePage'});
@@ -190,25 +176,29 @@
         }).then(() => {
           this.$axios({
             method: 'DELETE',
-            url: '/class/' + classId
+            url: '/class/' + classId,
+            headers: {
+              'Authorization': window.localStorage['token']
+            }
           })
             .then(res => {
-              if (res.data.status === 204) {
+              if (res.status === 200) {
+                window.localStorage['token'] = res.headers.authorization;
                 this.$message({
                   type: 'success',
                   message: '删除成功!'
                 });
-              } else if (res.data.status === 400) {
+              } else if (res.status === 400) {
                 this.$message({
                   type: 'error',
                   message: '错误的ID格式!'
                 });
-              } else if (res.data.status === 403) {
+              } else if (res.status === 403) {
                 this.$message({
                   type: 'error',
                   message: '用户的权限不足!'
                 });
-              } else if (res.data.status === 404) {
+              } else if (res.status === 404) {
                 this.$message({
                   type: 'error',
                   message: '未找到该班级!'

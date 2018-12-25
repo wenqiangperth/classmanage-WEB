@@ -36,7 +36,9 @@
             <td style="width: 28%;height: 35px">是否可见:</td>
             <td style="text-align: right">
               <el-switch
-                v-model="isVisible"
+                :active-value=1
+                :inactive-value=0
+                v-model=isVisible
                 active-color="#66cccc"
                 inactive-color="#616161">
               </el-switch>
@@ -103,16 +105,6 @@
           </tr>
         </table>
       </el-card>
-      <!--
-      <el-collapse accordion>
-        <el-collapse-item>
-          <template slot="title">
-            &nbsp;&nbsp;<i class="header-icon el-icon-info icon0"></i>&nbsp;&nbsp;2016--1
-          </template>
-
-        </el-collapse-item>
-      </el-collapse>
--->
       <el-button type="info" size="small"
                  style="float: right;margin-top: 15px;margin-bottom: 15px"
                  @click="deleteSeminar">删除该讨论课
@@ -132,13 +124,13 @@
     data() {
       return {
         seminarId: 1,
-        seminarName: '业务流程分析',
-        introduction: '界面导航图和所有界面原型设计课堂讨论每个小组15分组',
-        isVisible: true,
-        startTime: '2018-12-02 08:19:53',
-        endTime: '2018-12-06 08:19:53',
-        signUpNum: 6,
-        seminarSerial: 1,
+        seminarName: '',
+        introduction: '',
+        isVisible: '',
+        startTime: '',
+        endTime: '',
+        signUpNum: '',
+        seminarSerial: '',
         signUpOrder: [{
           value: '选项1',
           label: '自定'
@@ -160,19 +152,25 @@
       }
     },
     created() {
-      this.getParams();
+      this.seminarId = this.$route.params.seminar.id;
+      this.seminarName = this.$route.params.seminar.seminarName;
+      this.seminarSerial = this.$route.params.seminar.seminarSerial;
+      this.introduction = this.$route.params.seminar.introduction;
+      this.isVisible = this.$route.params.seminar.isVisible;
+      this.value1 = this.$route.params.roundSerial;
+      this.startTime = this.$route.params.seminar.enrollStartTime;
+      this.endTime = this.$route.params.seminar.enrollEndTime;
+      this.signUpNum = this.$route.params.seminar.maxTeam;
+      console.log(this.seminarId);
     },
     methods: {
-      getParams() {
-        this.seminarId = this.$route.params.seminarId;
-      },
       returnSeminarPage() {
         this.$router.push({path: '/teacher/SeminarPage'});
       },
       NewSuccess() {
         this.$axios({
           method: 'PUT',
-          url: '/seminar/' + this.$data.seminarId,
+          url: '/seminar/' + this.seminarId,
           data: {
             seminarId: this.seminarId,
             seminarName: this.seminarName,
@@ -183,20 +181,24 @@
             enrollStartTime: this.startTime,
             enrollEndTime: this.endTime,
             maxTeam: this.signUpNum
+          },
+          headers: {
+            'Authorization': window.localStorage['token']
           }
         }).then(res => {
-          if (res.data.status === 204) {
+          if (res.status === 200) {
+            window.localStorage['token'] = res.headers.authorization;
             this.$message({
               message: '修改成功！',
               type: 'success'
             });
             this.$router.push({path: '/teacher/seminarPage'});
-          } else if (res.data.status === 400) {
+          } else if (res.status === 400) {
             this.$message({
               message: '错误的ID格式！',
               type: 'error'
             });
-          } else if (res.data.status === 403) {
+          } else if (res.status === 403) {
             this.$message({
               message: '权限不足！',
               type: 'error'
@@ -213,26 +215,30 @@
         }).then(() => {
           this.$axios({
             method: 'DELETE',
-            url: '/seminar/' + this.$data.seminarId
+            url: '/seminar/' + this.$data.seminarId,
+            headers: {
+              'Authorization': window.localStorage['token']
+            }
           })
             .then(res => {
-              if (res.data.status === 204) {
+              if (res.status === 200) {
+                window.localStorage['token'] = res.headers.authorization;
                 this.$message({
                   type: 'success',
                   message: '删除成功!'
                 });
                 this.$router.push({path: '/teacher/SeminarPage'});
-              } else if (res.data.status === 400) {
+              } else if (res.status === 400) {
                 this.$message({
                   type: 'error',
                   message: '错误的ID格式!'
                 });
-              } else if (res.data.status === 403) {
+              } else if (res.status === 403) {
                 this.$message({
                   type: 'error',
                   message: '用户权限不足!'
                 });
-              } else if (res.data.status === 404) {
+              } else if (res.status === 404) {
                 this.$message({
                   type: 'error',
                   message: '未找到!'
