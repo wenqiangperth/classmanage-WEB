@@ -24,10 +24,10 @@
     <div class="divHeight"></div>
 
     <ul id="Files" style="opacity: 0.85">
-      <li v-for="(value,key) in items" @click="open2(key)">
-        <a>第{{key+1}}组：</a>
+      <li v-for="(team,key) in items">
+        <a>第{{team.teamOrder}}组：</a>
         <i class="el-icon-document"></i>
-        {{value.message}}
+        {{team.team.teamName}}
       </li>
     </ul>
     <div style="height: 280px;"></div>
@@ -41,7 +41,7 @@
       return {
         seminarId:'',
         attendanceId:'',
-        items:[{},{},{},{},{},{}],
+        items:[],
         note:{
           backgroundImage:"url("+require("../../../assets/cartoon1.jpg")+")",
           backgroundRepeat: "no-repeat",
@@ -55,18 +55,19 @@
       that.courseId=that.$route.query.courseId;
       that.courseName=that.$route.query.courseName;
       that.klassId=that.$route.query.klassId;
-      //先获取展示的Id,展示顺序
 
       that.$axios({
         method:'GET',
-        url:'/attendance/attendanceId/report',
-        params:{
-          attendanceId: that.attendanceId
+        url:'/seminar/'+that.seminarId+'/class/'+that.klassId+'/attendance',
+        headers:{
+          'Authorization':window.localStorage['token']
         }
       })
         .then(res=>{
+          console.log(res);
           if(res.status===200){
-            that.items=data.order; //需要返回此次讨论课的展示顺序和对应ID
+            window.localStorage['token']=res.headers.authorization;
+            that.items=res.data;            //需要返回此次讨论课的展示顺序和对应ID
           }
         })
         .catch(e=>{
@@ -167,7 +168,7 @@
   }
 
   ul {
-    text-align: left;
+    text-align: center;
     font-size: 20px;
   }
 

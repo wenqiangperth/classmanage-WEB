@@ -58,7 +58,7 @@
         -->
 
       <div class="ensure-change">
-        <a @click="conf">确认修改</a>
+        <a @click="conf">退出登陆</a>
       </div>
       <div style="height: 145px"></div>
     </div>
@@ -146,11 +146,12 @@
           this.$router.push({path:'/Account/ChangeEmail'});
         },
         conf(){
-          this.$message({
-            message:'已保存您的修改',
-            type:'success'
+          this.$router.push({
+            path:'/',
+            query:{
+              account: this.account
+            }
           });
-          this.$router.push({path:'/HomePage'});
         }
       }
     }

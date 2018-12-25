@@ -69,8 +69,12 @@
           },
           submit(){
             let that=this;
-            if(that.password !== that.password1)
-              alert("密码不一致，请重新输入");
+            if(that.password !== that.password1){
+              this.$message({
+                type:'error',
+                message:'密码不一致，请重新输入'
+              })
+            }
             else
               that.$axios({
                 method: 'PUT',
@@ -86,8 +90,11 @@
                 .then(res => {
                   if(res.status===200)
                     window.localStorage['token']=res.headers.authorization;
-                    alert("激活成功");
-                    this.$router.
+                    this.$message({
+                      type:'success',
+                      message:'账号激活成功'
+                    });
+                    this.$router.push({path:'/'});
                   if(res.status===400)
                     alert("信息不合法,检验邮箱是否正确！")
                 })

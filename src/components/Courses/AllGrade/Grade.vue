@@ -123,7 +123,7 @@
         //根据courseId获得teamId
         this.$axios({
           method:'GET',
-          url:'course/'+this.courseId+'/myteam',
+          url:'course/'+this.courseId+'/myTeam',
           headers:{
             'Authorization':window.localStorage['token']
           }

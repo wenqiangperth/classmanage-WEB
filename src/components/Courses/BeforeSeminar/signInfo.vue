@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :style="note">
       <header class="home-title">
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
@@ -22,41 +22,44 @@
         </div>
       </header>
       <div class="divHeight"></div>
-<!--
-      <ul id="Files">
-        <li v-for="(value,key) in items" >
-          <a id="order">第{{key+1}}组：</a>
-          <a id="info">{{value.message}}</a>
-        </li>
-      </ul>
- -->
-      <ul id="Files">
-        <li>
-          <a>第1组：</a>
-          <a>1-1 业务流程.ppt</a>
-        </li>
-        <li>
-          <a>第2组：</a>
-          <a style="color: red;">1-4 未提交</a>
-        </li>
-        <li>
-          <a>第3组：</a>
-          <a style="color: #66CCCC" @click="open">{{info}}</a>
-        </li>
-        <li>
-          <a>第4组：</a>
-          <a>1-7 业务流程</a>
-        </li>
-        <li>
-          <a>第5组：</a>
-          <a style="color: red">1-3 未提交</a>
-        </li>
-        <li>
-          <a>第6组：</a>
-          <a>1-2 业务流程.ppt</a>
-        </li>
-      </ul>
 
+      <div class="main" style="opacity: 0.85;">
+        <el-tag >本次最大报名组数：{{maxTeam}}</el-tag>
+        <ul id="Files">
+          <!--<li v-for="(num,index) in maxTeam">-->
+            <!--<a>第{{num}}组 <i class="el-icon-caret-right"></i></a>-->
+            <!--<a v-for="team in seminarInfo">-->
+              <!--<a v-if="team.teamOrder===num">-->
+                <!--<i class="el-icon-document"></i>-->
+                <!--{{team.team.teamName}}:-->
+                <!--<a v-if="team.pptName!==null" style="text-decoration: underline;color: #5CACEE;">-->
+                  <!--{{team.pptName}}-->
+                <!--</a>-->
+                <!--<a v-else>-->
+                  <!--未提交-->
+                <!--</a>-->
+              <!--</a>-->
+              <!--<a v-else>可报名</a>-->
+            <!--</a>-->
+          <!--</li>-->
+          <li v-for="(team,index) in seminarInfo">
+              <!--@click="open2(key)"-->
+            <a>第{{team.teamOrder}}组 <i class="el-icon-caret-right"></i></a>
+            <i class="el-icon-document"></i>
+            {{team.team.teamName}}:
+            <a v-if="team.pptName!==null" style="text-decoration: underline;color: #5CACEE;">
+              {{team.pptName}}
+            </a>
+            <a v-else>
+              未提交
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="post-seminar">
+        <a @click="sign">报名</a>
+      </div>
+      <div style="height: 230px;"></div>
     </div>
 </template>
 
@@ -65,53 +68,171 @@
         name: "signInfo",
       data(){
           return {
-            info: '可报名',
-            items:[
-              {message: '1-1 业务流程.ppt'},
-              {message: '1-4 未提交'},
-              {message: '可报名'},
-              {message: '1-7 业务流程'},
-              {message: '1-3 未提交'},
-              {message: '1-2 业务流程.ppt'}
-            ]
+            seminarId:'',
+            courseId:'',
+            courseName:'',
+            klassId:'',
+            maxTeam:'',
+            seminarInfo:[],
+            note:{
+              backgroundImage:"url("+require("../../../assets/seminarpic.jpg")+")",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "100% 100%"
+            },
           }
       },
+      created(){
+        let that = this;
+        that.seminarId=that.$route.query.seminarId;
+        that.courseId=that.$route.query.courseId;
+        that.courseName=that.$route.query.courseName;
+        that.klassId=that.$route.query.klassId;
+        that.$axios({
+          method:'GET',
+          url:'/seminar/'+that.seminarId+'/class/'+that.klassId+'/attendance',
+          headers:{
+            'Authorization':window.localStorage['token']
+          }
+        })
+          .then(res=>{
+            console.log(res);
+            if(res.status===200){
+              window.localStorage['token']=res.headers.authorization;
+              this.seminarInfo=res.data;
+              if(that.maxTeam===res.data.length){
+                this.$message({
+                  type:'warning',
+                  message:'当前讨论课已报满，暂时无法报名！'
+                })
+              }
+            }
+          })
+          .catch(e=>{
+            console.log(e);
+          });
+
+        that.$axios({
+          method:'GET',
+          url:'/seminar/'+that.seminarId,
+          headers:{
+            'Authorization':window.localStorage['token']
+          }
+        })
+          .then(res=>{
+            console.log(res);
+            if(res.status===200){
+              window.localStorage['token']=res.headers.authorization;
+              that.maxTeam=res.data.maxTeam;
+            }
+          })
+          .catch(e=>{
+            console.log(e)
+          })
+      },
       methods:{
-        open() {
-          this.$confirm('确定报名?', '提示', {
+        // open() {
+        //   this.$confirm('确定报名?', '提示', {
+        //     confirmButtonText: '确定',
+        //     cancelButtonText: '取消',
+        //     type: 'warning',
+        //     center: true
+        //   }).then(() => {
+        //     this.$message({
+        //       type: 'success',
+        //       message: '报名成功!'
+        //     });
+        //     this.info = '1-5 未提交';
+        //     this.$axios({
+        //       method:'POST',
+        //       url:'/seminar/seminarId/class/classId/presentation',
+        //       data:{
+        //         //传给后端报名的次序
+        //         //order:this.index
+        //       }
+        //     })
+        //       .then()
+        //       .catch(e=>{
+        //         console.log(e)
+        //       })
+        //   }).catch(() => {
+        //     this.$message({
+        //       type: 'info',
+        //       message: '已取消报名'
+        //     });
+        //     this.info = '可报名';
+        //   });
+        // },
+        back(){
+          this.$router.push({
+            path:'/Courses/BeforeSeminar/BeforeSeminar',
+            name:'BeforeSeminar',
+            query:{
+              seminarId:this.seminarId,
+              courseId: this.courseId,
+              courseName: this.courseName,
+              klassId: this.klassId
+            }
+          });
+        },
+        sign(){
+          this.$prompt('请输入展示顺序', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
-            type: 'warning',
-            center: true
-          }).then(() => {
-            this.$message({
-              type: 'success',
-              message: '报名成功!'
-            });
-            this.info = '1-5 未提交';
+            inputPlaceholder:'请输入未被报名的展示顺序',
+            center:true,
+            inputValidator: (value)=>{
+              if((value<=this.maxTeam&&value>0&&(value%1===0))||value==='')
+                return true;
+              else return false},
+          }).then(({ value }) => {
+            let teamOrder=value;
             this.$axios({
               method:'POST',
-              url:'/seminar/seminarId/class/classId/presentation',
+              url:'/seminar/'+this.$data.seminarId+'/class/'+this.$data.klassId+'/attendance',
+              headers:{
+                'Authorization':window.localStorage['token']
+              },
               data:{
-                //传给后端报名的次序
-                //order:this.index
+                teamOrder: teamOrder,
               }
             })
-              .then()
-              .catch(e=>{
-                console.log(e)
+              .then(res=>{
+                console.log(res);
+                if(res.status===200){
+                  this.$message({
+                    type: 'success',
+                    message: '你的展示顺序: ' + value
+                  });
+                  this.$router.push({
+                    path:'/Courses/BeforeSeminar/ChangeSign',    //报名成功进入可修改报名界面
+                    name:'ChangeSign',
+                    query:{
+                      seminarId:this.seminarId,
+                      courseId: this.courseId,
+                      courseName: this.courseName,
+                      klassId: this.klassId
+                    }
+                  })
+                }
+                else{
+                  this.$message({
+                    type:'error',
+                    message:'报名失败，请重新选择您的报名顺序'
+                  })
+                }
               })
+              .catch(e=>{
+                console.log(e);
+              })
+
           }).catch(() => {
             this.$message({
               type: 'info',
-              message: '已取消报名'
+              message: '取消输入'
             });
-            this.info = '可报名';
           });
         },
-        back(){
-          this.$router.push({path:'/Courses/BeforeSeminar/BeforeSeminar'});
-        }
+
       }
     }
 </script>
@@ -121,7 +242,7 @@
     width: 100%;
     line-height: 70px;
     display: block;
-    background-color: #CCFF99;
+    background-color: #5CACEE;
     border-radius: 5px;
   }
 
@@ -148,6 +269,25 @@
     display: block;
     color: #fff;
     height: 50px;
+  }
+
+  .post-seminar{
+    margin:20px 10px 15px 10px;
+    border:1px solid #66CCCC;
+    border-radius:25px;
+  }
+
+  .post-seminar a{
+    display: block;
+    width: 100%;
+    text-align: center;
+    line-height: 50px;
+    color: #fff;
+    background-color: #66CCCC;
+    font-size: 19px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    border-radius: 25px;
   }
 
   ul {

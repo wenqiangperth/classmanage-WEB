@@ -72,7 +72,7 @@
           <label style="text-align: left; line-height: 50px">
             展示材料：
           </label>
-          <a style="text-align: center; color: #66CCCC;text-decoration: underline" >
+          <a style="text-align: center; color: #66CCCC;text-decoration: underline" @click="sign">
             查看信息
           </a>
           <el-button @click="openIntro" style="width:100%; height: 50px;text-decoration: underline;background-color: #fff">点此查看讨论课介绍</el-button>
@@ -128,6 +128,8 @@
             if(res.status===200){
               window.localStorage['token']=res.headers.authorization;
               that.seminarInfo=res.data;
+              that.seminarInfo.enrollStartTime=that.timestampToTime(res.data.enrollStartTime);
+              that.seminarInfo.enrollEndTime=that.timestampToTime(res.data.enrollEndTime);
             }
           })
           .catch(e=>{
@@ -136,7 +138,24 @@
       },
       methods:{
           sign(){
-            this.$router.push({path:'/Courses/BeforeSeminar/signInfo'});
+            if(this.compare()){
+              this.$message({
+                type:'warning',
+                message:'现在不再可报名时间内，无法报名'
+              })
+            }
+            if(!this.compare()){
+              this.$router.push({
+                path:'/Courses/BeforeSeminar/signInfo',
+                name:'signInfo',
+                query:{
+                  seminarId:this.seminarId,
+                  courseId: this.courseId,
+                  courseName: this.courseName,
+                  klassId: this.klassId
+                }
+              });
+            }
           },
           back(){
               this.$router.push({
@@ -159,9 +178,44 @@
             });
           },
         getTime(){
-          this.nowTime=new Date().getTime();
+          this.nowTime=new Date();
           console.log(this.nowTime);
-        }
+        },
+        timestampToTime(timestamp){
+          let date = new Date(timestamp),//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+          Y = date.getFullYear() + '-',
+          M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-',
+          D = date.getDate() + ' ',
+          h = date.getHours() + ':',
+          m = date.getMinutes() + ' ',
+          s = date.getSeconds();
+          return Y+M+D+h+m;
+        },
+        compare(){
+          let nowTime=new Date();
+          let startTime=new Date(this.seminarInfo.enrollStartTime);
+          let endTime=new Date(this.seminarInfo.enrollEndTime);
+          let nowY=nowTime.getFullYear(),
+              nowM=nowTime.getMonth(),
+              nowD=nowTime.getDate(),
+              nowH=nowTime.getHours(),
+              startY=startTime.getFullYear(),
+              startM=startTime.getMonth(),
+              startD=startTime.getDate(),
+              startH=startTime.getHours(),
+              endY=endTime.getFullYear(),
+              endM=endTime.getMonth(),
+              endD=endTime.getDate(),
+              endH=endTime.getHours();
+          if((startY<=nowY)&&(startM<=nowM)&&(startD<=nowD)&&(startH<=nowH)){
+            if((nowY<=endY)&&(nowM<=endM)&&(nowD<=endD)&&(nowH<=endH)){
+              return true;
+            }
+            else
+              return false;
+          }
+          else return false;
+        },
       }
     }
 </script>

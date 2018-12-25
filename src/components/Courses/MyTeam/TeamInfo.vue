@@ -107,7 +107,7 @@
             })
             .catch(e=>{
               console.log(e)
-            })
+            });
 
           that.$axios({
             method:'GET',

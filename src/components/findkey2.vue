@@ -47,8 +47,12 @@
           },
           submit(){
            let that = this
-            if(that.password1 !== that.password)
-              alert("密码不一致，请重新输入！")
+            if(that.password1 !== that.password){
+              this.$message({
+                type:'error',
+                message:'密码不一致，请重新输入！'
+              })
+            }
             else{
               that.$axios({
                 method: 'PUT',
@@ -61,8 +65,8 @@
                 }
               })
                 .then(response => {
-                  window.localStorage["token"]=response.headers.authorization
-                  console.log(response)
+                  window.localStorage["token"]=response.headers.authorization;
+                  console.log(response);
                   if(response.status === 200){
                     alert("已成功修改密码")
                     this.$router.push({path:'/'})

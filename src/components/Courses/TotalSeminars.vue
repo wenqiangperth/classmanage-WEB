@@ -62,6 +62,7 @@
           teamId:'',
           roundInfo:[],
           klassId:'',
+          seminarInfo:[],
         };
       },
       created(){
@@ -87,6 +88,24 @@
               alert("wrong")
             }
           });
+
+        this.$axios({
+          method:'GET',
+          url:'/course/'+this.courseId+'/myTeam',
+          headers:{
+            'Authorization':window.localStorage['token']
+          }
+        })
+          .then(res=>{
+            console.log(res);
+            if(res.status===200){
+              this.teamId=res.data.id;
+              console.log('传来的teamId'+this.teamId);
+            }
+          })
+          .catch(e=>{
+            console.log(e);
+          })
 
       },
       methods: {
@@ -125,7 +144,60 @@
               console.log(res);
               if(res.status===200){
                 window.localStorage['token']=res.headers.authorization;
-                if(res.data.status===1){       //进入已结束的讨论课界面
+                if(res.data.status===2){        //进入已结束的讨论课界面
+                  this.$axios({
+                    method:'GET',
+                    url:'/seminar/'+seminarId+'/class/'+this.klassId+'/attendance',
+                    headers:{
+                      'Authorization':window.localStorage['token']
+                    }
+                  })
+                    .then(res=>{
+                      console.log(res);
+                      if(res.status===200){
+                        this.seminarInfo=res.data;
+                        let teamOrder;
+                        for(let i=0;i<this.seminarInfo.length;i++){
+                          if(this.teamId===this.seminarInfo[i].teamId)
+                            teamOrder=this.seminarInfo[i].teamOrder;
+                        }
+                        console.log('teamOrder'+teamOrder);
+                        if(teamOrder>=1){      //展示顺序不为空表示已报名，进入结束讨论课的界面，可以提交书面报告查看成绩
+                          this.$router.push({
+                            path:'/Courses/BeforeSeminar/AfterSign',
+                            name:'AfterSign',
+                            query:{
+                              seminarId:seminarId,
+                              courseId: this.courseId,
+                              courseName: this.courseName,
+                              klassId: this.klassId,
+                            }
+                          })
+                        }
+                        else{                //展示顺序为空表示尚未报名
+                          this.$router.push({
+                            path:'/Courses/AfterSeminar/SeminarInfo',
+                            name:'SeminarInfo',
+                            query:{
+                              seminarId:seminarId,
+                              courseId: this.courseId,
+                              courseName: this.courseName,
+                              klassId: this.klassId
+                            }
+                          })
+                        }
+                      }
+                    })
+                    .catch(e=>{
+                      console.log(e)
+                    })
+
+
+
+
+
+
+
                   this.$router.push({
                     path:'/Courses/AfterSeminar/SeminarInfo',
                     name:'SeminarInfo',
@@ -137,8 +209,7 @@
                     }
                   })
                 }
-                if(res.data.status===2){        //进入正在进行的讨论课
-                  window.localStorage['token']=res.headers.authorization;
+                if(res.data.status===1){        //进入正在进行的讨论课
                   this.$router.push({
                     path:'/Courses/Seminaring/Seminaring',
                     name:'Seminaring',
@@ -151,21 +222,54 @@
                   })
                 }
                 if(res.data.status===0){        //进入尚未进行的讨论课
-                  window.localStorage['token']=res.headers.authorization;
-                  this.$router.push({
-                    path:'/Courses/BeforeSeminar/BeforeSeminar',
-                    // name:'Seminaring',
-                    query:{
-                      seminarId:seminarId,
-                      courseId: this.courseId,
-                      courseName: this.courseName,
-                      klassId: this.klassId
+                  this.$axios({
+                    method:'GET',
+                    url:'/seminar/'+seminarId+'/class/'+this.klassId+'/attendance',
+                    headers:{
+                      'Authorization':window.localStorage['token']
                     }
                   })
-                }
-              }
-              else{
+                    .then(res=>{
+                      console.log(res);
+                      if(res.status===200){
+                        this.seminarInfo=res.data;
+                        let teamOrder;
+                        for(let i=0;i<this.seminarInfo.length;i++){
+                          if(this.teamId===this.seminarInfo[i].teamId)
+                            teamOrder=this.seminarInfo[i].teamOrder;
+                        }
+                        console.log('teamOrder'+teamOrder);
+                        if(teamOrder>=1){      //展示顺序不为空表示已报名，进入修改报名界面
+                          this.$router.push({
+                            path:'/Courses/BeforeSeminar/ChangeSign',
+                            name:'ChangeSign',
+                            query:{
+                              seminarId:seminarId,
+                              courseId: this.courseId,
+                              courseName: this.courseName,
+                              klassId: this.klassId,
+                            }
+                          })
+                        }
+                        else{                //展示顺序为空表示尚未报名
+                          this.$router.push({
+                            path:'/Courses/BeforeSeminar/BeforeSeminar',
+                            // name:'Seminaring',
+                            query:{
+                              seminarId:seminarId,
+                              courseId: this.courseId,
+                              courseName: this.courseName,
+                              klassId: this.klassId
+                            }
+                          })
+                        }
+                      }
+                    })
+                    .catch(e=>{
+                      console.log(e)
+                    })
 
+                }
               }
             })
         }
