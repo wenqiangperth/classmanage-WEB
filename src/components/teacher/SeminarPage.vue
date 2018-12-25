@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="head" class="head">
-      <div class="title"><i class="el-icon-back icon1 icon0" @click="Back"></i>{{courseName}}
+      <div class="title"><i class="el-icon-back icon1 icon0" @click="Back"></i>{{course.courseName}}
         <el-dropdown class="plus" trigger="click">
           <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
@@ -29,9 +29,9 @@
             <el-card style="width:100%">
               <div slot="header">
                 <span style="float:left;font-weight: bold;color: #616161">{{item.seminarName}}</span>
-                <i v-if="(seminarMainCourseId!==0)&&(courseId !== seminarMainCourseId)"></i>
+                <i v-if="(course.seminarMainCourseId!==0)&&(course.courseId !== course.seminarMainCourseId)"></i>
                 <i class="el-icon-edit el-icon0" style="float: right" v-else
-                   @click="updateSeminarInfo(index0,index)"></i>
+                   @click="updateSeminarInfo(index0)"></i>
               </div>
               <div style="width: 100%" v-for="(class1,index1) in classInfo" :key="index1">
                 <div class="div0" @click="checkClassSeminar(class1.id,item.id,items.roundSerial)">
@@ -43,9 +43,10 @@
 
         </el-collapse-item>
       </el-collapse>
-      <div style="width: 100%" v-if="(seminarMainCourseId!==0)&&(courseId !== seminarMainCourseId)"></div>
+      <div style="width: 100%"
+           v-if="(course.seminarMainCourseId!==0)&&(course.courseId !== course.seminarMainCourseId)"></div>
       <div style="width: 100%" v-else>
-        <el-button class="btn" type="success" plain @click="NewSeminar(courseId,roundInfo)"
+        <el-button class="btn" type="success" plain @click="NewSeminar(course.courseId,roundInfo)"
                    style="margin-top: 10px"><i class="el-icon-plus" style="font-weight: bolder"></i>&nbsp;&nbsp;新建讨论课
         </el-button>
       </div>
@@ -59,16 +60,10 @@
     name: "temp",
     data() {
       return {
-        courseId: 1,
-        courseName: 'OOAD',
-        isMaster: '',
+        course: [],
         classInfo: [],
         seminars: [],
-        roundInfo: [{
-          id: 1,
-          roundSerial: 1,
-        },
-        ],
+        roundInfo: [],
         currentClassInfo: {},
         teamMainCourseId: '',
         seminarMainCourseId: ''
@@ -76,15 +71,12 @@
       }
     },
     created() {
-      this.courseId = this.$route.params.course.courseId;
-      this.courseName = this.$route.params.course.courseName;
-      this.teamMainCourseId = this.$route.params.course.teamMainCourseId;
-      this.seminarMainCourseId = this.$route.params.course.seminarMainCourseId;
-
+      this.course = this.$route.params.course;
+      console.log(this.course);
       let that = this;
       that.$axios({
         method: 'GET',
-        url: '/course/' + that.courseId + '/round',
+        url: '/course/' + that.course.courseId + '/round',
         headers: {
           'Authorization': window.localStorage['token']
         }
@@ -94,7 +86,7 @@
             window.localStorage['token'] = res.headers.authorization;
             let data = res.data;
             that.roundInfo = data;
-            console.log(that.roundInfo);
+            console.log("轮次" + that.roundInfo[0].id);
 
           } else if (res.status === 400) {
             that.$message({
@@ -112,7 +104,7 @@
       });
       that.$axios({
         method: 'GET',
-        url: '/course/' + that.courseId + '/class',
+        url: '/course/' + that.course.courseId + '/class',
         headers: {
           'Authorization': window.localStorage['token']
         }
@@ -122,7 +114,7 @@
             window.localStorage['token'] = res.headers.authorization;
             let data = res.data;
             that.classInfo = data;
-            //console.log(that.classInfo[0].grade);
+            //console.log(that.classInfo[0]);
           } else if (res.status === 400) {
             that.$message({
               message: '错误的ID格式',
@@ -148,44 +140,46 @@
           path: '/teacher/SetRound',
           name: 'SetRound',
           params: {
-            roundId: roundId
+            roundId: roundId,
+            course: this.course
           }
         })
       },
       NewSeminar(courseId, roundInfo) {
-        //console.log("courseId" + courseId);
-        //console.log("roundInfo" + roundInfo);
         this.$router.push({
           path: '/teacher/NewSeminar',
           name: 'NewSeminar',
           params: {
             courseId: courseId,
-            roundInfo: roundInfo
+            roundInfo: roundInfo,
+            course: this.course
           }
         })
       },
-      updateSeminarInfo(index0, index) {
-        var seminar = this.seminars[index0];
-        var roundSerial = this.roundInfo[index].roundSerial;
+      updateSeminarInfo(index0) {
+        var seminarId = this.seminars[index0].id;
+        var roundInfo = this.roundInfo;
         this.$router.push({
           path: '/teacher/UpdateSeminarInfo',
           name: 'UpdateSeminarInfo',
           params: {
-            seminar: seminar,
-            roundSerial: roundSerial
+            seminarId: seminarId,
+            roundInfo: roundInfo,
+            course: this.course
           }
         })
       },
       checkClassSeminar(classId, seminarId, roundId) {
-        console.log("classId" + classId);
-        console.log("seminarId" + seminarId);
+        //console.log("classId" + classId);
+        //console.log("seminarId" + seminarId);
         this.$router.push({
           path: '/teacher/BeforeSeminar',
           name: 'beforeSeminar',
           params: {
             classId: classId,
             seminarId: seminarId,
-            roundId: roundId
+            roundId: roundId,
+            course: this.course
           }
         })
 
@@ -211,7 +205,7 @@
               window.localStorage['token'] = res.headers.authorization;
               let data_ = res.data;
               that.seminars = data_;
-              console.log(that.seminars);
+              console.log("讨论课：" + res.data[0].id);
             } else if (res.status === 400) {
               that.$message({
                 message: '错误的ID格式',
@@ -229,10 +223,6 @@
       },
 
     },
-
-    watch: {
-      '$route': 'getParams'
-    }
   }
 </script>
 

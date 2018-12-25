@@ -156,7 +156,8 @@
           path: '/teacher/NewClass',
           name: 'NewClass',
           params: {
-            courseId: courseId
+            courseId: courseId,
+            courseName: this.courseName
           }
         });
       },
@@ -188,6 +189,9 @@
                   type: 'success',
                   message: '删除成功!'
                 });
+                this.$router.push({
+                  path: '/teacher/CourseManage',
+                })
               } else if (res.status === 400) {
                 this.$message({
                   type: 'error',

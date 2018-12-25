@@ -31,18 +31,18 @@
                v-for="(item,index) in results"
                :key="index">
           <tr>
-            <td style="width: 15%">{{item.groupId}}</td>
+            <td style="width: 15%">{{classSerial}}-{{item.teamSerial}}</td>
             <td style="width: 21.25%;">
-              <el-input class="input0" placeholder="成绩" v-model="item.pre"></el-input>
+              <el-input class="input0" placeholder="成绩" v-model="item.score.presentationScore"></el-input>
             </td>
             <td style="width: 21.25%;">
-              <el-input class="input0" placeholder="成绩" v-model="item.question"></el-input>
+              <el-input class="input0" placeholder="成绩" v-model="item.score.questionScore"></el-input>
             </td>
             <td style="width: 21.25%;">
-              <el-input class="input0" placeholder="成绩" v-model="item.report"></el-input>
+              <el-input class="input0" placeholder="成绩" v-model="item.score.reportScore"></el-input>
             </td>
             <td>
-              <el-input placeholder="成绩" v-model="item.all" :disabled="true"></el-input>
+              <el-input placeholder="成绩" v-model="item.score.totalScore" :disabled="true"></el-input>
             </td>
           </tr>
         </table>
@@ -64,50 +64,55 @@
     name: "ResultsPage",
     data() {
       return {
-        results: [
-          {
-            groupId: '3-1',
-            pre: '5.0',
-            question: '5.0',
-            report: '5.0',
-            all: '5.0'
-          },
-          {
-            groupId: '3-2',
-            pre: '5.0',
-            question: '5.0',
-            report: '5.0',
-            all: '5.0'
-          }, {
-            groupId: '3-3',
-            pre: '5.0',
-            question: '5.0',
-            report: '5.0',
-            all: '5.0'
-          },
-          {
-            groupId: '3-4',
-            pre: '5.0',
-            question: '5.0',
-            report: '5.0',
-            all: '5.0'
-          },
-          {
-            groupId: '3-5',
-            pre: '5.0',
-            question: '5.0',
-            report: '5.0',
-            all: '5.0'
-          },
-          {
-            groupId: '3-6',
-            pre: '5.0',
-            question: '5.0',
-            report: '5.0',
-            all: '5.0'
-          }
-        ]
+        seminarId: '',
+        course: [],
+        classId: '',
+        roundId: '',
+        results: [],
+        classSerial: ''
       }
+    },
+    created() {
+      this.course = this.$route.params.course;
+      this.seminarId = this.$route.params.seminarId;
+      this.roundId = this.$route.params.roundId;
+      this.classId = this.$route.params.classId;
+      let that = this;
+      that.$axios({
+        method: 'GET',
+        url: '/class/' + that.classId,
+        headers: {
+          'Authorization': window.localStorage['token']
+        }
+      })
+        .then(res => {
+          if (res.status === 200) {
+            window.localStorage['token'] = res.headers.authorization;
+            console.log(res.data);
+            that.classSerial = res.data.klassSerial;
+          }
+        })
+        .catch(e => {
+          console.log(e);
+        });
+      that.$axios({
+        method: 'GET',
+        url: '/seminar/' + that.seminarId + '/class/' + that.classId + '/seminarscore',
+        headers: {
+          'Authorization': window.localStorage['token']
+        }
+      })
+        .then(res => {
+          if (res.status === 200) {
+            window.localStorage['token'] = res.headers.authorization;
+            console.log(res.data);
+            that.results = res.data;
+          }
+        })
+        .catch(e => {
+          console.log(e);
+        });
+
     },
     methods: {
       gotoHomePage(){
@@ -117,11 +122,37 @@
         this.$router.push({path:'/teacher/SeminarPage'});
       },
       updateSuccess() {
-        this.$message({
-          message: '修改成功!',
-          type: 'success'
-        });
-        this.$router.push({path: '/teacher/AfterSeminar'});
+        this.$axios({
+          method: 'PUT',
+          url: '/seminar/' + this.seminarId,
+          data: {
+            results: this.results
+          },
+          headers: {
+            'Authorization': window.localStorage['token']
+          }
+        })
+          .then(res => {
+            if (res.status === 200) {
+              this.$message({
+                message: '修改成功!',
+                type: 'success'
+              });
+              this.$router.push({
+                path: '/teacher/BeforeSeminar',
+                name: 'beforeSeminar',
+                params: {
+                  seminarId: this.seminarId,
+                  classId: this.classId,
+                  roundId: this.roundId,
+                  course: this.course
+                }
+              });
+            }
+          }).catch(e => {
+          console.log(e);
+        })
+
       },
       returnAfterSeminar() {
         this.$router.push({path: '/teacher/AfterSeminar'});

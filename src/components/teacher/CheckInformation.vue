@@ -42,6 +42,11 @@
     name: "CheckInfo",
     data() {
       return {
+        attendanceId: '',
+        classId: '',
+        seminarId: '',
+        course: [],
+        roundId: '',
         groupInfo: [
           {
             id: 1,
@@ -66,9 +71,43 @@
         ]
       }
     },
+    created() {
+      this.classId = this.$route.params.classId;
+      this.seminarId = this.$route.params.seminarId;
+      this.course = this.$route.params.course;
+      this.roundId = this.$route.params.roundId;
+      let that = this;
+      that.$axios({
+        method: 'GET',
+        url: '/seminar/' + that.seminarId + '/class/' + that.classId + '/attendance',
+        headers: {
+          'Authorization': window.localStorage['token']
+        }
+      })
+        .then(res => {
+          if (res.status === 200) {
+            window.localStorage['token'] = res.headers.authorization;
+            let data = res.data;
+            console.log(data);
+
+          }
+        })
+        .catch(e => {
+          console.log(e);
+        })
+    },
     methods: {
       Back() {
-        this.$router.go(-1);
+        this.$router.push({
+          path: '/teacher/BeforeSeminar',
+          name: 'beforeSeminar',
+          params: {
+            course: this.course,
+            roundId: this.roundId,
+            classId: this.classId,
+            seminarId: this.seminarId
+          }
+        })
       },
       gotoSeminar() {
         this.$router.push({path: '/teacher/SeminarPage'});

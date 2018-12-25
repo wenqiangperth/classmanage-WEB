@@ -144,6 +144,7 @@
         });
       },
       viewGroups(index) {
+        let course = this.courses[index];
         this.$router.push({
           path: '/teacher/StudentGroups',
           name: 'StudentGroups',
@@ -181,6 +182,7 @@
           name: 'SeminarPage',
           params: {
             course: course
+
           }
         });
       },

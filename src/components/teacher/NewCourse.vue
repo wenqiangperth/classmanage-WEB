@@ -42,19 +42,13 @@
           </tr>
         </table>
       </el-card>
-      <el-card class="box-card">
-        <table
-          style="width: 100%">
-          <tr>
-            <td style="width:30%">小组人数:</td>
-            <td>
-              <el-input placeholder="下限" v-model="course.minNum"></el-input>
-            </td>
-            <td>
-              <el-input placeholder="上限" v-model="course.maxNum"></el-input>
-            </td>
-          </tr>
-        </table>
+      <el-card style="width: 100%">
+        <div slot="header">
+          <span style="font-weight: bold;color: #616161;">组队要求:</span>
+          <el-button type="text" style="float: right; padding: 3px 0" @click="setTeamRequires">
+            <i class="el-icon-d-arrow-right" style="font-weight: bolder;font-size: 16px;color: #66cccc"></i>
+          </el-button>
+        </div>
         <table
           style="width:100%">
           <tr>
@@ -77,81 +71,9 @@
                 placeholder="选择日期时间"
                 style="width: 100%">
               </el-date-picker>
-            </td>
-          </tr>
-          <tr style="height: 40px">
-            <td style="width: 28%">组员性别:</td>
-            <td style="text-align: right">
-              <el-switch
-                v-model="course.isGenderRequired"
-                active-color="#66cccc"
-                inactive-color="#cccccc"
-                >
-              </el-switch>
-            </td>
-          </tr>
-        </table>
-        <div id="table1" style="width: 100%;">
-          <table
-            style="width: 100%;">
-            <tr>
-              <td style="width:30%">男生人数:</td>
-              <td>
-                <el-input placeholder="下限" v-model="course.minBoyNum"></el-input>
-              </td>
-              <td>
-                <el-input placeholder="上限" v-model="course.maxBoyNum"></el-input>
               </td>
             </tr>
           </table>
-        </div>
-        <div id="table2" style="width: 100%;">
-          <table
-            style="width: 100%;">
-            <tr>
-              <td style="width:30%">女生人数:</td>
-              <td>
-                <el-input placeholder="下限" v-model="course.minGirlNum"></el-input>
-              </td>
-              <td>
-                <el-input placeholder="上限" v-model="course.maxGirlNum"></el-input>
-              </td>
-            </tr>
-          </table>
-        </div>
-
-        <!--
-                <table style="width: 100%;">
-                  <tr style="height: 40px">
-                    <td style="width:40%;"><label>是否根据星座分组:</label></td>
-                    <td style="text-align: right">
-                      <el-switch
-                        v-model="course.isGroupByConstellation"
-                        active-color="#66cccc"
-                        inactive-color="#cccccc"
-                      >
-                      </el-switch>
-                    </td>
-                  </tr>
-                </table>
-                -->
-        <el-table :data="data0">
-          <el-table-column prop="name" label="冲突课程">
-            <template slot-scope="scope">
-              <el-select v-model="data0[scope.$index]" placeholder="请选择">
-                <el-option
-                  v-for="item in options3"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </template>
-          </el-table-column>
-        </el-table>
-        <el-button type="info" size="small" style="float: right;margin-top: 5px;margin-bottom: 5px" @click="addObject">新增对象</el-button>
-
-
       </el-card>
       <div style="width: 100%;margin-top: 20px">
         <el-button class="btn" type="success" plain @click="NewSuccess">发布</el-button>
@@ -204,13 +126,8 @@
         data0: [],
       }
     },
-    //created() {
-    //  this.getParams();
-    // },
+
     methods: {
-      /*  getParams() {
-          this.course.teacherId = this.$route.params.teacherId;
-        },*/
       returnCourseManage() {
         this.$router.push({path: '/teacher/CourseManage'});
       },
@@ -251,26 +168,9 @@
             console.log(e);
           })
       },
-      addObject(){
-        this.data0.push({});
+      setTeamRequires() {
+        this.$router.push({path: '/teacher/SetTeamRequires'});
       }
-      /*displayTable(temp){
-        if(temp){
-          var table1=document.getElementById("table1");
-          var table2=document.getElementById("table2");
-          table1.style.display="block";
-          table2.style.display="block";
-        }else{
-          let table3=document.getElementById("table1");
-          let table4=document.getElementById("table2");
-          table3.style.display="none";
-          table4.style.display="none";
-        }}
-*/
-
-    },
-    watch: {
-      '$route': 'getParams'
     }
   }
 </script>

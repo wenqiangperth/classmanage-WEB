@@ -70,13 +70,13 @@
           <span class="font_style">本轮讨论课报名次数:</span>
         </div>
         <table
-          v-for="item in roundInfo.classRound"
+          v-for="item in roundInfo.klassRounds"
           style="width: 100%"
         >
           <tr>
-            <td style="width: 50%;text-align: center">{{item.classSerial}}班:</td>
+            <td style="width: 50%;text-align: center">{{item.klassSerial}}班:</td>
             <td>
-              <el-input-number size="mini" v-model="item.enrollNum"></el-input-number>
+              <el-input-number size="mini" v-model="item.enrollNumber"></el-input-number>
             </td>
           </tr>
         </table>
@@ -95,40 +95,9 @@
     data() {
       return {
         roundId: 1,
-        seminars: [
-          {
-            id: 1,
-            seminarName: '业务流程分析',
-            seminarSerial: 2
-          }, {
-            id: 2,
-            seminarName: '领域模型分析',
-            seminarSerial: 3
-          }
-        ],
-        roundInfo:
-          {
-            id: 1,
-            roundSerial: 1,
-            presentationScoreMethod: 0,
-            reportScoreMethod: 1,
-            questionScoreMethod: 1,
-            classRound: [
-              {
-                id: 1,
-                classSerial: 1,
-                enrollNum: 1
-              }, {
-                id: 1,
-                classSerial: 2,
-                enrollNum: 1
-              }, {
-                id: 1,
-                classSerial: 3,
-                enrollNum: 1
-              }
-            ]
-          },
+        seminars: [],
+        roundInfo: {},
+        course: [],
         options: [{
           value: 1,
           label: '最高分'
@@ -158,18 +127,22 @@
       let that = this;
       that.$axios({
         method: 'GET',
-        url: '/round/' + that.$data.roundId + '/seminar'
+        url: '/round/' + that.$data.roundId + '/seminar',
+        headers: {
+          'Authorization': window.localStorage['token']
+        }
       })
         .then(res => {
-          if (res.data.status === 200) {
+          if (res.status === 200) {
+            window.localStorage['token'] = res.headers.authorization;
             that.seminars = [];
-            that.seminars = res.data.data;
-          } else if (res.data.status === 400) {
+            that.seminars = res.data;
+          } else if (res.status === 400) {
             this.$message({
               type: 'error',
               message: '错误的ID格式'
             })
-          } else if (res.data.status === 404) {
+          } else if (res.status === 404) {
             this.$message({
               type: 'error',
               message: '未找到讨论课'
@@ -181,23 +154,23 @@
         });
       that.$axios({
         method: 'GET',
-        url: '/round/' + that.$data.roundId
+        url: '/round/' + that.$data.roundId,
+        headers: {
+          'Authorization': window.localStorage['token']
+        }
       })
         .then(res => {
-          if (res.data.status === 200) {
-            let data_ = res.data.data;
-            that.roundInfo.id = that.roundId;
-            that.roundInfo.roundSerial = data_.roundSerial;
-            that.roundInfo.presentationScoreMethod = data_.presentationScoreMethod;
-            that.roundInfo.reportScoreMethod = data_.reportScoreMethod;
-            that.roundInfo.questionScoreMethod = data_.questionScoreMethod;
-            that.roundInfo.classRound = data_.classRound;
-          } else if (res.data.status === 400) {
+          if (res.status === 200) {
+            window.localStorage['token'] = res.headers.authorization;
+            let data_ = res.data;
+            console.log(data_);
+            that.roundInfo = data_;
+          } else if (res.status === 400) {
             this.$message({
               type: 'error',
               message: '错误的ID格式'
             })
-          } else if (res.data.status === 404) {
+          } else if (res.status === 404) {
             this.$message({
               type: 'error',
               message: '未找到轮次'
@@ -212,34 +185,51 @@
     methods: {
       getParams() {
         this.roundId = this.$route.params.roundId;
+        this.course = this.$route.params.course;
       },
       returnSeminarPage() {
-        this.$router.go(-1);
+        this.$router.push({
+          path: '/teacher/SeminarPage',
+          name: 'SeminarPage',
+          params: {
+            course: this.course
+          }
+        });
       },
       SetSuccess() {
         this.$axios({
           method: 'PUT',
           url: '/round/' + this.$data.roundId,
-          params: {
-            presentationScoreMethod: this.value,
-            questionScoreMethod: this.value2,
-            reportScoreMethod: this.value3,
-            classRound: this.roundInfo.classRound
+          data: {
+            presentationScoreMethod: this.roundInfo.presentationScoreMethod,
+            questionScoreMethod: this.roundInfo.questionScoreMethod,
+            reportScoreMethod: this.roundInfo.reportScoreMethod,
+            klassRounds: this.roundInfo.klassRounds
+          },
+          headers: {
+            'Authorization': window.localStorage['token']
           }
         })
           .then(res => {
-            if (res.data.status === 204) {
+            if (res.status === 200) {
+              window.localStorage['token'] = res.headers.authorization;
               this.$message({
                 message: '修改成功!',
                 type: 'success'
               });
-              this.$router.push({path: '/teacher/SeminarPage'});
-            } else if (res.data.status === 400) {
+              this.$router.push({
+                path: '/teacher/SeminarPage',
+                name: 'SeminarPage',
+                params: {
+                  course: this.course
+                }
+              });
+            } else if (res.status === 400) {
               this.$message({
                 type: 'error',
                 message: '错误的ID格式'
               })
-            } else if (res.data.status === 403) {
+            } else if (res.status === 403) {
               this.$message({
                 type: 'error',
                 message: '用户权限不足'

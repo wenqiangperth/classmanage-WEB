@@ -7,7 +7,6 @@
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
             <el-dropdown-item><i class="el-icon-service" @click="gotoSeminar">&nbsp;&nbsp;讨论课</i></el-dropdown-item>
-            <el-dropdown-item><i class="el-icon-back" @click="returnLogin">&nbsp;&nbsp;退 出</i></el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -95,6 +94,9 @@
     name: "CourseManage",
     data() {
       return {
+        scores: [],
+        courseId: '',
+        rounds: [],
         groupScore:{
           groupId:'1-1',
           finalScore: 5.0,
@@ -140,6 +142,25 @@
         ],
         dialogTableVisible: false
       }
+    },
+    created() {
+      this.courseId = this.$route.params.courseId;
+      let that = this;
+      that.$axios({
+        method: 'GET',
+        url: '/course/' + that.$data.courseId + '/round',
+        headers: {
+          'Authorization': window.localStorage['token']
+        }
+      })
+        .then(res => {
+          if (res.status === 200) {
+            window.localStorage['token'] = res.headers.authorization;
+            console.log("进入");
+            console.log(res.data);
+            that.rounds = res.data;
+          }
+        })
     },
     methods: {
       returnLogin() {

@@ -1,7 +1,7 @@
 <template>
   <div class="body0">
     <div id="head" class="head">
-      <div class="title"><i class="el-icon-close icon1 icon0" @click="returnSeminarPage"></i>修改讨论课信息</div>
+      <div class="title"><i class="el-icon-close icon1 icon0" @click="returnSeminarPage"></i>修改讨论课</div>
     </div>
     <div class="main">
       <div style="width: 100%;height: 15px"></div>
@@ -93,12 +93,12 @@
           <tr>
             <td style="width: 26%">round</td>
             <td style="text-align: right">
-              <el-select v-model="value1" placeholder="请选择">
+              <el-select v-model="roundSerial" placeholder="请选择">
                 <el-option
-                  v-for="item in roundInfo"
-                  :key="item.id"
+                  v-for="(item,index) in roundInfo"
+                  :key="item.roundId"
                   :label="item.seminarSerial"
-                  :value="item.id">
+                  :value="item.roundSerial">
                 </el-option>
               </el-select>
             </td>
@@ -123,6 +123,7 @@
     name: "UpdateSeminarInfo",
     data() {
       return {
+        course: [],
         seminarId: 1,
         seminarName: '',
         introduction: '',
@@ -131,6 +132,9 @@
         endTime: '',
         signUpNum: '',
         seminarSerial: '',
+        roundId: '',
+        roundSerial: '',
+        roundId0: '',
         signUpOrder: [{
           value: '选项1',
           label: '自定'
@@ -148,24 +152,66 @@
           label: '第一轮'
         }],
         value: '默认',
-        value1: '无(默认新建)'
       }
     },
     created() {
-      this.seminarId = this.$route.params.seminar.id;
-      this.seminarName = this.$route.params.seminar.seminarName;
-      this.seminarSerial = this.$route.params.seminar.seminarSerial;
-      this.introduction = this.$route.params.seminar.introduction;
-      this.isVisible = this.$route.params.seminar.isVisible;
-      this.value1 = this.$route.params.roundSerial;
-      this.startTime = this.$route.params.seminar.enrollStartTime;
-      this.endTime = this.$route.params.seminar.enrollEndTime;
-      this.signUpNum = this.$route.params.seminar.maxTeam;
-      console.log(this.seminarId);
+      this.seminarId = this.$route.params.seminarId;
+      this.roundInfo = this.$route.params.roundInfo;
+      this.course = this.$route.params.course;
+
+      let that = this;
+      that.$axios({
+        method: 'GET',
+        url: '/seminar/' + that.seminarId,
+        headers: {
+          'Authorization': window.localStorage['token']
+        }
+      })
+        .then(res => {
+          if (res.status === 200) {
+            window.localStorage['token'] = res.headers.authorization;
+            let data_ = res.data;
+            that.seminarName = data_.seminarName;
+            that.seminarSerial = data_.seminarSerial;
+            that.introduction = data_.introduction;
+            that.isVisible = data_.isVisible;
+            that.roundId = data_.roundId;
+            that.startTime = data_.enrollStartTime;
+            that.endTime = data_.enrollEndTime;
+            that.signUpNum = data_.maxTeam;
+
+            this.$axios({
+              method: 'GET',
+              url: '/round/' + that.roundId,
+              headers: {
+                'Authorization': window.localStorage['token']
+              }
+            })
+              .then(res => {
+                console.log(res);
+                if (res.status === 200) {
+                  that.roundSerial = res.data.roundSerial;
+                  window.localStorage['token'] = res.headers.authorization;
+                }
+              }).catch(e => {
+              console.log(e);
+            })
+          }
+        })
+        .catch(e => {
+          console.log(e);
+        })
+
     },
     methods: {
       returnSeminarPage() {
-        this.$router.push({path: '/teacher/SeminarPage'});
+        this.$router.push({
+          path: '/teacher/SeminarPage',
+          name: 'SeminarPage',
+          params: {
+            course: this.course
+          }
+        });
       },
       NewSuccess() {
         this.$axios({
@@ -177,7 +223,7 @@
             introduction: this.introduction,
             seminarSerial: this.seminarSerial,
             isVisible: this.isVisible,
-            roundId: this.value1,
+            roundId: this.roundId0,
             enrollStartTime: this.startTime,
             enrollEndTime: this.endTime,
             maxTeam: this.signUpNum
@@ -192,7 +238,13 @@
               message: '修改成功！',
               type: 'success'
             });
-            this.$router.push({path: '/teacher/seminarPage'});
+            this.$router.push({
+              path: '/teacher/seminarPage',
+              name: 'SeminarPage',
+              params: {
+                course: this.course
+              }
+            });
           } else if (res.status === 400) {
             this.$message({
               message: '错误的ID格式！',
@@ -205,6 +257,7 @@
             });
           }
         })
+
 
       },
       deleteSeminar() {
@@ -227,7 +280,13 @@
                   type: 'success',
                   message: '删除成功!'
                 });
-                this.$router.push({path: '/teacher/SeminarPage'});
+                this.$router.push({
+                  path: '/teacher/SeminarPage',
+                  name: 'SeminarPage',
+                  params: {
+                    course: this.course
+                  }
+                });
               } else if (res.status === 400) {
                 this.$message({
                   type: 'error',
@@ -256,7 +315,13 @@
       }
     },
     watch: {
-      '$route': 'getParams'
+      'roundSerial': function (roundSerial) {
+        for (let i = 0; i < this.roundInfo.length; i++) {
+          if (this.roundInfo[i].roundSerial === roundSerial)
+            this.roundId0 = this.roundInfo[i].id;
+        }
+
+      }
     }
   }
 </script>

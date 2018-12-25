@@ -1,14 +1,13 @@
 <template>
   <div class="body0">
     <div id="head" class="head">
-      <div class="title"><i class="el-icon-back icon1 icon0" @click="returnCourseManage"></i>{{courseName}}
+      <div class="title"><i class="el-icon-back icon1 icon0" @click="returnCourseManage"></i>课程要求
         <el-dropdown class="plus" trigger="click">
           <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
             <el-dropdown-item><i class="el-icon-service" @click="gotoTotalSeminar">&nbsp;&nbsp;讨论课</i>
             </el-dropdown-item>
-            <el-dropdown-item><i class="el-icon-back" @click="returnLogin">&nbsp;&nbsp;退 出</i></el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -16,8 +15,8 @@
     <div class="empty" style="height: 10px;width: 100%"></div>
     <div class="main">
       <el-card>
-        <div slot="header" style="float: left">
-          <span style="font-weight: bold;color: #616161">课程要求</span>
+        <div slot="header">
+          <span style="font-weight: bold;color: #616161;float: left">简介</span>
         </div>
         <p style="font-size: 13px">{{introduction}}</p>
       </el-card>
@@ -41,12 +40,6 @@
         <table
           style="width: 100%;text-align: center;font-size: 13px">
           <tr style="height: 30px">
-            <td style="width:30%">小组人数:</td>
-            <td>
-              {{minNum}}~{{maxNum}}
-            </td>
-          </tr>
-          <tr style="height: 30px">
             <td style="width: 30%">组队开始:</td>
             <td>{{teamStartTime}}</td>
           </tr>
@@ -54,20 +47,14 @@
             <td style="width: 30%">组队截止:</td>
             <td>{{teamEndTime}}</td>
           </tr>
-          <tr style="height: 30px">
-            <td style="width: 30%">性别要求:</td>
-            <td>男:{{maleNum}} 女:{{femaleNum}}</td>
-          </tr>
-          <tr style="height: 30px">
-            <td style="width: 30%">冲突课程:</td>
-            <td v-for="item in defeatCourse">
-              {{item.name}}({{item.teacher}})
-            </td>
-          </tr>
         </table>
       </el-card>
+      <div style="width: 100%;margin-top: 20px;height:45px" @click="gotoTeamRequires">
+        <label style="font-weight: bold;float: right">组队要求<i class="el-icon-d-arrow-right"
+                                                             style="font-weight: bolder;color: #66cccc;font-size: 16px"></i></label>
+      </div>
       <div id="el-btn" style="width: 100%;margin-top: 20px"
-           v-show="(((teamMainCourseId===0)&&(seminarMainCourseId===0))||(teamMainCourseId!==0)&&(teamMainCourseId===courseId)||(seminarMainCourseId!==0)&&(seminarMainCourseId==courseId))">
+           v-show="(((teamMainCourseId===null)&&(seminarMainCourseId===null))||(teamMainCourseId!==null)&&(teamMainCourseId===courseId)||(seminarMainCourseId!==null)&&(seminarMainCourseId==courseId))">
         <el-button type="success"
                    @click="deleteCourse" plain
                    style="float: right;margin-bottom: 20px">
@@ -87,6 +74,7 @@
     data() {
       return {
 
+        course: [],
         courseId: 1,
         courseName: '',
         introduction: '翻转课堂形式上课，学生自由组队，以小组形式每周做汇报，每组汇报时间15分钟',
@@ -117,7 +105,9 @@
       }
     },
     created() {
-      this.getParams();
+      this.course = this.$route.params.course;
+      this.courseId = this.course.courseId;
+      this.courseName = this.course.courseName;
       let that = this;
       that.$axios({
         method: 'GET',
@@ -129,6 +119,7 @@
         .then(res => {
           if (res.status === 200) {
             window.localStorage['token'] = res.headers.authorization;
+            console.log("aaaaa");
             console.log(res.data);
             let data = res.data;
             that.introduction = data.introduction;
@@ -137,8 +128,6 @@
             that.tableData1[2].percentage = data.reportPercentage;
             that.teamStartTime = data.teamStartTime.substring(0, 10) + ' ' + data.teamStartTime.substring(11, 19);
             that.teamEndTime = data.teamEndTime.substring(0, 10) + ' ' + data.teamEndTime.substring(11, 19);
-            // that.minNum = data.MinMemberNumber;
-            // that.maxNum = data.MaxMemberNumber;
             that.teamMainCourseId = data.teamMainCourseId;
             that.seminarMainCourseId = data.seminarMainCourseId;
           } else if (res.status === 404) {
@@ -156,24 +145,22 @@
         .catch((e) => {
           console.log(e);
         });
-      //this.isMasterCourse();
     },
     methods: {
-      getParams() {
-        this.courseId = this.$route.params.course.courseId;
-        this.courseName = this.$route.params.course.courseName;
-      },
       returnLogin() {
         this.$router.push({path: '/'});
-      },
-      gotoHomePage(){
-        this.$router.push({path:'/teacher/HomePage'});
       },
       returnCourseManage() {
         this.$router.push({path: '/teacher/CourseManage'});
       },
+      gotoHomePage() {
+        this.$router.push({path: '/teacher/HomePage'});
+      },
       gotoTotalSeminar() {
         this.$router.push({path: '/teacher/SeminarPage'});
+      },
+      gotoTeamRequires() {
+        this.$router.push({path: '/teacher/TeamRequires'});
       },
       deleteCourse() {
         MessageBox.confirm('此操作将永久删除该课程?', '提示', {

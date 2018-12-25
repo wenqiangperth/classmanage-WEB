@@ -1,18 +1,11 @@
 <template>
   <div>
     <div id="head" class="head">
-      <div class="title"><i class="el-icon-back icon1 icon0" @click="returnLogin"></i>修改密码</div>
+      <div class="title"><i class="el-icon-back icon1 icon0" @click="returnLogin"></i>激活账户</div>
     </div>
     <div class="main">
       <div style="width:100%;height:15px"></div>
       <table class="table0">
-        <tr>
-          <td class="td0">
-            <el-input id="pass2" type="password" v-model="oldPassword" placeholder="原密码">
-              <i slot="suffix" class="el-input__icon el-icon-view icon2 icon0" @click="showPassword2"></i>
-            </el-input>
-          </td>
-        </tr>
         <tr>
           <td class="td0">
             <el-tooltip class="item" effect="dark" content="密码长度8-32位，须包含数字字母符号至少两种或以上" placement="bottom">
@@ -20,6 +13,13 @@
                 <i slot="suffix" class="el-input__icon el-icon-view icon2 icon0" @click="showPassword"></i>
               </el-input>
             </el-tooltip>
+          </td>
+        </tr>
+        <tr>
+          <td class="td0">
+            <el-input id="pass2" type="password" v-model="password" placeholder="确认密码">
+              <i slot="suffix" class="el-input__icon el-icon-view icon2 icon0" @click="showPassword2"></i>
+            </el-input>
           </td>
         </tr>
         <tr>
@@ -33,6 +33,7 @@
         </tr>
 
       </table>
+
       <div class="footer">
         <el-button class="btn" type="success" plain @click="modifyPassword">确认修改</el-button>
       </div>
@@ -46,8 +47,8 @@
     name: "Activate",
     data() {
       return {
+        password: '',
         newPassword: '',
-        oldPassword: '',
         isShow1: false,
         isShow2: false
       }
@@ -57,37 +58,44 @@
         this.$router.push({path: '/'});
       },
       modifyPassword() {
-        this.$axios({
-          method: 'PUT',
-          url: '/user/password',
-          data: {
-            oldPassword: this.oldPassword,
-            password: this.newPassword
-          },
-          headers: {
-            'Authorization': window.localStorage['token']
-          }
-        })
-          .then(res => {
-            if (res.status === 200) {
-              window.localStorage['token'] = res.headers.authorization;
-              this.$message({
-                type: 'success',
-                message: '修改成功！'
-              });
-              this.$router.push({
-                path: '/teacher/AccountManage',
-              });
-            } else if (res.status === 400) {
-              this.$message({
-                type: 'error',
-                message: '信息不合法！'
-              });
+        if (this.password !== this.newPassword) {
+          this.$message({
+            type: 'error',
+            message: '请确认密码！'
+          })
+        } else {
+          this.$axios({
+            method: 'PUT',
+            url: '/teacher/active',
+            data: {
+              password: this.newPassword
+            },
+            headers: {
+              'Authorization': window.localStorage['token']
             }
           })
-          .catch(e => {
-            console.log(e);
-          })
+            .then(res => {
+              if (res.status === 200) {
+                window.localStorage['token'] = res.headers.authorization;
+                this.$message({
+                  type: 'success',
+                  message: '激活成功！'
+                });
+                this.$router.push({
+                  path: '/teacher/HomePage',
+                });
+              } else if (res.status === 400) {
+                this.$message({
+                  type: 'error',
+                  message: '信息不合法！'
+                });
+              }
+            })
+            .catch(e => {
+              console.log(e);
+            })
+        }
+
       },
       showPassword() {
         this.isShow1 = !this.isShow1;
@@ -139,3 +147,4 @@
   }
 
 </style>
+

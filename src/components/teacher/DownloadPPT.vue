@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="head" class="head">
-      <div class="title"><i class="el-icon-back icon1 icon0" @click="returnHomePage"></i>OOAD
+      <div class="title"><i class="el-icon-back icon1 icon0" @click="Back"></i>OOAD
         <el-dropdown class="plus" trigger="click">
           <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
@@ -44,6 +44,8 @@
         attendanceId: '',
         classId: '',
         seminarId: '',
+        course: [],
+        roundId: '',
         ppt: [],
         groupInfo: [
           '1-1.ppt',
@@ -55,19 +57,24 @@
       }
     },
     created() {
+      this.classId = this.$route.params.classId;
+      this.seminarId = this.$route.params.seminarId;
+      this.course = this.$route.params.course;
+      this.roundId = this.$route.params.roundId;
       let that = this;
-      //先获取展示的Id,展示顺序
       that.$axios({
         method: 'GET',
-        url: '/attendance/attendanceId/report',
-        params: {
-          attendanceId: that.attendanceId
+        url: '/seminar/' + that.seminarId + '/class/' + that.classId + '/attendance',
+        headers: {
+          'Authorization': window.localStorage['token']
         }
       })
         .then(res => {
-          if (res.data.status === 200) {
-            let data = res.data.data;
-            that.groupInfo = data.order;//返回此次讨论课的展示顺序和对应ID？？？
+          if (res.status === 200) {
+            window.localStorage['token'] = res.headers.authorization;
+            let data = res.data;
+            console.log(data);
+
           }
         })
         .catch(e => {
@@ -76,12 +83,17 @@
 
     },
     methods: {
-      getParams() {
-        this.classId = this.$route.params.classId;
-        this.seminarId = this.$route.params.seminarId;
-      },
-      returnHomePage() {
-        this.$router.push({path: '/teacher/HomePage'});
+      Back() {
+        this.$router.push({
+          path: '/teacher/BeforeSeminar',
+          name: 'beforeSeminar',
+          params: {
+            course: this.course,
+            roundId: this.roundId,
+            classId: this.classId,
+            seminarId: this.seminarId
+          }
+        })
       },
       gotoSeminar() {
         this.$router.push({path: '/teacher/SeminarPage'});
@@ -101,13 +113,14 @@
           .then(() => {
             that.$axios({
               method: 'GET',
-              url: '/attendance/attendanceId/powerpoint',
-              params: {
-                attendanceId: index
+              url: '/attendance/' + (index + 1) + '/powerpoint',
+              headers: {
+                'Authorization': window.localStorage['token']
               }
             })
               .then(res => {
-                if (res.data.status === 200) {
+                if (res.status === 200) {
+                  window.localStorage['token'] = res.headers.authorization;
                   this.$message({
                     type: 'success',
                     message: '下载成功!'
@@ -136,9 +149,13 @@
             that.$axios({
               method: 'GET',
               url: '/seminar/' + this.$data.seminarId + '/class/' + this.$data.classId + '/ppt',
+              headers: {
+                'Authorization': window.localStorage['token']
+              }
             })
               .then(res => {
                 if (res.status === 200) {
+                  window.localStorage['token'] = res.headers.authorization;
                   console.log(res.data);
                   that.ppt = res.data;
                   this.$message({
@@ -176,7 +193,6 @@
   .info {
     width: 100%;
     font-size: 14px;
-    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", Arial, sans-serif;
   }
 </style>
 

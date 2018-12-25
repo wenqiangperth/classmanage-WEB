@@ -60,6 +60,9 @@ import OngoingSeminar from "../components/teacher/OngoingSeminar";
 import CheckInformation from "../components/teacher/CheckInformation";
 import DownloadPPT from "../components/teacher/DownloadPPT";
 import TotalSeminar from "../components/teacher/TotalSeminar";
+import TeamRequires from "../components/teacher/TeamRequires";
+import SetTeamRequires from "../components/teacher/SetTeamRequires";
+import Activate from "../components/teacher/Activate";
 
 
 
@@ -361,6 +364,21 @@ export default new Router({
       name: 'TotalSeminar',
       path: '/teacher/TotalSeminar',
       component: TotalSeminar
+    },
+    {
+      name: 'TeamRequires',
+      path: '/teacher/TeamRequires',
+      component: TeamRequires
+    },
+    {
+      name: 'SetTeamRequires',
+      path: '/teacher/SetTeamRequires',
+      component: SetTeamRequires
+    },
+    {
+      name: 'Activate',
+      path: '/teacher/Activate',
+      component: Activate
     }
   ]
 })

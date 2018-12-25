@@ -2,7 +2,7 @@
   <div>
     <div id="head" class="head">
       <div class="title">
-        <i class="el-icon-back icon1 icon0" @click="Back"></i>OOAD
+        <i class="el-icon-back icon1 icon0" @click="Back"></i>讨论课
         <el-dropdown class="plus" trigger="click">
           <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
@@ -35,40 +35,34 @@
         <tr class="tr0">
           <td class="td1"><label>课程情况:</label></td>
           <td>
-            <label>{{currentSeminarInfo.status}}
-              <el-button type="text" size="small" style="color:#66cccc;"
-                         @click="checkInfo(currentSeminarInfo.status,classId,seminarId)">
-                查看信息
-              </el-button>
-            </label>
+            <label v-if="status===0">未开始</label>
+            <label v-else-if="status===1">正在进行</label>
+            <label v-else-if="status===2">已结束</label>
+            <el-button type="text" size="small" style="color:#66cccc;"
+                       @click="checkInfo(status,classId,seminarId)">
+              查看信息
+            </el-button>
+
           </td>
         </tr>
       </table>
-      <div style="width: 100%" v-if="currentSeminarInfo.status===0">
+      <div style="width: 100%" v-if="status===0">
         <el-button type="success" class="btn" plain @click="startSeminar" style="margin-top: 160px">开始讨论课</el-button>
       </div>
-      <div style="width: 100%" v-else-if="currentSeminarInfo.status===1">
+      <div style="width: 100%" v-else-if="status===1">
         <el-button type="success" class="btn" plain @click="gotoOngoingSeminar" style="margin-top: 160px">进入讨论课
         </el-button>
       </div>
-      <div style="width: 100%" v-else-if="currentSeminarInfo.status===2">
+      <div style="width: 100%;" v-else-if="status===2">
         <div style="width: 100%">
-          <el-button type="success" class="btn" plain @click="checkReport(seminarId,classId)" style="margin-top: 160px">
+          <el-button type="success" class="btn" plain @click="checkReport(seminarId,classId)" style="margin-top: 100px">
             书面报告
           </el-button>
         </div>
         <div style="width: 100%;margin-top: 10px">
-          <el-button type="success" class="btn" plain @click="checkGrades" style="margin-top: 160px">查看成绩报告</el-button>
+          <el-button type="success" class="btn" plain @click="checkGrades(seminarId,classId)">查看成绩</el-button>
         </div>
       </div>
-      <!--
-      <div>
-        <el-button type="success" class="btn1 btn" plain @click="updateInfo">修改讨论课信息</el-button>
-      </div>
-      <el-button type="info" size="mini" plain
-                 style="float: right;margin-top: 5px">
-        删除讨论课
-      </el-button>-->
     </div>
 
 
@@ -80,18 +74,13 @@
     name: "BeforeSeminar",
     data() {
       return {
-        seminar: {
-          seminarId: '',
-          order: '2',
-          topic: '领域模型',
-          num: '1',
-          require: '界面导航图和所有界面原型设计课堂讨论每个小组15分钟',
-          status: '未开始',
-        },
+
         classId: '',
         seminarId: '',
         roundId: '',
-        currentSeminarInfo: {}
+        currentSeminarInfo: {},
+        status: '',
+        course: []
       }
     },
     created() {
@@ -99,19 +88,33 @@
       let that = this;
       that.$axios({
         method: 'GET',
-        url: '/seminar/' + that.$data.seminarId + '/class/' + that.$data.classId
+        url: '/seminar/' + that.$data.seminarId,
+        headers: {
+          'Authorization': window.localStorage['token']
+        }
       }).then(res => {
-        if (res.data === 200) {
+        if (res.status === 200) {
+          window.localStorage['token'] = res.headers.authorization;
           let data_ = res.data;
-          that.currentSeminarInfo.seminarId = seminarId;
-          that.currentSeminarInfo.seminarName = data_.seminarName;
-          that.currentSeminarInfo.introduction = data_.introduction;
-          that.currentSeminarInfo.status = data_.status;
-          that.currentSeminarInfo.maxTeam = data_.maxTeam;
-          that.currentSeminarInfo.seminarSerial = data.seminarSerial;
-          that.currentSeminarInfo.enrollStartTime = data_.enrollStartTime;
-          that.currentSeminarInfo.enrollEndTime = data_.enrollEndTime;
-          that.currentSeminarInfo.reportDDL = data_.reportDDL;
+          console.log(data_);
+          that.currentSeminarInfo = data_;
+        }
+      })
+        .catch(e => {
+          console.log(e);
+        });
+
+      that.$axios({
+        method: 'GET',
+        url: '/seminar/' + that.$data.seminarId + '/class/' + that.$data.classId,
+        headers: {
+          'Authorization': window.localStorage['token']
+        }
+      }).then(res => {
+        console.log(res);
+        if (res.status === 200) {
+          window.localStorage['token'] = res.headers.authorization;
+          that.status = res.data.status;
         }
       })
         .catch(e => {
@@ -123,8 +126,9 @@
         this.seminarId = this.$route.params.seminarId;
         this.classId = this.$route.params.classId;
         this.roundId = this.$route.params.roundId;
+        this.course = this.$route.params.course;
       },
-      gotoHomePage(){
+      gotoHomePage() {
         this.$router.push({
           path: '/teacher/HomePage',
         });
@@ -143,7 +147,13 @@
         this.$router.push({path: '/teacher/StartSeminar'});
       },
       Back() {
-        this.$router.go(-1);
+        this.$router.push({
+          path: '/teacher/SeminarPage',
+          name: 'SeminarPage',
+          params: {
+            course: this.course
+          }
+        })
       },
       gotoTotalSeminar() {
         this.$router.push({path: '/teacher/TotalSeminar'});
@@ -154,9 +164,10 @@
             path: '/teacher/DownloadPPT',
             name: 'DownloadPPT',
             params: {
-              status: status,
               seminarId: seminarId,
-              classId: classId
+              classId: classId,
+              roundId: this.roundId,
+              course: this.course
             }
           })
         } else if ((status === 0) || (status === 1)) {
@@ -164,7 +175,8 @@
             path: '/teacher/CheckInformation',
             name: 'CheckInformation',
             params: {
-              status: status,
+              roundId: this.roundId,
+              course: this.course,
               seminarId: seminarId,
               classId: classId
             }
@@ -177,17 +189,26 @@
           name: 'ReportPage',
           params: {
             seminarId: seminarId,
-            classId: classId
+            classId: classId,
+            roundId: this.roundId,
+            course: this.course
           }
         })
       },
-      checkGrades() {
-
+      checkGrades(seminarId, classId) {
+        this.$router.push({
+          path: '/teacher/ResultsPage',
+          name: 'ResultsPage',
+          params: {
+            seminarId: seminarId,
+            classId: classId,
+            roundId: this.roundId,
+            course: this.course
+          }
+        })
       }
     },
-    watch: {
-      '$route': 'getParams'
-    }
+
 
   }
 </script>
@@ -207,7 +228,6 @@
   .td1 {
     width: 30%;
   }
-
 
 
 </style>

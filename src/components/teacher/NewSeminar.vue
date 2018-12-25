@@ -143,7 +143,8 @@
           label: '第一轮'
         }],*/
         roundInfo: [],
-        roundId: ''
+        roundId: '',
+        course: []
       }
     },
     created() {
@@ -153,6 +154,7 @@
       getParams() {
         this.courseId = this.$route.params.courseId;
         this.roundInfo = this.$route.params.roundInfo;
+        this.course = this.$route.params.course
         console.log("courseId" + this.courseId);
       },
       returnSeminarPage() {
@@ -184,7 +186,13 @@
                 message: '发布成功！',
                 type: 'success'
               });
-              this.$router.push({path: '/teacher/seminarPage'});
+              this.$router.push({
+                path: '/teacher/seminarPage',
+                name: 'SeminarPage',
+                params: {
+                  course: this.course
+                }
+              });
             } else if (res.status === 403) {
               this.$message({
                 message: '用户权限不足！',
