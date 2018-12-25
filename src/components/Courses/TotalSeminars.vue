@@ -93,15 +93,6 @@
         back(){
           this.$router.push({path:'/Courses/CoursePage'});
         },
-        // BeforeSeminar(){
-        //   this.$router.push({path:'/Courses/BeforeSeminar/BeforeSeminar'});
-        // },
-        // present(){
-        //   this.$router.push({path:'/Courses/Seminaring/Seminaring'});
-        // },
-        // AfterSeminar(){
-        //   this.$router.push({path:'/Courses/AfterSeminar/SeminarInfo'})
-        // },
         chooseRound(index){
           let roundId = this.roundInfo[index].id;
           console.log(roundId);
@@ -162,8 +153,8 @@
                 if(res.data.status===0){        //进入尚未进行的讨论课
                   window.localStorage['token']=res.headers.authorization;
                   this.$router.push({
-                    path:'/Courses/Seminaring/Seminaring',
-                    name:'Seminaring',
+                    path:'/Courses/BeforeSeminar/BeforeSeminar',
+                    // name:'Seminaring',
                     query:{
                       seminarId:seminarId,
                       courseId: this.courseId,

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :style="note">
       <header class="home-title">
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
@@ -21,70 +21,73 @@
           </el-dropdown>
         </div>
       </header>
-      <div class="divHeight"></div>
-      <div>
-        <img src="../../../assets/2.jpg" style="border-radius: 50px"/>
+      <div class="main" style="opacity: 0.85;">
+        <div class="divHeight"></div>
+        <div>
+          <img src="../../../assets/2.jpg" style="border-radius: 50px"/>
+        </div>
+
+        <div class="intro"
+             style="height: 50px; background-color: #F0F0F0; display: block">
+          <label style="text-align: left; line-height: 50px">
+            轮次：
+          </label>
+          <label style="text-align: center">
+            第{{seminarInfo.roundSerial}}轮
+          </label>
+        </div>
+
+        <div class="intro"
+             style="height: 50px; background-color: #fff; display: block">
+          <label style="text-align: left; line-height: 50px">
+            主题：
+          </label>
+          <label style="text-align: center">
+            {{seminarInfo.seminarName}}
+          </label>
+        </div>
+
+        <div class="intro"
+             style="height: 50px; background-color: #F0F0F0; display: block">
+          <label style="text-align: left; line-height: 50px">
+            课次序号：
+          </label>
+          <label style="text-align: center">
+            第{{seminarInfo.seminarSerial}}次
+          </label>
+        </div>
+
+        <div class="intro"
+             style="height: 50px; background-color: #fff; display: block">
+          <label style="text-align: left; line-height: 50px">
+            课程情况：
+          </label>
+          <label style="text-align: center; color: #66CCCC">
+            未开始
+          </label>
+        </div>
+
+        <div class="intro"
+             style="height: 50px; background-color: #F0F0F0; display: block">
+          <label style="text-align: left; line-height: 50px">
+            展示材料：
+          </label>
+          <a style="text-align: center; color: #66CCCC;text-decoration: underline" >
+            查看信息
+          </a>
+          <el-button @click="openIntro" style="width:100%; height: 50px;text-decoration: underline;background-color: #fff">点此查看讨论课介绍</el-button>
+        </div>
+
+        <ul class="time-info">
+          <li>报名开始时间：<a>{{seminarInfo.enrollStartTime}}</a></li>
+          <li>报名截止时间：<a>{{seminarInfo.enrollEndTime}}</a></li>
+        </ul>
+
+        <div class="post-seminar">
+          <a @click="sign">报名</a>
+        </div>
       </div>
-
-      <div class="intro"
-           style="height: 50px; background-color: #F0F0F0; display: block">
-        <label style="text-align: left; line-height: 50px">
-          轮次：
-        </label>
-        <label style="text-align: center">
-          第{{order}}轮
-        </label>
-      </div>
-
-      <div class="intro"
-           style="height: 50px; background-color: #fff; display: block">
-        <label style="text-align: left; line-height: 50px">
-          主题：
-        </label>
-        <label style="text-align: center">
-          {{topic}}
-        </label>
-      </div>
-
-      <div class="intro"
-           style="height: 50px; background-color: #F0F0F0; display: block">
-        <label style="text-align: left; line-height: 50px">
-          课次序号：
-        </label>
-        <label style="text-align: center">
-          第1次
-        </label>
-      </div>
-
-      <div class="intro"
-           style="height: 50px; background-color: #fff; display: block">
-        <label style="text-align: left; line-height: 50px">
-          课程情况：
-        </label>
-        <label style="text-align: center; color: #66CCCC">
-          {{status}}
-        </label>
-      </div>
-
-      <div class="intro"
-           style="height: 50px; background-color: #F0F0F0; display: block">
-        <label style="text-align: left; line-height: 50px">
-          展示材料：
-        </label>
-        <a style="text-align: center; color: #66CCCC" >
-          查看信息
-        </a>
-      </div>
-
-      <ul class="time-info">
-        <li>报名开始时间：<a>{{startTime}}</a></li>
-        <li>报名截止时间：<a>{{endTime}}</a></li>
-      </ul>
-
-      <div class="post-seminar">
-        <a @click="sign">报名</a>
-      </div>
-
+      <div style="height: 100px;"></div>
     </div>
 </template>
 
@@ -94,36 +97,37 @@
       data(){
           return {
             seminarId:'',
-            order:'',
-            topic:'',
-            status:'',
-            teamNumLimit:'',
-            startTime: '10.1.2018  12:00',
-            endTime: '10.7.2018  24:00'
+            courseId:'',
+            courseName:'',
+            klassId:'',
+            seminarInfo:[],
+            note:{
+              backgroundImage:"url("+require("../../../assets/backpic.jpg")+")",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "100% 100%"
+            },
+            nowTime:'',
           }
       },
       created(){
-          //在此处需要先接收上个页面传入的seminarId
-
         let that = this;
+        that.getTime();
+        that.seminarId=that.$route.query.seminarId;
+        that.courseId=that.$route.query.courseId;
+        that.courseName=that.$route.query.courseName;
+        that.klassId=that.$route.query.klassId;
         that.$axios({
           method:'GET',
-          url:'/seminar/seminarId',
+          url:'/seminar/'+that.seminarId,
           headers:{
-            'token':window.localStorage['token']
-          },
-          params:{
-            seminarId:that.seminarId
+            'Authorization':window.localStorage['token']
           }
         })
           .then(res=>{
-            if(res.data.status===200){
-              console.log(res.data.data);
-              let data=res.data.data;
-              that.order=data.order;
-              that.topic=data.topic;
-              that.status=data.status;
-              that.teamNumLimit=data.teamNumLimit;
+            console.log(res);
+            if(res.status===200){
+              window.localStorage['token']=res.headers.authorization;
+              that.seminarInfo=res.data;
             }
           })
           .catch(e=>{
@@ -135,8 +139,29 @@
             this.$router.push({path:'/Courses/BeforeSeminar/signInfo'});
           },
           back(){
-              this.$router.push({path:'/Courses/TotalSeminars'});
-          }
+              this.$router.push({
+                path:'/Courses/TotalSeminars',
+                name:'TotalSeminars',
+                query:{
+                  seminarId:this.seminarId,
+                  courseId: this.courseId,
+                  courseName: this.courseName,
+                  klassId: this.klassId
+                }
+              });
+          },
+          openIntro(){
+            const h = this.$createElement;
+            this.$notify({
+              title: '讨论课介绍',
+              message: h('i', { style: 'color: teal'}, this.seminarInfo.introduction),
+              duration:7000
+            });
+          },
+        getTime(){
+          this.nowTime=new Date().getTime();
+          console.log(this.nowTime);
+        }
       }
     }
 </script>
@@ -146,7 +171,7 @@
     width: 100%;
     line-height: 70px;
     display: block;
-    background-color: #CCFF99;
+    background-color: #5CACEE;
     border-radius: 5px;
   }
 
@@ -195,7 +220,7 @@
   }
 
   ul{
-    margin: 40px 0 10px 10px;
+    margin: 50px 0 10px 10px;
   }
 
   ul,li{

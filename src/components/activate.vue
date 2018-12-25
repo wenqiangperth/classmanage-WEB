@@ -76,7 +76,7 @@
                 method: 'PUT',
                 url: '/student/active',
                 headers:{
-                  token: window.localStorage['token']
+                  'Authorization': window.localStorage['token']
                 },
                 data:{
                   password: that.password,
@@ -85,8 +85,9 @@
               })
                 .then(res => {
                   if(res.status===200)
-                    window.localStorage["token"]=res.headers.authorization
-                    alert("激活成功")
+                    window.localStorage['token']=res.headers.authorization;
+                    alert("激活成功");
+                    this.$router.
                   if(res.status===400)
                     alert("信息不合法,检验邮箱是否正确！")
                 })
