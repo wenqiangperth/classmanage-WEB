@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="main" :style="note">
       <header class="home-title">
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
@@ -23,13 +23,16 @@
       </header>
       <div class="divHeight"></div>
 
-      <ul id="Files">
-        <li v-for="(value,key) in items" @click="open2(key+1)">
-          <a>第{{key+1}}组：</a>
-          <i class="el-icon-document"></i>
-          {{value.message}}
-        </li>
-      </ul>
+      <div style="opacity: 0.85">
+        <ul id="Files">
+          <li v-for="(item,key) in items" @click="open2(key)">
+            <a>第{{item.teamOrder}}组：</a>
+            <i class="el-icon-document"></i>
+            {{item.pptName}}
+          </li>
+        </ul>
+      </div>
+      <div style="height: 100px;"></div>
     </div>
 </template>
 
@@ -39,30 +42,36 @@
       data(){
         return {
           seminarId:'',
-          items:[
-          {message: '1-1.ppt'},
-          {message: '1-2.ppt'},
-          {message: '1-3.ppt'},
-          {message: '1-4.ppt'},
-          {message: '1-5.ppt'},
-          {message: '1-6.ppt'}
-        ]}
+          courseId:'',
+          courseName:'',
+          klassId:'',
+          items:[],
+          note:{
+            backgroundImage:"url("+require("../../../assets/cartoon1.jpg")+")",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "100% 100%"
+          },
+        }
       },
       created(){
         //得到上个页面的seminarId
         let that = this;
+        that.seminarId=that.$route.query.seminarId;
+        that.courseId=that.$route.query.courseId;
+        that.courseName=that.$route.query.courseName;
+        that.klassId=that.$route.query.klassId;
         that.$axios({
           method:'GET',
-          url:'',
-          params:{
-            seminarId: that.seminarId
+          url:'/seminar/'+that.seminarId+'/class/'+that.klassId+'/attendance',
+          headers:{
+            'Authorization':window.localStorage['token']
           }
         })
           .then(res=>{
-            let data=res.data;
-            console.log(data);
-            if(res.data===200){
-              that.items=data;
+            console.log(res.data);
+            if(res.status===200){
+              window.localStorage['token']=res.headers.authorization;
+              that.items=res.data;
             }
           })
           .catch(e=>{
@@ -71,19 +80,50 @@
       },
       methods:{
           back(){
-            this.$router.push({path:'/Courses/Seminaring/Seminaring'})
+            this.$router.push({
+              path:'/Courses/Seminaring/Seminaring',
+              name:'Seminaring',
+              query:{
+                seminarId:this.seminarId,
+                courseId: this.courseId,
+                courseName: this.courseName,
+                klassId: this.klassId
+              }
+            })
           },
-         open2() {
+         open2(index) {
+           let attendanceId=this.items[index].id;  //展示的id
            this.$confirm('确定下载?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning',
              center: true
           }).then(() => {
-            this.$message({
-              type: 'success',
-              message: '下载成功!'
-            });
+            this.$axios({
+              method: 'GET',
+              url:'attendance/'+attendanceId+'/powerpoint',
+              responseType:'blob',
+              headers:{
+                'Authorization':window.localStorage['token']
+              }
+            })
+              .then(res=>{
+                if(!res) {return}
+                debugger;
+                let url = window.URL.createObjectURL(res.data);
+                let link = document.createElement('a');
+                link.style.display = 'none';
+                link.href = url;
+                link.setAttribute('download', 'powerpoint.ppt');
+                document.body.appendChild(link);
+                link.click();
+
+                this.$message({
+                  type: 'success',
+                  message: '下载成功!'
+                });
+              });
+
           }).catch(() => {
             this.$message({
               type: 'info',

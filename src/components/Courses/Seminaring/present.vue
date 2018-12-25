@@ -22,19 +22,25 @@
         </div>
       </header>
       <div class="title">
-        {{SeminarTitle}}
+        {{seminarName}}
       </div>
-      <div class="Seminar">
-        <el-tag style="font-size: larger" type="success">
+      <div >
+        <el-tag style="font-size: larger;float: left" type="success">
           <i class="el-icon-loading"></i>
-          {{order}}</el-tag>
+          {{order}}
+        </el-tag>
+        <el-tag style="font-size: larger;float: right" type="info">
+          <i class="el-icon-phone-outline"></i>
+          当前已有3人提问
+        </el-tag>
       </div>
       <div class="divHeight"></div>
 
       <ul id="Files">
-        <li v-for="item in items">
+        <li v-for="item in SeminaringInfo">
           <i class="el-icon-star-on"></i>
-          {{item.message}}
+          {{item.team.teamSerial}}:{{item.team.teamName}}
+          <el-tag style="float: right">展示顺序：{{item.teamOrder}}</el-tag>
         </li>
       </ul>
 
@@ -51,31 +57,34 @@
         name: "present",
       data(){
         return{
-          SeminarTitle: '业务流程分析',
+          seminarId:'',
+          courseId:'',
+          courseName:'',
+          klassId:'',
+          seminarName:'',
+          SeminaringInfo:[],
           order: '1-3',
-          items: [
-            {message:'1-1'},
-            {message:'1-3'},
-            {message:'1-5'},
-            {message:'1-2'},
-            {message:'1-6'},
-            {message:'1-4'}
-          ]
         }
       },
       created(){
           let that = this;
+          that.seminarId=that.$route.query.seminarId;
+          that.courseId=that.$route.query.courseId;
+          that.courseName=that.$route.query.courseName;
+          that.klassId=that.$route.query.klassId;
+          that.seminarName=that.$route.query.seminarName;
           that.$axios({
             method:'GET',
-            url:'/seminar/seminarId/class/classId/presentation?status=present',
+            url:'/seminar/'+that.seminarId+'/class/'+that.klassId+'/attendance',
             headers:{
-              'token':window.localStorage['token']
+              'Authorization':window.localStorage['token']
             }
           })
             .then(res=>{
-              let data=res.data.data;
-              that.order=data.order;
-              that.items=data.item;
+              console.log(res);
+              if(res.status===200){
+                this.SeminaringInfo=res.data;
+              }
             })
             .catch(e=>{
               console.log(e)
@@ -83,23 +92,30 @@
       },
       methods:{
           back(){
-            this.$router.push({path:'/Courses/Seminaring/Seminaring'})
+            this.$router.push({
+              path:'/Courses/Seminaring/Seminaring',
+              name:'Seminaring',
+              query:{
+                seminarId:this.seminarId,
+                courseId: this.courseId,
+                courseName: this.courseName,
+                klassId: this.klassId,
+              }
+            })
           },
          open() {
            this.$axios({
              method:'POST',
-             url:'seminar/seminarId/class/classId/question',
+             url:'seminar/'+this.seminarId+'/class/'+this.klassId+'/question',
              headers:{
-               'token':window.localStorage['token']
-             },
-             data:{
-               userId:window.localStorage['userId']
+               'Authorization':window.localStorage['token']
              }
            })
              .then(res=>{
+               console.log(res);
                if(res.status===200){
                  //提问报名成功
-                 let data=res.data.data;
+                 let data=res.data;
                  this.account=data.account;
                  this.name=data.name;
                  this.$alert('请<br/><strong>{{this.name}}1-3: 赵四同学</strong>' +
@@ -158,7 +174,7 @@
   }
 
   .title{
-    margin: 20px 0 0 0;
+    margin: 20px 0 10px 0;
     height: 20px;
     line-height: 20px;
     font-size: 24px;
@@ -186,7 +202,7 @@
   }
 
   .Seminar{
-    float: right;
+    float: left;
   }
 
   .question{

@@ -33,7 +33,7 @@
            轮次：
          </label>
          <label style="text-align: center">
-           第{{courseInfo.roundSerial}}轮
+           第{{seminarInfo.roundSerial}}轮
          </label>
        </div>
 
@@ -43,7 +43,7 @@
            主题：
          </label>
          <label style="text-align: center">
-           {{courseInfo.seminarName}}
+           {{seminarInfo.seminarName}}
          </label>
        </div>
 
@@ -53,7 +53,7 @@
            课次序号：
          </label>
          <label style="text-align: center">
-           第{{courseInfo.seminarSerial}}次
+           第{{seminarInfo.seminarSerial}}次
          </label>
        </div>
 
@@ -86,6 +86,7 @@
            已提交
          </a>
        </div>
+       <el-button @click="openIntro" style="width:100%; height: 50px;text-decoration: underline;background-color: #f0f0f0">点此查看讨论课介绍</el-button>
      </div>
 
       <div class="enter-seminar">
@@ -145,7 +146,9 @@
           .then(res=>{
             console.log(res);
             if(res.status===200){
+              window.localStorage['token']=res.headers.authorization;
               this.seminarInfo=res.data;
+              this.intro=res.data.introduction;
             }
           })
           .catch(e=>{
@@ -154,17 +157,39 @@
       },
       methods:{
           back(){
-            this.$router.push({path: '/Courses/TotalSeminars'});
+            this.$router.push({
+              path:'/Courses/TotalSeminars',
+              name:'TotalSeminars',
+              query:{
+                seminarId:this.seminarId,
+                courseId: this.courseId,
+                courseName: this.courseName,
+                klassId: this.klassId
+              }
+            })
           },
           present(){
-              this.$router.push({path:'/Courses/Seminaring/present'});
+              this.$router.push({
+                path:'/Courses/Seminaring/present',
+                name:'present',
+                query:{
+                  seminarId:this.seminarId,
+                  courseId: this.courseId,
+                  courseName: this.courseName,
+                  klassId: this.klassId,
+                  seminarName:this.seminarInfo.seminarName,
+                }
+              });
           },
           check(){
             this.$router.push({
               path:'/Courses/Seminaring/download',
               name:'download',
               query:{
-                seminarId:this.seminarId
+                seminarId:this.seminarId,
+                courseId: this.courseId,
+                courseName: this.courseName,
+                klassId: this.klassId
               }
             })
           },
@@ -176,10 +201,15 @@
         },
         handleExceed(files, fileList) {
           this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+        },
+        openIntro(){
+          const h = this.$createElement;
+          this.$notify({
+            title: '讨论课介绍',
+            message: h('i', { style: 'color: teal'}, this.intro),
+            duration:7000
+          });
         }
-        // beforeRemove(file, fileList) {
-        //   return this.$confirm(`确定移除 ${ file.name }？`);
-        // }
       }
     }
 </script>
