@@ -119,7 +119,13 @@
         this.$router.push({path:'/teacher/HomePage'});
       },
       gotoSeminar(){
-        this.$router.push({path:'/teacher/SeminarPage'});
+        this.$router.push({
+          path: '/teacher/SeminarPage',
+          name: 'SeminarPage',
+          params: {
+            course: this.course
+          }
+        });
       },
       updateSuccess() {
         this.$axios({
@@ -134,6 +140,7 @@
         })
           .then(res => {
             if (res.status === 200) {
+              window.localStorage['token'] = res.headers.authorization;
               this.$message({
                 message: '修改成功!',
                 type: 'success'
