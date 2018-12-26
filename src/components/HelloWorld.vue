@@ -127,11 +127,17 @@ export default {
 
           }
           if(res.status!==200) {
-            alert("账号/密码错误！");
+            this.$message({
+              type:'error',
+              message:'账号/密码错误！'
+            })
           }
         })
         .catch(e => {
-          alert("账号/密码错误！");
+          this.$message({
+            type:'error',
+            message:'账号/密码错误！'
+          })
           console.log(e);
           _this.password='';
         });

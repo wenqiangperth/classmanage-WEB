@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :style="note">
       <header class="home-title">
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
@@ -25,7 +25,7 @@
         <img src="../../assets/user.png" style="border-radius: 50px">
       </div>
 
-      <div class="main">
+      <div class="main" style="opacity: 0.8;">
         <el-collapse accordion>
           <el-collapse-item v-for="(round,index) in roundInfo"
                             :key="index" >
@@ -35,8 +35,8 @@
                 第{{round.roundSerial}}轮
               </div>
             </template>
-            <div style="width: 100%">
-              <div v-for="(seminar,semId) in courses">
+            <div style="width: 100%;">
+              <div v-for="(seminar,semId) in courses" style="font-weight: bold">
                 <el-button class="btn" type="info" plain @click="EnterSeminar(semId)">
                   <i class="el-icon-document"></i>
                   {{seminar.seminarName}}
@@ -46,7 +46,7 @@
           </el-collapse-item>
         </el-collapse>
       </div>
-
+      <div style="height: 250px;"></div>
     </div>
 </template>
 
@@ -63,6 +63,11 @@
           roundInfo:[],
           klassId:'',
           seminarInfo:[],
+          note:{
+            backgroundImage:"url("+require("../../assets/sky.jpg")+")",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "100% 100%",
+          }
         };
       },
       created(){
@@ -198,16 +203,16 @@
 
 
 
-                  this.$router.push({
-                    path:'/Courses/AfterSeminar/SeminarInfo',
-                    name:'SeminarInfo',
-                    query:{
-                      seminarId:seminarId,
-                      courseId: this.courseId,
-                      courseName: this.courseName,
-                      klassId: this.klassId
-                    }
-                  })
+                  // this.$router.push({
+                  //   path:'/Courses/AfterSeminar/SeminarInfo',
+                  //   name:'SeminarInfo',
+                  //   query:{
+                  //     seminarId:seminarId,
+                  //     courseId: this.courseId,
+                  //     courseName: this.courseName,
+                  //     klassId: this.klassId
+                  //   }
+                  // })
                 }
                 if(res.data.status===1){        //进入正在进行的讨论课
                   this.$router.push({
@@ -244,10 +249,11 @@
                             path:'/Courses/BeforeSeminar/ChangeSign',
                             name:'ChangeSign',
                             query:{
-                              seminarId:seminarId,
+                              seminarId: seminarId,
                               courseId: this.courseId,
                               courseName: this.courseName,
                               klassId: this.klassId,
+
                             }
                           })
                         }
@@ -310,6 +316,7 @@
     background-color: #66CCCC;
     color: #fff;
     font-size: 16px;
+    font-weight: bold;
   }
 
 

@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <header class="home-title">
+  <div :style="note">
+    <header class="home-title" >
       <div class="homeTitle">
         <i class="el-icon-arrow-left" @click="back"></i>
         <label>OOAD </label>
@@ -25,7 +25,7 @@
       <img src="../../../assets/2.jpg">
     </div>
 
-    <div class="main">
+    <div class="main" style="opacity: 0.8;">
       <el-collapse accordion>
         <el-collapse-item v-for="(round,index) in roundInfo"
                           :key="index" >
@@ -69,7 +69,7 @@
       </el-collapse>
 
     </div>
-
+    <div style="height: 400px;"></div>
   </div>
 </template>
 
@@ -96,7 +96,12 @@
             data:''
           }],
           temp:[],
-          dialogTableVisible: false
+          dialogTableVisible: false,
+          note:{
+            backgroundImage:"url("+require("../../../assets/sky.jpg")+")",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "100% 100%",
+          }
         };
       },
       created(){
@@ -239,5 +244,6 @@
     background-color: #66CCCC;
     color: #fff;
     font-size: 16px;
+    font-weight: bold;
   }
 </style>

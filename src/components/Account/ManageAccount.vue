@@ -146,12 +146,25 @@
           this.$router.push({path:'/Account/ChangeEmail'});
         },
         conf(){
-          this.$router.push({
-            path:'/',
-            query:{
-              account: this.account
-            }
+          this.$confirm('确认退出登陆, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            center:true,
+            type: 'warning'
+          }).then(() => {
+            this.$router.push({
+              path:'/',
+              query:{
+                account: this.account
+              }
+            });
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消'
+            });
           });
+
         }
       }
     }

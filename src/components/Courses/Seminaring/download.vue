@@ -27,8 +27,13 @@
         <ul id="Files">
           <li v-for="(item,key) in items" @click="open2(key)">
             <a>第{{item.teamOrder}}组：</a>
-            <i class="el-icon-document"></i>
-            {{item.pptName}}
+            <a v-if="item.pptName!==null" style="text-decoration: underline;color: green;">
+              <i class="el-icon-document"></i>
+              {{item.pptName}}
+            </a>
+            <a v-else style="color: red;">
+              未提交ppt
+            </a>
           </li>
         </ul>
       </div>
@@ -108,20 +113,27 @@
               }
             })
               .then(res=>{
-                if(!res) {return}
-                debugger;
-                let url = window.URL.createObjectURL(res.data);
-                let link = document.createElement('a');
-                link.style.display = 'none';
-                link.href = url;
-                link.setAttribute('download', 'powerpoint.ppt');
-                document.body.appendChild(link);
-                link.click();
-
-                this.$message({
-                  type: 'success',
-                  message: '下载成功!'
-                });
+                // if(!res) {return}
+                // debugger;
+                // let url = window.URL.createObjectURL(res.data);
+                // let link = document.createElement('a');
+                // link.style.display = 'none';
+                // link.href = url;
+                // link.setAttribute('download', 'powerpoint.pptx');
+                // document.body.appendChild(link);
+                // link.click();
+                if(res.status===200){
+                  let aTag=document.createElement('a');
+                  let blob=new Blob([res.data],{type:""});
+                  aTag.download=this.items[index].pptUrl;
+                  aTag.href=URL.createObjectURL(blob);
+                  aTag.click();
+                  URL.revokeObjectURL(blob);
+                  this.$message({
+                    type: 'success',
+                    message: '下载成功!'
+                  });
+                }
               });
 
           }).catch(() => {

@@ -68,7 +68,7 @@
           <a @click="sign">修改报名</a>
         </div>
       </div>
-      <div style="height: 150px;"></div>
+      <div style="height: 200px;"></div>
     </div>
 </template>
 
@@ -84,6 +84,7 @@
             teamId:'',
             maxTeam:'',
             seminarInfo:[],
+            attendanceId:'',
             note:{
               backgroundImage:"url("+require("../../../assets/backpic.jpg")+")",
               backgroundRepeat: "no-repeat",
@@ -97,6 +98,7 @@
         that.courseId=that.$route.query.courseId;
         that.courseName=that.$route.query.courseName;
         that.klassId=that.$route.query.klassId;
+        that.teamId=that.$route.query.teamId;
         that.$axios({
           method:'GET',
           url:'/seminar/'+that.seminarId+'/class/'+that.klassId+'/attendance',
@@ -105,10 +107,17 @@
           }
         })
           .then(res=>{
+            console.log('这里有attendanceId?');
             console.log(res);
             if(res.status===200){
               window.localStorage['token']=res.headers.authorization;
               this.seminarInfo=res.data;
+
+              for(let i=0;i<this.seminarInfo.length;i++){
+                if(this.teamId===this.seminarInfo[i].teamId)
+                  this.attendanceId=this.seminarInfo[i].id;
+              }
+              console.log('attendanec为'+this.attendanceId);
               if(that.maxTeam===res.data.length){
                 this.$message({
                   type:'warning',
@@ -243,6 +252,8 @@
             center:true,
           }).then(() => {
             //首先获得attendanceId????????????????????????????????????????????????
+
+
             this.$axios({
               method:'DELETE',
               url:'/attendance/'+this.$data.attendanceId,
@@ -252,7 +263,7 @@
             })
               .then(res=>{
                 console.log(res);
-                if(res.status===201){
+                if(res.status===200){
                   window.localStorage['token']=res.headers.authorization;
                   this.$message({
                     type: 'success',

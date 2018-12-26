@@ -145,7 +145,7 @@
           },
           EnterTeam(){
             this.$axios({
-              method:'course/'+this.$data.courseId+'/myteam',
+              method:'course/'+this.$data.courseId+'/myTeam',
               headers:{
                 'Authorization': window.localStorage['token']
               }

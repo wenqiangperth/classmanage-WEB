@@ -201,7 +201,7 @@
               seminarId:this.seminarId,
               courseId: this.courseId,
               courseName: this.courseName,
-              klassId: this.klassId
+              klassId: this.klassId,
             }
           })
         },
@@ -233,7 +233,8 @@
               seminarId:this.seminarId,
               courseId: this.courseId,
               courseName: this.courseName,
-              klassId: this.klassId
+              klassId: this.klassId,
+              teamId: this.teamId,
             }
           });
         }
