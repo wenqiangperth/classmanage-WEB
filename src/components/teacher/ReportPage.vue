@@ -22,7 +22,7 @@
           <tr id="tr0">
             <td style="width: 20%">第{{item.teamOrder}}组</td>
             <td style="width: 55%;">
-              <span style="color: #66cccc" @click="downloadReport1"
+              <span style="color: #66cccc" @click="downloadReport1(item.id,index)"
                     v-if="item.reportUrl!==null">{{item.reportName}}</span>
               <span style="color: red" v-else>未提交</span>
             </td>
@@ -51,7 +51,6 @@
 
 <script>
   import {MessageBox} from 'mint-ui';
-
   export default {
     name: "ReportPage",
     data() {
@@ -112,7 +111,7 @@
       gotoTotalSeminar() {
         this.$router.push({path: '/teacher/TotalSeminar'});
       },
-      downloadReport1() {
+      downloadReport1(id, index) {
         MessageBox.confirm('确定下载该报告吗?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -121,7 +120,8 @@
           .then(() => {
             this.$axios({
               method: 'GET',
-              url: '/attendance/' + this.groupInfo.teamOrder + '/class/' + this.$data.classId + '/report',
+              url: '/attendance/' + id + '/report',
+              responseType: 'blob',
               headers: {
                 'Authorization': window.localStorage['token']
               }
@@ -131,11 +131,23 @@
                   window.localStorage['token'] = res.headers.authorization;
                   console.log("下载文件");
                   console.log(res.data);
-                  /*this.files = res.data;
+                  /*let url=window.URL.createObjectURL(res.data);
+                  let link=document.createElement('a');
+                  link.style.display='none';
+                  link.href=url;
+                  link.setAttribute('download','.docx');
+                  document.body.appendChild(link);
+                  link.click();*/
+                  let aTag = document.createElement('a');
+                  let blob = new Blob([res.data], {type: ""});
+                  aTag.download = this.groupInfo[index].reportUrl;
+                  aTag.href = URL.createObjectURL(blob);
+                  aTag.click();
+                  URL.revokeObjectURL(blob);
                   this.$message({
                     type: 'success',
                     message: '下载成功!'
-                  });*/
+                  });
                 }
               })
               .catch(e => {
@@ -158,6 +170,7 @@
             this.$axios({
               method: 'GET',
               url: '/seminar/' + this.$data.seminarId + '/class/' + this.$data.classId + '/report',
+              responseType: 'blob',
               headers: {
                 'Authorization': window.localStorage['token']
               }
@@ -167,11 +180,17 @@
                   window.localStorage['token'] = res.headers.authorization;
                   console.log("下载文件");
                   console.log(res.data);
-                  /*this.files = res.data;
+                  let url = window.URL.createObjectURL(res.data);
+                  let link = document.createElement('a');
+                  link.style.display = 'none';
+                  link.href = url;
+                  link.setAttribute('download', '*.zip');
+                  document.body.appendChild(link);
+                  link.click();
                   this.$message({
                     type: 'success',
                     message: '下载成功!'
-                  });*/
+                  });
                 }
               })
               .catch(e => {

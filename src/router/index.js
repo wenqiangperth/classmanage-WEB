@@ -216,7 +216,7 @@ export default new Router({
       component:FindPassword
     },
     {
-      name: 'HomePage',
+      name: 'homePage',
       path:'/teacher/HomePage',
       component:HomePage
     },

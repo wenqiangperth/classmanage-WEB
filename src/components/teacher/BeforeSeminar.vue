@@ -137,14 +137,22 @@
         this.$router.push({
           path: '/teacher/StartSeminar',
           name: 'StartSeminar',
-          query: {
+          params: {
             classId: this.classId,
-            seminarId: this.seminarId
+            seminarId: this.seminarId,
+            course: this.course
           }
         });
       },
       gotoOngoingSeminar() {
-        this.$router.push({path: '/teacher/StartSeminar'});
+        this.$router.push({
+          path: '/teacher/StartSeminar',
+          name: 'StartSeminar',
+          params: {
+            classId: this.classId,
+            seminarId: this.seminarId
+          }
+        });
       },
       Back() {
         this.$router.push({

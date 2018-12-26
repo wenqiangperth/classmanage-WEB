@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="head" class="head">
-      <div class="title"><i class="el-icon-back icon0 icon1" @click="Back"></i><span>我的课程</span>
+      <div class="title"><i class="el-icon-back icon0 icon1" @click="gotoHomePage"></i><span>我的课程</span>
         <el-dropdown class="plus" trigger="click">
           <i class="el-icon-plus icon0 icon1"></i>
           <el-dropdown-menu slot="dropdown">
@@ -71,6 +71,7 @@
     data() {
       return {
         courses: [],
+        account: '',
         item: [
           '学生成绩',
           '学生组队',
@@ -82,6 +83,7 @@
       }
     },
     created() {
+      this.account = this.$route.query.account;
       let that = this;
       that.$axios({
         method: 'GET',
@@ -114,11 +116,15 @@
         })
     },
     methods: {
-      Back() {
-        this.$router.go(-1);
-      },
+
       gotoHomePage(){
-        this.$router.push({path:'/teacher/HomePage'});
+        this.$router.push({
+          path: '/teacher/HomePage',
+          name: 'homePage',
+          query: {
+            account: this.account
+          }
+        });
       },
       gotoTotalSeminar() {
         this.$router.push({path: '/teacher/TotalSeminar'});

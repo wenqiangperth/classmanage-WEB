@@ -18,7 +18,8 @@
       </div>
       <div style="width: 100%"
            v-for="(item,index) in classInfo"
-           :key="index">
+           :key="index"
+      >
         <el-card>
           <div slot="header">
             <span style="font-weight: bold">{{item.grade}}-{{item.klassSerial}}</span>
@@ -38,12 +39,19 @@
               <td>
                 <el-upload
                   class="upload-demo"
+                  :http-request="upload"
                   action="https://jsonplaceholder.typicode.com/posts/"
+                  :on-preview="handlePreview"
+                  :on-remove="handleRemove"
                   multiple
                   :limit="3"
-                  :on-exceed="handleExceed">
-                  <el-button size="mini" type="info" plain>点击上传</el-button>
-                  <!--<div slot="tip" class="el-upload__tip" style="float:right">未选择任何文件</div>-->
+                  :on-exceed="handleExceed"
+                  :file-list="fileList">
+                  <div>
+                    <el-button size="mini" type="info" plain v-on:click="insideMethod(index)">点击上传</el-button>
+                  </div>
+                  <!--<el-button size="mini" type="info" plain>点击上传</el-button>
+                  <div slot="tip" class="el-upload__tip" style="float:right">未选择任何文件</div>-->
                 </el-upload>
               </td>
             </tr>
@@ -79,6 +87,7 @@
 
 <script>
   import {MessageBox} from 'mint-ui';
+
   export default {
     name: "ClassInfo",
     data() {
@@ -94,7 +103,9 @@
             klassTime: '周三7，8节',
             klassLocation: '海韵教学楼',
           }
-        ]
+        ],
+        fileList: [],
+        temp: 0
       }
     },
     created() {
@@ -136,8 +147,52 @@
         this.courseId = this.$route.query.courseId;
         this.courseName = this.$route.query.courseName;
       },
-      gotoHomePage(){
-        this.$router.push({path:'/teacher/HomePage'});
+
+      insideMethod(index) {
+        //console.log("我是里");
+        //console.log(index);
+        this.temp = index;
+      },
+      upload(file) {
+        let formData = new FormData();
+        let config = {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        };
+        formData.append('file', file.file);
+        console.log(this.classInfo);
+        this.$axios({
+          method: 'PUT',
+          url: '/class/' + this.classInfo[this.temp].id,
+          processData: false,
+          data: formData,
+          config: config,
+          headers: {
+            'Authorization': window.localStorage['token']
+          }
+        })
+          .then(res => {
+            console.log(res.data);
+            if (res.status === 200) {
+              window.localStorage['token'] = res.headers.authorization;
+              this.$message({
+                type: 'success',
+                message: '上传名单成功！'
+              })
+            } else {
+              this.$message({
+                type: 'error',
+                message: '上传失败！请重新上传！'
+              })
+            }
+          })
+          .catch(e => {
+            console.log(e);
+          })
+      },
+      gotoHomePage() {
+        this.$router.push({path: '/teacher/HomePage'});
       },
       returnLogin() {
         this.$router.push({path: '/'});
@@ -150,6 +205,12 @@
       },
       handleExceed(files, fileList) {
         this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+      },
+      handlePreview(file) {
+        console.log(file);
+      },
+      handleRemove(file, fileList) {
+        console.log(file, fileList);
       },
       addClass(courseId) {
         this.$router.push({
@@ -219,9 +280,9 @@
         });
       }
     },
-    watch: {
-      '$route': 'getParams'
-    }
+    // watch: {
+    //   '$route': 'getParams'
+    // }
   }
 </script>
 

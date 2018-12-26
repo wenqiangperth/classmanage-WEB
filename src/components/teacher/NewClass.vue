@@ -36,10 +36,15 @@
             <td>
               <el-upload
                 class="upload-demo"
+                :http-request="upload"
                 action="https://jsonplaceholder.typicode.com/posts/"
-                multiple>
-                <el-button size="mini" type="info">选择文件</el-button>
-                <div slot="tip" class="el-upload__tip" style="float:right;">未选择任何文件</div>
+                :on-preview="handlePreview"
+                :on-remove="handleRemove"
+                :limit="3"
+                multiple
+                :on-exceed="handleExceed"
+                :file-list="fileList">
+                <el-button size="mini" type="info">上传学生名单</el-button>
               </el-upload>
             </td>
           </tr>
@@ -60,7 +65,8 @@
       return {
         courseId: 1,
         courseName: '',
-        classInfo: {}
+        classInfo: {},
+        fileList: []
       }
     },
     created() {
@@ -81,6 +87,29 @@
           }
 
         });
+      },
+      handleRemove(file, fileList) {
+        console.log(file, fileList);
+      },
+      handlePreview(file) {
+        console.log(file);
+      },
+      handleExceed(files, fileList) {
+        this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+      },
+      upload(file) {
+        console.log("file");
+        console.log(file);
+        let formData = new FormData();
+        let config = {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        };
+        formData.append('file' + file.file);
+        this.$axios({
+          method: 'PUT',
+        })
       },
       NewSuccess() {
         this.$axios({

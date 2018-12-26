@@ -19,8 +19,10 @@
           <template slot="title">
             <div style="font-weight: bold" v-for="cid in classInfo">
               &nbsp;&nbsp<span v-show="cid.id===item.klassId"><i class="header-icon el-icon-star-off el-icon0"></i>&nbsp;&nbsp;{{cid.klassSerial}}-{{item.teamSerial}}-{{item.teamName}}</span>
-              <span v-if="item.status===0" style="color: red;"><i class="el-icon-warning"></i></span>
-              <span v-else-if="item.status===2" style="color: red;"><i class="el-icon-time"></i></span>
+              <span v-if="(item.status===0)&&(cid.id===item.klassId)" style="color: red;"><i class="el-icon-warning"
+                                                                                             style="font-size: 18px"></i></span>
+              <span v-else-if="(item.status===2)&&(cid.id===item.klassId)" style="color: red;"><i class="el-icon-time"
+                                                                                                  style="font-size: 18px"></i></span>
             </div>
           </template>
           <el-card style="width:100%">

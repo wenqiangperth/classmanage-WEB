@@ -116,7 +116,7 @@ export default {
                 }
                 if(arr[1]===" isActive=0}"){
                   this.$router.push({
-                    path:'/teacher/EditPassword',
+                    path: '/teacher/Activate',
                     query:{
                       account: this.account
                     }

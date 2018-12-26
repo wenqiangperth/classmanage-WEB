@@ -5,7 +5,6 @@
         <el-dropdown class="plus" trigger="click">
           <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item><i class="el-icon-date" @click="gotoBacklog">&nbsp;&nbsp;待 办</i></el-dropdown-item>
             <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -15,11 +14,10 @@
       <div style="width:100%">
         <el-card>
           <fieldset>
-            <legend style="font-size: 20px;color:#66cccc">xX{{seminar[0].name}}Xx</legend>
+            <legend style="font-size: 20px;color:#66cccc">xX{{seminarName}}Xx</legend>
             <p><span style="font-weight: bold;color:#616161">正在展示:</span>
-              <br>组号:{{groups[group].id}} {{groups[group].name}}
-              <br>已进行5分钟
-              <br>已有{{quesGroups.length}}名同学提问
+              <br>组号:{{klassSerial}}-{{teamSerial}} {{teamName}}
+              <br>已有<span style="color: #66cccc;font-weight: bold">{{quesGroups.length}}</span>名同学提问
             </p>
           </fieldset>
         </el-card>
@@ -41,32 +39,33 @@
       </el-card>
       <div class="left">
         <el-menu default-active="1-4-1" class="el-menu-vertical-demo"
-                 @open="handleOpen" @close="handleClose" :collapse="isCollapse">
+                 :collapse="isCollapse">
           <el-submenu index="1">
             <template slot="title">
-              <i class="iconfont icon-huatong"></i>
+              <i class="iconfont icon-huatong"></i>&nbsp;&nbsp;展示
               <span slot="title">导航一</span>
             </template>
             <el-menu-item-group>
               <span slot="title">展示小组</span>
-              <el-menu-item v-for="(group,index0) in groups"
+              <el-menu-item v-for="(group,index0) in attendanceInfo"
                             :key="index0"
                             index="index0"
-                            v-model="group.id"
-                            @click="updatePreScore">{{group.id}}
+                            v-model="index0"
+                            @click="updatePreScore(index0)">
+                {{group.team.klassSerial}}-{{group.team.teamSerial}}{{group.team.teamName}}
               </el-menu-item>
             </el-menu-item-group>
           </el-submenu>
           <el-submenu index="2">
             <template slot="title">
-              <i class="iconfont icon-jushou"></i>
+              <i class="iconfont icon-jushou"></i>&nbsp;&nbsp;提问
               <span slot="title">导航二</span>
             </template>
             <el-menu-item-group>
               <span slot="title">提问小组</span>
-              <el-menu-item v-for="(group,index0) in quesGroups"
-                            :key="index0"
-                            index="index0" @click="updateQuesScore">{{group.id}}
+              <el-menu-item v-for="(group,index1) in quesGroups"
+                            :key="index1"
+                            index="index1" @click="updateQuesScore">{{group.id}}
               </el-menu-item>
             </el-menu-item-group>
           </el-submenu>
@@ -80,8 +79,9 @@
           <el-input
             placeholder="输入成绩"
             suffix-icon="el-icon-edit"
-            v-model="groups[group].score">
+            v-model="presentationScore">
           </el-input>
+          <el-button type="info" size="small" style="margin-top: 5px;float: right;margin-bottom: 5px">确认</el-button>
         </el-card>
         <el-card id="ques" style="display: none">
           <div slot="header">
@@ -92,6 +92,13 @@
               <td style="width: 30%">提问成绩</td>
               <td>
                 <el-input placeholder="输入成绩"></el-input>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 30%"></td>
+              <td>
+                <el-button type="info" size="small" style="margin-top: 5px;float: right;margin-bottom: 5px">确认
+                </el-button>
               </td>
             </tr>
           </table>
@@ -149,41 +156,21 @@
     data() {
       return {
         isCollapse: true,
+        course: [],
+        classId: '',
+        seminarId: '',
+        attendanceInfo: [],
+        score: '',
+        nowIndex: 0,
         value1: '',
-        seminar: [{
-          id: '1',
-          name: '用例分析',
-          course: 'OOAD',
-          desc: '界面导航图，每组要求15分组'
-        }],
-        group: 0,
-        count: 0,
-        groups: [{
-          id: '1-1',
-          name: 'yybby',
-          score: ''
-        }, {
-          id: '1-2',
-          name: 'nnnyyy',
-          score: ''
-        }, {
-          id: '1-3',
-          name: 'fffff',
-          score: ''
-        }, {
-          id: '1-4',
-          name: 'fffff',
-          score: ''
-        }, {
-          id: '1-5',
-          name: 'fffff',
-          score: ''
-        }, {
-          id: '1-6',
-          name: 'fffff',
-          score: ''
-        }
-        ],
+        team: '',
+        klassSerial: '',
+        seminarName: '',
+        teamSerial: '',
+        teamName: '',
+        presentationScore: '',
+        questionScore: '',
+        klassSeminarId: '',
         groupSelected: '1-1',
         otherScore: '',
         otherQuesScore: '',
@@ -202,6 +189,36 @@
         ],
       }
     },
+    created() {
+      this.course = this.$route.params.course;
+      this.classId = this.$route.params.classId;
+      this.seminarId = this.$route.params.seminarId;
+      let that = this;
+      that.$axios({
+        method: 'GET',
+        url: '/seminar/' + that.seminarId + '/class/' + that.classId + '/attendance',
+        headers: {
+          'Authorization': window.localStorage['token']
+        }
+      })
+        .then(res => {
+          if (res.status === 200) {
+            window.localStorage['token'] = res.headers.authorization;
+            console.log("获得当前展示信息");
+            console.log(res.data);
+            that.attendanceInfo = res.data;
+            that.seminarName = that.attendanceInfo[that.nowIndex].score.seminarName;
+            that.klassSerial = that.attendanceInfo[that.nowIndex].team.klassSerial;
+            that.teamSerial = that.attendanceInfo[that.nowIndex].team.teamSerial;
+            that.teamName = that.attendanceInfo[that.nowIndex].team.teamName;
+            that.klassSeminarId = that.attendanceInfo[that.nowIndex].team.klassSeminarId;
+
+          }
+        }).catch(e => {
+        console.log(e);
+      });
+
+    },
     methods: {
       gotoBacklog() {
         this.$router.push({path: '/teacher/Backlog'});
@@ -211,12 +228,6 @@
       },
       returnSeminarPage() {
         this.$router.push({path: '/teacher/SeminarPage'});
-      },
-      handleOpen(key, keyPath) {
-        console.log(key, keyPath);
-      },
-      handleClose(key, keyPath) {
-        console.log(key, keyPath);
       },
       askQuestions() {
         var pre_ = document.getElementById("pre");
@@ -229,13 +240,12 @@
         ques_.style.display = "block";
       },
       nextGroup() {
-        this.count++;
-        this.group++;
-        if ((this.count > 0) && (this.count < this.groups.length - 1)) {
-          this.$router.push({path: '/teacher/StartSeminar'});
+        this.nowIndex++;
+        if ((this.nowIndex > 0) && (this.nowIndex < this.attendanceInfo.length - 1)) {
+          // this.$router.push({path: '/teacher/StartSeminar'});
           var next_ = document.getElementById("nextGroup");
           next_.innerHTML = "下组展示";
-        } else if (this.count === this.groups.length - 1) {
+        } else if (this.nowIndex === this.attendanceInfo.length - 1) {
           var next0_ = document.getElementById("nextGroup");
           next0_.innerHTML = "结束展示";
         }
@@ -247,10 +257,11 @@
         update_.style.display = "none";
         pre_.style.display = "block";
         ques_.style.display = "none";
-        if (this.group === this.groups.length) {
+        if (this.nowIndex === this.attendanceInfo.length) {
           var finish_ = document.getElementById("finished");
           finish_.style.display = "block";
         }
+
       },
       endSeminar() {
         this.$router.push({path: '/teacher/AfterSeminar'});
@@ -267,7 +278,7 @@
         var update_ = document.getElementById("update1");
         update_.style.display = "none";
       },
-      updatePreScore() {
+      updatePreScore(index) {
         var pre_ = document.getElementById("pre");
         pre_.style.display = "none";
         var update1_ = document.getElementById("update1");
@@ -276,6 +287,25 @@
         ques_.style.display = "none";
         var update_ = document.getElementById("update");
         update_.style.display = "block";
+        this.$axios({
+          method: 'POST',
+          url: '/seminar/' + this.klassSeminarId + '/team/' + this.attendanceInfo[index].team.teamId + '/enterseminar',
+          data: {
+            presentationScore: this.presentationScore
+          },
+          headers: {
+            'Authorization': window.localStorage['token']
+          }
+        })
+          .then(res => {
+            if (res.status === 200) {
+              window.localStorage['token'] = res.headers.authorization;
+              this.$message({
+                type: 'success',
+                message: '修改成功'
+              })
+            }
+          });
       },
       updateQuesScore() {
         var pre_ = document.getElementById("pre");
@@ -293,21 +323,24 @@
 
 <style scoped>
   .left {
-    width: 21%;
+    width: 30%;
     min-height: 50px;
     float: left;
     margin-top: 10px;
   }
+
   .right {
-    width: 79%;
+    width: 70%;
     min-height: 50px;
     float: left;
     margin-top: 10px;
   }
+
   .el-menu-vertical-demo:not(.el-menu--collapse) {
     width: 200px;
     min-height: 400px;
   }
+
   .finish {
     position: fixed;
     top: 0;
@@ -327,18 +360,30 @@
   .el-menu-item.is-active {
     color: #66cccc;
   }
+
   .el-menu-item, .el-submenu__title {
     height: 45px;
     line-height: 45px;
   }
+
   .el-menu--collapse .el-menu .el-submenu,
   .el-menu--popup {
     min-width: 100px;
   }
+
   .el-submenu__title i {
     color: #66cccc;
   }
+
   .el-submenu [class^=el-icon-] {
     font-size: 25px;
+  }
+
+  .el-menu--collapse {
+    width: 90px;
+  }
+
+  .el-menu {
+    border-left: solid 1px #e6e6e6;
   }
 </style>

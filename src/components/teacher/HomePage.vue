@@ -55,7 +55,6 @@
       name: "HomePage",
       data() {
         return {
-          token:'',
           teacher:{
             account: '123456789',
             name: '邱明',
@@ -90,7 +89,6 @@
       },
       methods:{
         getData() {
-          this.token=this.$route.query.token;
           this.account = this.$route.query.account;
         },
           SetAccount(){
@@ -106,7 +104,13 @@
             this.$router.push({path:'/'});
         },
         gotoCourseManage() {
-          this.$router.push({path: '/teacher/CourseManage'});
+          this.$router.push({
+            path: '/teacher/CourseManage',
+            name: 'CourseManage',
+            params: {
+              account: this.account
+            }
+          });
         },
         gotoSeminar() {
           this.$router.push({path: '/teacher/TotalSeminar'});

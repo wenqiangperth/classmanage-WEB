@@ -2,7 +2,7 @@
   <div>
     <div id="head" class="head">
       <div class="title">
-        <i class="el-icon-back icon1 icon0" @click="returnAfterSeminar"></i>
+        <i class="el-icon-back icon1 icon0" @click="Back"></i>
         成绩
         <el-dropdown class="plus" trigger="click">
           <i class="el-icon-plus icon0"></i>
@@ -120,12 +120,20 @@
       },
       gotoSeminar(){
         this.$router.push({
-          path: '/teacher/SeminarPage',
-          name: 'SeminarPage',
-          params: {
-            course: this.course
-          }
+          path: '/teacher/TotalSeminar'
         });
+      },
+      Back() {
+        this.$router.push({
+          path: '/teacher/BeforeSeminar',
+          name: 'beforeSeminar',
+          params: {
+            course: this.course,
+            classId: this.classId,
+            roundId: this.roundId,
+            seminarId: this.seminarId
+          }
+        })
       },
       updateSuccess() {
         this.$axios({

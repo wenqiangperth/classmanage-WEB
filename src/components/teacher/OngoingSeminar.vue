@@ -8,7 +8,6 @@
           <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
-            <el-dropdown-item><router-link :to="{name:'Login'}"><i class="el-icon-back">&nbsp;&nbsp;退 出</i></router-link></el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -41,10 +40,6 @@
           </td>
         </tr>
       </table>
-      <!--<el-button type="info" size="mini"
-                 style="float: right;margin-top: 20px" @click="deleteSeminar">
-        删除讨论课
-      </el-button>-->
       <div>
         <el-button type="success" class="btn" plain @click="startSeminar" style="margin-top: 100px">进入讨论课</el-button>
       </div>

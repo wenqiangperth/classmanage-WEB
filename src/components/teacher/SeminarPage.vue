@@ -29,7 +29,7 @@
             <el-card style="width:100%">
               <div slot="header">
                 <span style="float:left;font-weight: bold;color: #616161">{{item.seminarName}}</span>
-                <i v-if="(course.seminarMainCourseId!==0)&&(course.courseId !== course.seminarMainCourseId)"></i>
+                <i v-if="(course.seminarMainCourseId!==null)&&(course.courseId !== course.seminarMainCourseId)"></i>
                 <i class="el-icon-edit el-icon0" style="float: right" v-else
                    @click="updateSeminarInfo(index0)"></i>
               </div>
@@ -44,7 +44,7 @@
         </el-collapse-item>
       </el-collapse>
       <div style="width: 100%"
-           v-if="(course.seminarMainCourseId!==0)&&(course.courseId !== course.seminarMainCourseId)"></div>
+           v-if="(course.seminarMainCourseId!==null)&&(course.courseId !== course.seminarMainCourseId)"></div>
       <div style="width: 100%" v-else>
         <el-button class="btn" type="success" plain @click="NewSeminar(course.courseId,roundInfo)"
                    style="margin-top: 10px"><i class="el-icon-plus" style="font-weight: bolder"></i>&nbsp;&nbsp;新建讨论课
@@ -133,7 +133,9 @@
     },
     methods: {
       Back() {
-        this.$router.go(-1);
+        this.$router.push({
+          path: '/teacher/CourseManage'
+        })
       },
       setRound(roundId) {
         this.$router.push({

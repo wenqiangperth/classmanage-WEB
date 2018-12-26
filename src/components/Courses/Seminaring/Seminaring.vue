@@ -106,7 +106,8 @@
         :limit="3"
         :on-exceed="handleExceed"
         :file-list="fileList">
-        <el-button style="font-size: 19px;font-weight: bold;letter-spacing: 3px;border-radius: 25px" type="success">
+        <el-button style="font-size: 19px;font-weight: bold;letter-spacing: 3px;border-radius: 25px" type="success"
+                   @click="upload">
           <i class="el-icon-upload"></i> 上传PPT</el-button>
       </el-upload>
 
@@ -273,7 +274,7 @@
             // this.$axios.post('/attendance/'+this.$data.attendanceId+'/powerpoint',formData)
             this.$axios({
               url:'/attendance/'+this.$data.attendanceId+'/powerpoint',
-              method: 'post',
+              method: 'POST',
               processData: false,
               data: formData,
               config: config,

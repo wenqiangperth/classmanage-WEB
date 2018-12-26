@@ -12,19 +12,21 @@
       </div>
     </div>
     <div class="empty"></div>
-    <div class="main">
-      <el-collapse accordion v-for="(round,index) in grades"
+    <div class="main" style="font-size: 14px">
+      <el-collapse accordion v-for="(round,index) in rounds"
                    :key="index">
         <el-collapse-item>
           <template slot="title">
-            &nbsp;&nbsp;<i class="header-icon el-icon-service el-icon0"></i>&nbsp;&nbsp;<span
-            style="font-weight: bold;font-family: 黑体;color: #616161">{{round.name}}</span>
+            <div style="width: 100%;text-align: left" @click="getScores(index)">
+              &nbsp;&nbsp;<i class="header-icon el-icon-service el-icon0"></i>&nbsp;&nbsp;<span
+              style="font-weight: bold;font-family: 黑体;color: #616161">第{{round.roundSerial}}轮</span>
+            </div>
           </template>
           <div style="width: 100%;">
-            <div v-for="(group0,index0) in round.groups"
-            :key="index0">
-              <el-button type="info" plain style="width:100%" @click="dialogTableVisible = true">
-                <i class="iconfont icon-zudui"></i>&nbsp;&nbsp;{{group0}}
+            <div v-for="(item,index0) in scores"
+                 :key="index0">
+              <el-button type="info" plain style="width:100%" @click="showGrade(index0)">
+                <i class="iconfont icon-zudui"></i>&nbsp;&nbsp;{{item.team.klassSerial}}-{{item.team.teamSerial}}&nbsp;&nbsp;{{item.team.teamName}}
               </el-button>
             </div>
           </div>
@@ -37,11 +39,11 @@
           :visible.sync="dialogTableVisible"
           width="90%">
           <el-table
-            :data="groupScore.item"
+            :data="seminarsScore"
             style="width: 100%;"
             >
             <el-table-column
-              prop="name"
+              prop="seminarName"
               label="主题"
               width="80"
               align="center">
@@ -51,7 +53,7 @@
               width="75"
               align="center">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.pre"></el-input>
+                <el-input v-model="scope.row.presentationScore"></el-input>
               </template>
             </el-table-column>
             <el-table-column
@@ -59,7 +61,7 @@
               width="75"
               align="center">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.question"></el-input>
+                <el-input v-model="scope.row.questionScore"></el-input>
               </template>
             </el-table-column>
             <el-table-column
@@ -67,15 +69,29 @@
               width="75"
               align="center">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.report"></el-input>
+                <el-input v-model="scope.row.reportScore"></el-input>
               </template>
             </el-table-column>
           </el-table>
           <table style="width: 100%">
             <tr style="width: 100%">
+              <td width="85" style="text-align: center">总成绩</td>
+              <td style="text-align: center">
+                <el-input width="75" v-model="roundScore.presentationScore" :disabled="true"></el-input>
+              </td>
+              <td style="text-align: center">
+                <el-input width="75" v-model="roundScore.questionScore" :disabled="true"></el-input>
+              </td>
+              <td style="text-align: center">
+                <el-input width="75" v-model="roundScore.reportScore" :disabled="true"></el-input>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%">
+            <tr style="width: 100%">
               <td style="width: 40%">本轮总成绩</td>
               <td>
-                <el-input v-model="groupScore.finalScore"></el-input>
+                <el-input v-model="roundScore.totalScore" :disabled="true"></el-input>
               </td>
             </tr>
           </table>
@@ -96,55 +112,17 @@
       return {
         scores: [],
         courseId: '',
+        courseName: '',
         rounds: [],
-        groupScore:{
-          groupId:'1-1',
-          finalScore: 5.0,
-          item:[
-            {
-              name: '用例分析',
-              pre: '5.0',
-              question: '5.0',
-              report: '5.0'
-
-            },
-            {
-              name: '界面原型',
-              pre: '5.0',
-              question: '5.0',
-              report: '5.0'
-            },
-            {
-              name: '总成绩',
-              pre: '5.0',
-              question: '5.0',
-              report: '5.0'
-            }
-          ]
-        },
-        grades: [
-          {
-            name: '第一轮',
-            groups: [
-               '1-1',
-               '1-2'
-            ],
-
-          },
-          {
-            name: '第二轮',
-            groups: [
-              '2-1',
-              '2-2'
-            ],
-
-          }
-        ],
+        teams: [],
+        seminarsScore: [],
+        roundScore: [],
         dialogTableVisible: false
       }
     },
     created() {
       this.courseId = this.$route.params.courseId;
+      this.courseName = this.$route.params.courseName;
       let that = this;
       that.$axios({
         method: 'GET',
@@ -160,7 +138,9 @@
             console.log(res.data);
             that.rounds = res.data;
           }
-        })
+        }).catch(e => {
+        console.log(e);
+      });
     },
     methods: {
       returnLogin() {
@@ -177,6 +157,28 @@
       },
       UpdateGrades(){
 
+      },
+      showGrade(index) {
+        this.dialogTableVisible = true;
+        this.seminarsScore = this.scores[index].seminarScores;
+        this.roundScore = this.scores[index].roundScore;
+      },
+      getScores(index) {
+        this.$axios({
+          method: 'GET',
+          url: '/course/' + this.courseId + '/round/' + this.rounds[index].id + '/roundscore',
+          headers: {
+            'Authorization': window.localStorage['token']
+          }
+        })
+          .then(res => {
+            if (res.status === 200) {
+              console.log("轮次下所有成绩");
+              console.log(res.data);
+              this.scores = res.data;
+
+            }
+          })
       }
 
     }
@@ -194,6 +196,12 @@
 <style>
   .el-dialog__body {
     padding: 10px 20px 50px 20px;
+  }
+
+  .el-collapse-item__header {
+    font-size: 15px;
+    font-weight: bold;
+    color: #616161;
   }
 </style>
 

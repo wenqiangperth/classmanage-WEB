@@ -88,6 +88,7 @@
           if (res.status === 200) {
             window.localStorage['token'] = res.headers.authorization;
             let data = res.data;
+            console.log("展示小组信息");
             console.log(data);
 
           }

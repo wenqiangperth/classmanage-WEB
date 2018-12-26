@@ -82,7 +82,7 @@
                   message: '激活成功！'
                 });
                 this.$router.push({
-                  path: '/teacher/HomePage',
+                  path: '/',
                 });
               } else if (res.status === 400) {
                 this.$message({
