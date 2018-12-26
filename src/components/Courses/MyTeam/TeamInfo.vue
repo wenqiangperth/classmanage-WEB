@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :style="note">
       <header class="home-title">
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
@@ -22,49 +22,58 @@
         </div>
       </header>
 
-      <div>
-        <el-button style="width: 90%;margin:10px 0 10px 0;background-color: #f0f0f0" @click="EnterTeam">进入我的小组</el-button>
-      </div>
+      <div class="main" style="opacity: 0.85;">
+        <div>
+          <el-button style="width: 90%;margin:10px 0 10px 0;background-color: #f0f0f0" @click="EnterTeam">进入我的小组</el-button>
+        </div>
 
-      <div style="width: 100%;background-color: #fff">
-        <el-tag>小组信息总览</el-tag>
-      </div>
-      <el-collapse v-model="activeName" class="team" accordion>
-        <el-collapse-item v-for="(team,index) in teams" :key="index" :class="{'active':index%2!=1}">
-          <template slot="title">
-            <div style="font-size: 17px;font-weight: bold">
-              <i class="header-icon el-icon-search"></i>
-               {{team.teamSerial}}  : {{team.teamName}}
-              <label v-if="team.status===1" style="color: blue">(状态：Valid)</label>
-              <label v-else-if="team.status===2" style="color: blue">(状态：InValid)</label>
+        <div style="width: 100%;background-color: #fff">
+          <el-tag>小组信息总览</el-tag>
+        </div>
+        <el-collapse v-model="activeName" class="team" accordion>
+          <el-collapse-item v-for="(team,index) in teams" :key="index" :class="{'active':index%2!=1}">
+            <template slot="title">
+              <div style="font-size: 17px;font-weight: bold">
+                <i class="header-icon el-icon-search"></i>
+                {{team.klassSerial}}-{{team.teamSerial}}  : {{team.teamName}}
+                <a v-if="team.status===2" style="color:green;font-size: 20px">
+                  <i class="el-icon-success"></i>
+                </a>
+                <a v-else-if="team.status===0" style="color: red;font-size: 20px">
+                  <i class="el-icon-warning"></i>
+                </a>
+                <a v-else style="color: orange;font-size: 20px">
+                  <i class="el-icon-info"></i>
+                </a>
+              </div>
+            </template>
+            <div style="text-align: left;font-size: 16px;font-family: 幼圆">
+              <div style="background-color: #66cccc;font-weight: bold">组长：{{team.leaderName}}——{{team.leaderAccount}}</div>
+              <div v-for="mem in team.students">
+                组员：{{mem.studentName}}——{{mem.account}}
+              </div>
             </div>
-          </template>
-          <div style="text-align: left;font-size: 16px;font-family: 幼圆">
-            <div style="background-color: #66cccc;font-weight: bold">组长：{{team.leaderId}}——{{leaderAccount}}</div>
-            <div v-for="mem in team.students">
-              组员：{{mem.studentName}}——{{mem.account}}
+          </el-collapse-item>
+        </el-collapse>
+
+        <div class="pic"><img style="border-radius: 50px" src="../../../assets/1.jpg"></div>
+
+        <el-collapse v-model="activeName2">
+          <el-collapse-item>
+            <template slot="title">
+              <div style="font-size: 17px"><i class="header-icon el-icon-search"></i>
+                未组队学生</div>
+            </template>
+            <div v-for="ren in Unteam" style="text-align: left;font-size: 16px;font-family: 幼圆">
+              {{ren.studentName}}——{{ren.account}}
+              <div class="line"/>
             </div>
-          </div>
-        </el-collapse-item>
-      </el-collapse>
+          </el-collapse-item>
+        </el-collapse>
 
-      <div class="pic"><img style="border-radius: 50px" src="../../../assets/1.jpg"></div>
-
-      <el-collapse v-model="activeName2">
-        <el-collapse-item>
-          <template slot="title">
-            <div style="font-size: 17px"><i class="header-icon el-icon-search"></i>
-              未组队学生</div>
-          </template>
-          <div v-for="ren in Unteam" style="text-align: left;font-size: 16px;font-family: 幼圆">
-            {{ren.studentName}}——{{ren.account}}
-            <div class="line"/>
-          </div>
-        </el-collapse-item>
-      </el-collapse>
-
-      <div class="login-input">
-        <a @click="MakeTeam">创建小组</a>
+        <div class="login-input">
+          <a @click="MakeTeam">创建小组</a>
+        </div>
       </div>
     </div>
 </template>
@@ -80,7 +89,13 @@
           leaderName:'',
           leaderAccount:'',
           teams:[],
-          Unteam:[]
+          leaders:[],
+          Unteam:[],
+          note:{
+            backgroundImage:"url("+require("../../../assets/sky.jpg")+")",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "100% 100%"
+          }
         };
       },
       created(){
@@ -100,6 +115,14 @@
               if(res.status===200){
                 window.localStorage['token']=res.headers.authorization;
                 this.teams=res.data;
+                for(let i=0;i<this.teams.length;i++){
+                  for(let j=0;j<this.teams[i].students.length;j++){
+                    if(this.teams[i].leaderId===this.teams[i].students[j].id){
+                      this.teams[i].leaderAccount=this.teams[i].students[j].account;
+                      this.teams[i].leaderName=this.teams[i].students[j].studentName;
+                    }
+                  }
+                }
               }
               else if(res.status===404){
                 alert("尚未有队伍信息！")

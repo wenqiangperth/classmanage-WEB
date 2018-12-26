@@ -82,8 +82,11 @@
          <label style="text-align: left; line-height: 50px">
            PPT：
          </label>
-         <a style="text-align: center; color: #66CCCC" @click="check">
+         <a v-if="this.pptName!==null" style="text-align: center; color: #66CCCC" @click="check">
            已提交
+         </a>
+         <a v-if="this.pptName===null" style="text-align: center; color: red" @click="check">
+           未提交
          </a>
        </div>
        <el-button @click="openIntro" style="width:100%; height: 50px;text-decoration: underline;background-color: #f0f0f0">点此查看讨论课介绍</el-button>
@@ -124,6 +127,7 @@
           teamId:'',
           attendanceId:'',
           seminarInfo:[],
+          pptName:'',
           status:'正在进行',
           fileList:[],
           note:{
@@ -192,6 +196,7 @@
               for(let i=0;i<temp.length;i++){
                 if(this.teamId===temp[i].team.id){
                   this.attendanceId=temp[i].id;
+                  this.pptName=temp[i].pptName;
                 }
               }
             }
@@ -336,7 +341,7 @@
 
   .enter-seminar{
     width:90%;
-    margin:50px 10px 15px 10px;
+    margin:20px 10px 15px 10px;
     border:1px solid #66CCCC;
     border-radius:25px;
   }

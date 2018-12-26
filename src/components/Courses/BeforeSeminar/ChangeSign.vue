@@ -84,17 +84,17 @@
       </div>
 
       <el-upload
-        class="grade"
+        class="upload-demo"
+        :http-request="upload"
         action="https://jsonplaceholder.typicode.com/posts/"
         :on-preview="handlePreview"
         :on-remove="handleRemove"
-        :before-remove="beforeRemove"
         multiple
         :limit="3"
         :on-exceed="handleExceed"
         :file-list="fileList">
         <div class="grade">
-          <a >PPT提交</a>
+          <a @click="upload">PPT提交</a>
         </div>
       </el-upload>
 
@@ -116,6 +116,7 @@
           teamOrder:'',            //该用户所在小组的展示顺序
           pptName:'',                //报名小组的pptName
           teamName:'',
+          attendanceId:'',
           seminarInfo:[],
           note:{
             backgroundImage:"url("+require("../../../assets/backpic.jpg")+")",
@@ -185,6 +186,7 @@
                   this.pptName=temp[i].pptName;
                   this.teamOrder=temp[i].teamOrder;
                   this.teamName=temp[i].team.teamName;
+                  this.attendanceId=temp[i].id;
                 }
               }
             }
@@ -237,6 +239,45 @@
               teamId: this.teamId,
             }
           });
+        },
+        upload(file) {
+          console.log('file是啥：');
+          console.log(file);
+          let formData = new FormData();
+          let config = {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          };
+          formData.append('file', file.file);
+          this.$axios({
+            url: '/attendance/' + this.$data.attendanceId + '/powerpoint',
+            method: 'post',
+            processData: false,
+            data: formData,
+            config: config,
+            headers: {
+              'Authorization': window.localStorage['token']
+            }
+          })
+            .then(res => {
+              console.log(res);
+              if (res.status === 200) {
+                this.$message({
+                  type: 'success',
+                  message: '上传文件成功！'
+                })
+              }
+              else {
+                this.$message({
+                  type: 'error',
+                  message: '上传失败！请重新上传！'
+                })
+              }
+            })
+            .catch(e => {
+              console.log(e);
+            })
         }
       }
     }
@@ -277,7 +318,7 @@
   }
 
   .grade{
-    margin:40px 10px 15px 10px;
+    margin:60px 10px 15px 10px;
     border-radius:25px;
   }
 

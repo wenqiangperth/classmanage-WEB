@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :style="note">
       <header class="home-title">
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
@@ -21,59 +21,61 @@
           </el-dropdown>
         </div>
       </header>
-      <div style="height: 20px;background-color: #fff"></div>
+      <div class="main" style="opacity: 0.85;">
+        <div style="height: 20px;background-color: #fff"></div>
 
-      <el-form :inline="true" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="小组名" prop="name" >
-          <el-input v-model="ruleForm.name" placeholder="untitled"></el-input>
-        </el-form-item>
-        <el-form-item label="选择班级" prop="region">
-          <el-select v-model="ruleForm.region" placeholder="2016-（1）">
-            <el-option label="2016-（1）" value="1"></el-option>
-            <el-option label="2016-（2）" value="2"></el-option>
-            <el-option label="2016-（3）" value="3"></el-option>
-            <el-option label="2016-（4）" value="4"></el-option>
-          </el-select>
-        </el-form-item>
+        <el-form :inline="true" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+          <el-form-item label="小组名" prop="name" >
+            <el-input v-model="ruleForm.name" placeholder="untitled"></el-input>
+          </el-form-item>
+          <el-form-item label="选择班级" prop="region">
+            <el-select v-model="ruleForm.region" placeholder="2016-（1）">
+              <el-option label="2016-（1）" value="1"></el-option>
+              <el-option label="2016-（2）" value="2"></el-option>
+              <el-option label="2016-（3）" value="3"></el-option>
+              <el-option label="2016-（4）" value="4"></el-option>
+            </el-select>
+          </el-form-item>
 
-        <div class="search">
-          <el-input class="search-input" placeholder="输入学号/姓名" v-model="student"> <!--<i slot="prefix" class="iconfont icon-search" ></i>-->
-            <el-button @click="searchStu" slot="append" icon="el-icon-search"></el-button>
-          </el-input>
+          <div class="search">
+            <el-input class="search-input" placeholder="输入学号/姓名" v-model="student"> <!--<i slot="prefix" class="iconfont icon-search" ></i>-->
+              <el-button @click="searchStu" slot="append" icon="el-icon-search"></el-button>
+            </el-input>
+          </div>
+
+          <template>
+            <el-table
+              :data="Unteam"
+              style="width: 100%">
+              <el-table-column
+                label="添加队友"
+                fixed="left">
+                <template slot-scope="scope">
+                  <el-checkbox text-color="red"></el-checkbox>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="studentName"
+                label="姓名"
+                width="130">
+              </el-table-column>
+              <el-table-column
+                prop="account"
+                label="学号"
+                width="130">
+              </el-table-column>
+            </el-table>
+          </template>
+          <el-pagination
+            layout="prev, pager, next"
+            :total="100">
+          </el-pagination>
+
+        </el-form>
+
+        <div class="login-input">
+          <a @click="submitForm('ruleForm')">确认提交</a>
         </div>
-
-        <template>
-          <el-table
-            :data="Unteam"
-            style="width: 100%">
-            <el-table-column
-              label="添加队友"
-              fixed="left">
-              <template slot-scope="scope">
-                <el-checkbox text-color="red"></el-checkbox>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="studentName"
-              label="姓名"
-              width="130">
-            </el-table-column>
-            <el-table-column
-              prop="account"
-              label="学号"
-              width="130">
-            </el-table-column>
-          </el-table>
-        </template>
-        <el-pagination
-          layout="prev, pager, next"
-          :total="100">
-        </el-pagination>
-
-      </el-form>
-
-      <div class="login-input">
-        <a @click="submitForm('ruleForm')">确认提交</a>
       </div>
     </div>
 </template>
