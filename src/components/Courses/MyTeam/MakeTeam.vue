@@ -22,16 +22,18 @@
         </div>
       </header>
       <div class="main" style="opacity: 0.85;">
-        <el-form style="margin-top: 30px" :inline="true" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+        <el-form style="margin-top: 30px" :inline="true" :model="ruleForm" ref="ruleForm" label-width="100px" class="demo-ruleForm">
           <el-form-item label="小组名" prop="name" >
-            <el-input v-model="ruleForm.name" placeholder="untitled"></el-input>
+            <el-input v-model="name" placeholder="untitled"></el-input>
           </el-form-item>
           <el-form-item label="选择班级" prop="region">
-            <el-select v-model="ruleForm.region" placeholder="2016-（1）">
-              <el-option label="2016-（1）" value="1"></el-option>
-              <el-option label="2016-（2）" value="2"></el-option>
-              <el-option label="2016-（3）" value="3"></el-option>
-              <el-option label="2016-（4）" value="4"></el-option>
+            <el-select v-model="classId" placeholder="2016-1">
+              <el-option v-for="klass in classInfo"
+                         :label="klass.grade+'-'+klass.klassSerial"
+                         :value="klass.id">
+
+              </el-option>
+
             </el-select>
           </el-form-item>
 
@@ -49,7 +51,9 @@
                 label="添加队友"
                 fixed="left">
                 <template slot-scope="scope">
-                  <el-checkbox text-color="red"></el-checkbox>
+                  <el-button
+                    size="mini"
+                    @click="handleEdit(scope.$index, scope.row)">添加</el-button>
                 </template>
               </el-table-column>
               <el-table-column
@@ -64,10 +68,6 @@
               </el-table-column>
             </el-table>
           </template>
-          <el-pagination
-            layout="prev, pager, next"
-            :total="100">
-          </el-pagination>
         </el-form>
 
         <div class="login-input">
@@ -83,29 +83,34 @@
         name: "MakeTeam",
       data() {
         return {
+          name:'',
           courseId:'',
-          student: '',
+          classId:'',
+          leader:[{id:'',name:''}],
+          members: [{id:'',studentName:''}],
+          student:'',
+          classInfo:'',
           ruleForm: {
             name: '',
-            region: '',
-            type:[]
+            classId: '',
+            members:[]
           },
           rules: {
             name: [
               { required: true, message: '请输入小组名', trigger: 'blur' },
               { min: 3, message: '长度不能小于三个字符', trigger: 'blur' }
             ],
-            region: [
+            classId: [
               { required: true, message: '班级名不能为空', trigger: 'change' }
             ]
           },
           Unteam:[],       //未组队学生学号、姓名
-          members:[],
           note:{
             backgroundImage:"url("+require("../../../assets/backpic.jpg")+")",
             backgroundRepeat: "no-repeat",
             backgroundSize: "100% 100%",
-          }
+          },
+          i:0,
         };
       },
       created(){
@@ -128,6 +133,38 @@
               }
             })
             .catch(e=>{console.log(e)})
+
+          that.$axios({
+            method:'GET',
+            url:'/course/'+that.courseId+'/class',
+            headers:{
+              'Authorization':window.localStorage['token']
+            }
+          })
+            .then(res=>{
+              console.log(res);
+              if(res.status===200){
+                this.classInfo=res.data;
+              }
+            })
+            .catch(e=>{
+              console.log(e);
+            })
+
+        //获得创建小组人的信息（组长）
+          that.$axios({
+            method:'GET',
+            url:'/user/information',
+            headers:{
+              'Authorization': window.localStorage['token']
+            }
+          }).then(res=>{
+            console.log(res);
+            if(res.status===200){
+              this.leader.id=res.data.id;
+              this.leader.name=res.data.name;
+            }
+          }).catch(e=>{console.log(e)})
       },
       methods:{
           back(){
@@ -150,23 +187,28 @@
             });
             this.$axios({
               method:'POST',
-              url:'/team',
+              url:'course/'+this.$data.courseId+'/class/'+this.$data.classId+'/team',
+              headers:{
+                'Authorization':window.localStorage['token']
+              },
               data:{
-                name:this.ruleForm.name,
+                name:this.name,
                 courseId:this.courseId,
-                classId:this.ruleForm.region,
-                leader:{
-                  id:window.localStorage['userId']
-                },
-                members:this.members
+                classId:this.classId,
+                leader:this.leader,
+                members:this.members,
               }
             })
               .then(res=>{
-                if(res.data.status===200){
-                  alert("创建成功！")
+                console.log(res);
+                if(res.status===200){
+                  this.$message({
+                    type:'success',
+                    message:'创建小组成功！'
+                  })
                 }
                 else{
-                  alert("创建失败！");
+                  alert("创建失败！请重新创建！");
                 }
               })
               .catch(e=>{
@@ -185,7 +227,41 @@
             }
             if(that.student==='')
               that.Unteam = that.Unteam;
+          },
+
+        handleEdit(index, row){
+          console.log(row.id);
+          if(this.i>5){
+            this.$message({
+              type:'error',
+              message:'小组人数不得超过6人！'
+            })
           }
+          if(this.i<=5){
+            this.$confirm('确定添加'+row.studentName, '提示', {
+              confirmButtonText: '取消',
+              cancelButtonText: '确定',
+              type: 'warning',
+              center: true
+            }).then(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消添加!'
+              });
+            }).catch(() => {
+              this.$message({
+                type: 'success',
+                message: '添加成功'
+              });
+              this.members[this.i].id=row.id;
+              this.members[this.i].studentName=row.studentName;
+              this.i=this.i+1;
+              console.log('看这里'+this.i);
+              console.log('组员：')
+              console.log(this.members);
+            });
+          }
+        },
 
       }
     }

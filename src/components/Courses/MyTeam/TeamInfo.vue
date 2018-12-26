@@ -95,7 +95,8 @@
             backgroundImage:"url("+require("../../../assets/sky.jpg")+")",
             backgroundRepeat: "no-repeat",
             backgroundSize: "100% 100%"
-          }
+          },
+          userId:'',
         };
       },
       created(){
@@ -152,6 +153,19 @@
             .catch(e=>{
               console.log(e)
             })
+
+          that.$axios({
+            method:'GET',
+            url:'/user/information',
+            headers:{
+              'Authorization':window.localStorage['token']
+            }
+          }).then(res=>{
+            console.log(res);
+            if(res.status===200){
+              this.userId=res.data.id;
+            }
+          })
       },
       methods:{
           back(){
@@ -168,7 +182,8 @@
           },
           EnterTeam(){
             this.$axios({
-              method:'course/'+this.$data.courseId+'/myTeam',
+              method:'GET',
+              url:'/course/'+this.$data.courseId+'/myteam',
               headers:{
                 'Authorization': window.localStorage['token']
               }
@@ -177,7 +192,14 @@
                 console.log('判断身份');
                 console.log(res);
                 if(res.status===200){
-                  //
+                  if(this.userId===res.data.leaderId){
+                    //进入组长管理界面
+                  }else{
+                    //进入组员信息界面
+                    this.$router.push({
+                      path:'/Courses/MyTeam/WithDraw'
+                    })
+                  }
                 }
               })
               .catch(e=>{
