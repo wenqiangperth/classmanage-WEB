@@ -233,6 +233,7 @@
 
   .login-input a{
     display: block;
+    font-weight: bold;
     width: 100%;
     text-align: center;
     line-height: 40px;
@@ -241,6 +242,7 @@
     font-size: 17px;
     letter-spacing: 5px;
     border-radius: 25px;
+    margin-bottom: 20px;
   }
 
   .team {

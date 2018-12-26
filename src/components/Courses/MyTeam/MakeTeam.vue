@@ -22,9 +22,7 @@
         </div>
       </header>
       <div class="main" style="opacity: 0.85;">
-        <div style="height: 20px;background-color: #fff"></div>
-
-        <el-form :inline="true" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+        <el-form style="margin-top: 30px" :inline="true" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
           <el-form-item label="小组名" prop="name" >
             <el-input v-model="ruleForm.name" placeholder="untitled"></el-input>
           </el-form-item>
@@ -70,13 +68,13 @@
             layout="prev, pager, next"
             :total="100">
           </el-pagination>
-
         </el-form>
 
         <div class="login-input">
           <a @click="submitForm('ruleForm')">确认提交</a>
         </div>
       </div>
+      <div style="height: 200px;"></div>
     </div>
 </template>
 
@@ -85,8 +83,8 @@
         name: "MakeTeam",
       data() {
         return {
-          courseId:'1',
-          student:'',
+          courseId:'',
+          student: '',
           ruleForm: {
             name: '',
             region: '',
@@ -102,25 +100,31 @@
             ]
           },
           Unteam:[],       //未组队学生学号、姓名
-          members:[]
+          members:[],
+          note:{
+            backgroundImage:"url("+require("../../../assets/backpic.jpg")+")",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "100% 100%",
+          }
         };
       },
       created(){
           //query获得上一页面的courseId
           let that = this;
           that.courseId = that.$route.query.courseId;
-          console.log(that.courseId)
+          console.log(that.courseId);
           that.$axios({
             method:'GET',
             url:'/course/'+that.courseId+'/noTeam',
-            params:{
-              courseId: that.courseId
+            headers:{
+              'Authorization':window.localStorage['token']
             }
           })
             .then(res=>{
               console.log(res);
               if(res.status===200){
-
+                window.localStorage['token']=res.headers.authorization;
+                this.Unteam=res.data;
               }
             })
             .catch(e=>{console.log(e)})
