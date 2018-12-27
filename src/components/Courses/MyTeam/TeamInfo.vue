@@ -91,6 +91,7 @@
           teams:[],
           leaders:[],
           Unteam:[],
+          teamId:'',
           note:{
             backgroundImage:"url("+require("../../../assets/sky.jpg")+")",
             backgroundRepeat: "no-repeat",
@@ -194,12 +195,26 @@
                 if(res.status===200){
                   if(this.userId===res.data.leaderId){
                     //进入组长管理界面
+                    this.$router.push({
+                      path:'/Courses/MyTeam/TeamManage',
+                      name:'TeamManage',
+                      query:{
+                        courseId: this.courseId
+                      }
+                    })
+
                   }else{
                     //进入组员信息界面
                     this.$router.push({
                       path:'/Courses/MyTeam/WithDraw'
                     })
                   }
+                }
+                if(res.status===500){
+                  this.$message({
+                    type:'warning',
+                    message:'您尚未加入任何小组，快去创建小组吧~'
+                  })
                 }
               })
               .catch(e=>{

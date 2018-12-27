@@ -87,7 +87,7 @@
           courseId:'',
           classId:'',
           leader:[{id:'',name:''}],
-          members: [{id:'',studentName:''}],
+          members: [{id:'',studentName:''},{id:'',studentName:''},{id:'',studentName:''},{id:'',studentName:''},{id:'',studentName:''}],
           student:'',
           classInfo:'',
           ruleForm: {
@@ -187,7 +187,7 @@
             });
             this.$axios({
               method:'POST',
-              url:'course/'+this.$data.courseId+'/class/'+this.$data.classId+'/team',
+              url:'/team',
               headers:{
                 'Authorization':window.localStorage['token']
               },
@@ -257,7 +257,7 @@
               this.members[this.i].studentName=row.studentName;
               this.i=this.i+1;
               console.log('看这里'+this.i);
-              console.log('组员：')
+              console.log('组员：');
               console.log(this.members);
             });
           }

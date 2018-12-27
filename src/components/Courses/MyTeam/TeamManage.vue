@@ -2,7 +2,7 @@
     <div>
       <header class="home-title">
         <div class="homeTitle">
-          <i class="el-icon-arrow-left"></i>
+          <i class="el-icon-arrow-left" @click="back"></i>
           <label>OOAD </label>
           <el-dropdown trigger="click" >
             <span class="el-dropdown-link">
@@ -24,13 +24,13 @@
 
       <el-card class="box-card">
         <div slot="header" class="clearfix">
-          <span>{{teamTitle}}</span>
+          <span>{{myTeam.klassSerial}}-{{myTeam.teamSerial}}:{{myTeam.teamName}}</span>
           <el-button style="float: right; padding: 3px 0" type="text">操作</el-button>
         </div>
-        <div style="font-weight: bold">组长：{{leader.Na}}--{{leader.No}}</div>
-        <div v-for="obj in members" class="text item">
-          {{obj.Na}}--{{obj.No}}
-          <i style="float: right; color: red" class="el-icon-error" @click="dele(obj.No)"></i>
+        <div style="font-weight: bold">组长：{{leader.name}}--{{leader.account}}</div>
+        <div v-for="member in myTeam.students" class="text item">
+          {{member.studentName}}--{{member.account}}
+          <i style="float: right; color: red" class="el-icon-error" @click="dele(member.account)"></i>
         </div>
       </el-card>
       <div class="divHeight"></div>
@@ -53,21 +53,17 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="Na"
+            prop="studentName"
             label="姓名"
             width="130">
           </el-table-column>
           <el-table-column
-            prop="No"
+            prop="account"
             label="学号"
             width="130">
           </el-table-column>
         </el-table>
       </template>
-      <el-pagination
-        layout="prev, pager, next"
-        :total="100">
-      </el-pagination>
       <div class="divHeight"></div>
 
       <el-row>
@@ -101,12 +97,13 @@
         name: "TeamManage",
       data(){
           return{
+            courseId:'',
             teamId:'',    //记录用户所在小组的teamId并传给后端
-            item:'',      //存放所有从后端传来的数据
+            myTeam:[],      //存放所有从后端传来的数据
             reason:'',    // 成组特例申请理由
             student:'',
             teamTitle:'1-1 武林盟主',
-            leader:{ Na:'王强', No: '24320162201122' } ,
+            leader:[] ,
             members:[],
             Unteam:[],
             dialogFormVisible: false,
@@ -125,26 +122,70 @@
       },
       created(){
         let that = this;
-        that.teamId=that.$route.query.teamId;
+        that.courseId=that.$route.query.courseId;
+
         that.$axios({
           method:'GET',
-          url:'/team/'+that.teamId,
+          url:'/course/'+that.courseId+'/noTeam',
           headers:{
-            'Authorization': window.localStorage['token']
+            'Authorization':window.localStorage['token']
           }
-        })
-          .then(res=>{
+        }).then(res=>{
+            console.log(res);
             if(res.status===200){
-              console.log(res);
-              that.item=res.data;
+              window.localStorage['token']=res.headers.authorization;
+              this.Unteam=res.data;
             }
-            else if(res.status===404){
-              alert("未找到！")
+          }).catch(e=>{console.log(e)});
+
+        this.$axios({
+          method:'GET',
+          url:'/course/'+that.courseId+'/myteam',
+          headers:{
+            'Authorization':window.localStorage['token']
+          }
+        }).then(res=>{
+            console.log(res);
+            if(res.status===200){
+              this.teamId=res.data.id;
+              console.log('传来的teamId'+this.teamId);
+              that.$axios({
+                method:'GET',
+                url:'/team/'+this.teamId,
+                headers:{
+                  'Authorization': window.localStorage['token']
+                }
+              })
+                .then(res=>{
+                  console.log(res);
+                  if(res.status===200){
+                    that.myTeam=res.data;
+                  }
+                  else if(res.status===404){
+                    alert("未找到！")
+                  }
+                })
+                .catch(e=>{
+                  console.log(e)
+                })
             }
-          })
-          .catch(e=>{
-            console.log(e)
-          })
+          }).catch(e=>{
+            console.log(e);
+          });
+
+        that.$axios({
+          method:'GET',
+          url:'/user/information',
+          headers:{
+            'Authorization':window.localStorage['token']
+          }
+        }).then(res=>{
+          console.log(res);
+          if(res.status===200){
+            this.leader=res.data;
+          }
+        });
+
       },
       methods:{
         searchStu(){
@@ -162,42 +203,51 @@
         },
         //删除组员
         dele(index){
-          this.$confirm('此操作将删除您的队友, 是否继续?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            width:'50%',
-            type: 'warning',
-            center: true
-          }).then(() => {
-            this.$axios({
-              method:'PUT',
-              url:'team/'+this.$data.teamId+'/remove',
-              params:{
-                id:index,
-                teamId:this.teamId
-              }
-            })
-              .then(res=>{
-                let data=res.data;
-                if(data.status===204){
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                }
-                else{
-                  alert("删除失败！")
-                }
-              })
-              .catch(e=>{
-                console.log(e)
-              })
-          }).catch(() => {
+          console.log('删除的是谁'+index);
+          if(index===this.leader.account){
             this.$message({
-              type: 'info',
-              message: '已取消删除'
+              type:'error',
+              message:'组长无法执行自删除操作，可以选择解散小组。'
+            })
+          }
+          else{
+            this.$confirm('此操作将删除您的队友, 是否继续?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              width:'50%',
+              type: 'warning',
+              center: true
+            }).then(() => {
+              this.$axios({
+                method:'PUT',
+                url:'team/'+this.$data.teamId+'/remove',
+                params:{
+                  id:index,
+                  teamId:this.teamId
+                }
+              })
+                .then(res=>{
+                  let data=res.data;
+                  if(data.status===204){
+                    this.$message({
+                      type: 'success',
+                      message: '删除成功!'
+                    });
+                  }
+                  else{
+                    alert("删除失败！")
+                  }
+                })
+                .catch(e=>{
+                  console.log(e)
+                })
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消删除'
+              });
             });
-          });
+          }
         },
         // 提交审核
         validate(){
@@ -212,7 +262,7 @@
             }
           })
             .then(res=>{
-              if(res.status===201){
+              if(res.status===200){
                 alert("申请已提交成功");
               }else if(res.status===403){
                 alert("用户权限不足");
@@ -225,6 +275,16 @@
               console.log(e);
               this.dialogFormVisible=false;
             })
+        },
+
+        back(){
+          this.$router.push({
+            path:'/Courses/MyTeam/TeamInfo',
+            name:'TeamInfo',
+            query:{
+              courseId: this.courseId
+            }
+          })
         }
       }
     }
