@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :style="note">
       <header class="home-title">
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
@@ -22,75 +22,77 @@
         </div>
       </header>
 
-      <el-card class="box-card">
-        <div slot="header" class="clearfix">
-          <span>{{myTeam.klassSerial}}-{{myTeam.teamSerial}}:{{myTeam.teamName}}</span>
-          <el-button style="float: right; padding: 3px 0" type="text">操作</el-button>
-        </div>
-        <div style="font-weight: bold">组长：{{leader.name}}--{{leader.account}}</div>
-        <div v-for="member in myTeam.students" class="text item">
-          {{member.studentName}}--{{member.account}}
-          <i style="float: right; color: red" class="el-icon-error" @click="dele(member.id)"></i>
-        </div>
-      </el-card>
-      <div class="divHeight"></div>
+      <div class="main" style="opacity: 0.8;">
+        <el-card class="box-card">
+          <div slot="header" class="clearfix">
+            <span>{{myTeam.klassSerial}}-{{myTeam.teamSerial}}:{{myTeam.teamName}}</span>
+            <el-button style="float: right; padding: 3px 0" type="text">操作</el-button>
+          </div>
+          <div style="font-weight: bold">组长：{{leader.name}}--{{leader.account}}</div>
+          <div v-for="member in myTeam.students" class="text item">
+            {{member.studentName}}--{{member.account}}
+            <i style="float: right; color: red" class="el-icon-error" @click="dele(member.id)"></i>
+          </div>
+        </el-card>
+        <div class="divHeight"></div>
 
-      <div class="search">
-        <el-input class="search-input" placeholder="输入学号/姓名" v-model="student"> <!--<i slot="prefix" class="iconfont icon-search" ></i>-->
-          <el-button @click="searchStu" slot="append" icon="el-icon-search"></el-button>
-        </el-input>
+        <div class="search">
+          <el-input class="search-input" placeholder="输入学号/姓名" v-model="student"> <!--<i slot="prefix" class="iconfont icon-search" ></i>-->
+            <el-button @click="searchStu" slot="append" icon="el-icon-search"></el-button>
+          </el-input>
+        </div>
+
+        <template>
+          <el-table
+            :data="Unteam"
+            style="width: 100%">
+            <el-table-column
+              label="添加队友"
+              fixed="left">
+              <template slot-scope="scope">
+                <el-button
+                  size="mini"
+                  @click="handleEdit(scope.$index, scope.row)">添加</el-button>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="studentName"
+              label="姓名"
+              width="130">
+            </el-table-column>
+            <el-table-column
+              prop="account"
+              label="学号"
+              width="130">
+            </el-table-column>
+          </el-table>
+        </template>
+        <div class="divHeight"></div>
+
+        <el-row>
+          <el-button type="danger" @click="dismiss">解散小组</el-button>
+          <el-button type="warning" @click="dialogFormVisible = true">提交审核</el-button>
+        </el-row>
+        <el-dialog
+          title="成组特例申请"
+          :visible.sync="dialogFormVisible"
+          width="90%">
+          <el-form :model="form">
+            <el-form-item label="申请理由:" :label-width="formLabelWidth">
+              <el-input v-model="reason" autocomplete="off" placeholder="单行输入"></el-input>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">cancel</el-button>
+            <el-button type="primary" @click="validate">sure</el-button>
+          </div>
+        </el-dialog>
+        <div class="divHeight"></div>
+        <!--<el-row>-->
+          <!--&lt;!&ndash;<el-button type="success">保存</el-button>&ndash;&gt;-->
+        <!--</el-row>-->
+        <div style="height: 50px"></div>
       </div>
-
-      <template>
-        <el-table
-          :data="Unteam"
-          style="width: 100%">
-          <el-table-column
-            label="添加队友"
-            fixed="left">
-            <template slot-scope="scope">
-              <el-button
-                size="mini"
-                @click="handleEdit(scope.$index, scope.row)">添加</el-button>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="studentName"
-            label="姓名"
-            width="130">
-          </el-table-column>
-          <el-table-column
-            prop="account"
-            label="学号"
-            width="130">
-          </el-table-column>
-        </el-table>
-      </template>
-      <div class="divHeight"></div>
-
-      <el-row>
-        <el-button type="warning" size="small" @click="dialogFormVisible = true">提交审核</el-button>
-      </el-row>
-      <el-dialog
-        title="成组特例申请"
-        :visible.sync="dialogFormVisible"
-        width="90%">
-        <el-form :model="form">
-          <el-form-item label="申请理由:" :label-width="formLabelWidth">
-            <el-input v-model="reason" autocomplete="off" placeholder="单行输入"></el-input>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">cancel</el-button>
-          <el-button type="primary" @click="validate">sure</el-button>
-        </div>
-      </el-dialog>
-      <div class="divHeight"></div>
-      <el-row>
-        <el-button type="danger">解散小组</el-button>
-        <el-button type="primary">添加</el-button>
-        <el-button type="success">保存</el-button>
-      </el-row>
     </div>
 </template>
 
@@ -119,7 +121,12 @@
               resource: '',
               desc: ''
             },
-            formLabelWidth: '80px'
+            formLabelWidth: '80px',
+            note:{
+              backgroundImage:"url("+require("../../../assets/sky.jpg")+")",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "100% 100%",
+            },
           }
       },
       created(){
@@ -255,19 +262,27 @@
         },
         // 提交审核
         validate(){
-          this.reason='';
           this.$axios({
             method:'POST',
-            url:'team/'+this.$data.teamId+'/teamvalidrequest',
+            url:'/team/'+this.$data.teamId+'/teamvalidrequest',
+            headers:{
+              'Authorization':window.localStorage['token']
+            },
             data:{
+              courseId: this.courseId,
+              //classId: this.myTeam.klassId,
               teamId: this.teamId,
-              leaderId:this.leader,
-              reason:this.reason
+              //leaderId:this.leader.id,
+              reason:this.reason,
             }
           })
             .then(res=>{
+              console.log(res);
               if(res.status===200){
-                alert("申请已提交成功");
+               this.$message({
+                 type:'success',
+                 message:'您的申请已提交'
+               })
               }else if(res.status===403){
                 alert("用户权限不足");
               }else{
@@ -291,7 +306,9 @@
           })
         },
         handleEdit(index, row){
-          console.log(row.id);
+            console.log(row.id);
+            // let transId = JSON.parse(row.id);   //转为字符串
+            // console.log(transId);
             this.$confirm('确定添加'+row.studentName, '提示', {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
@@ -303,7 +320,25 @@
               if(this.myTeam.students.length<6||this.myTeam.students.length===6){
               //给后端发送请求，判断添加此人合不合法
                 console.log('发给后端');
-                this.myTeam.students.length=6;
+                this.$axios({
+                  method:'PUT',
+                  url:'/team/'+this.$data.teamId+'/add',
+                  headers:{
+                    'Authorization':window.localStorage['token']
+                  },
+                  data:{
+                    id:row.id
+                  }
+                }).then((res)=>{
+                  window.localStorage['token']=res.headers.authorization;
+                  console.log(res);
+                  if(res.status===200){
+
+                  }
+                })
+                  .catch(e=>{
+                    console.log(e);
+                })
               }
               else if(this.myTeam.students.length===7){
                 this.$message({type:'error', message:'组队人数不得超过6人！'});
@@ -311,41 +346,34 @@
               }
             }).catch(() => {
               this.$message({
-                type: 'success',
-                message: '添加成功'
+                type: 'info',
+                message: '取消添加'
               })
             })
-          // if(this.i>5){
-          //   this.$message({
-          //     type:'error',
-          //     message:'小组人数不得超过6人！'
-          //   })
-          // }
-          // if(this.i<=5){
-          //   this.$confirm('确定添加'+row.studentName, '提示', {
-          //     confirmButtonText: '取消',
-          //     cancelButtonText: '确定',
-          //     type: 'warning',
-          //     center: true
-          //   }).then(() => {
-          //     this.$message({
-          //       type: 'info',
-          //       message: '已取消添加!'
-          //     });
-          //   }).catch(() => {
-          //     this.$message({
-          //       type: 'success',
-          //       message: '添加成功'
-          //     });
-          //     this.members[this.i].id=row.id;
-          //     this.members[this.i].studentName=row.studentName;
-          //     this.i=this.i+1;
-          //     console.log('看这里'+this.i);
-          //     console.log('组员：');
-          //     console.log(this.members);
-          //   });
-          // }
         },
+        dismiss(){
+          this.$confirm('此操作将解散您的队伍, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            width:'50%',
+            type: 'warning',
+            center: true
+          }).then(()=>{
+            this.$axios({
+            method:'DELETE',
+            url:'/team/'+this.$data.teamId,
+            headers:{
+              'Authorization':window.localStorage['token']
+            }
+          }).then(res=>{
+            console.log(res);
+            window.localStorage['token']=res.headers.authorization;
+            if(res.status===200){
+              this.$message({type:'success',message:'解散小组成功！'})
+            }
+          }).catch(e=>{console.log(e);})})
+
+        },//解散小组
       }
     }
 </script>
