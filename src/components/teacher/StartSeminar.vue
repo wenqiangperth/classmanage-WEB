@@ -455,8 +455,41 @@
             console.log(e);
           })
         }
-        this.quesNum = 0;
         this.nowIndex++;
+        this.$axios({
+          method: 'PUT',
+          url: '/attendance/' + this.attendanceInfo[this.nowIndex].id + '/status',
+          data: {
+            status: 1
+          }
+        })
+          .then(res => {
+            if (res.status === 200) {
+              console.log("设置小组展示状态为1");
+            }
+          })
+          .catch(e => {
+            console.log(e);
+          });
+        if (this.nowIndex > 0) {
+          this.$axios({
+            method: 'PUT',
+            url: '/attendance/' + this.attendanceInfo[this.nowIndex - 1].id + '/status',
+            data: {
+              status: 0
+            }
+          })
+            .then(res => {
+              if (res.status === 200) {
+                console.log("设置上一小组展示状态为0");
+              }
+            })
+            .catch(e => {
+              console.log(e);
+            });
+        }
+        this.quesNum = 0;
+
         if ((this.nowIndex > -1) && (this.nowIndex < this.attendanceInfo.length - 1)) {
           var next_ = document.getElementById("nextGroup");
           next_.innerHTML = "下组展示";
@@ -579,6 +612,21 @@
           }).catch(e => {
           console.log(e);
         });
+        this.$axios({
+          method: 'PUT',
+          url: '/attendance/' + this.attendanceInfo[this.nowIndex].id + '/status',
+          data: {
+            status: 0
+          }
+        })
+          .then(res => {
+            if (res.status === 200) {
+              console.log("设置最后小组展示状态为0");
+            }
+          })
+          .catch(e => {
+            console.log(e);
+          });
         //设置书面报告时间
         this.$axios({
           method: 'PUT',
