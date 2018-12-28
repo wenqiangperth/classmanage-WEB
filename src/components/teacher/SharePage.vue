@@ -63,7 +63,7 @@
       let that = this;
       that.$axios({
         method: 'GET',
-        url: '/course/' + this.$data.courseId + '/teamshare',
+        url: '/course/' + that.$data.courseId + '/teamshare',
         headers: {
           'Authorization': window.localStorage['token']
         }
@@ -123,13 +123,26 @@
                   message: '取消成功!'
                 });
                 window.localStorage['token'] = res.headers.authorization;
-                this.$router.push({
-                  path: '/teacher/SharePage',
-                  name: 'SharePage',
-                  params: {
-                    course: this.course
+                let that = this;
+                that.$axios({
+                  method: 'GET',
+                  url: '/course/' + that.$data.courseId + '/teamshare',
+                  headers: {
+                    'Authorization': window.localStorage['token']
                   }
                 })
+                  .then(res => {
+                    if (res.status === 200) {
+                      window.localStorage['token'] = res.headers.authorization;
+                      console.log("team共享信息");
+                      console.log(res.data);
+                      that.sharesTeam = res.data;
+
+                    }
+                  })
+                  .catch(e => {
+                    console.log(e);
+                  })
 
               }
             })

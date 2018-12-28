@@ -13,10 +13,11 @@
     "axios": "^0.18.0",
     "element-ui": "^2.4.11",
     "mint-ui": "^2.2.13",
+    "qs": "latest",
     "vue": "^2.5.2",
     "vue-resource": "^1.5.1",
     "vue-router": "^3.0.1",
-    "qs": "latest"
+    "websocketserver": "^1.0.0"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

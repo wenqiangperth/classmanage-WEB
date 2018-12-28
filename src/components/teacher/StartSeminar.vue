@@ -15,10 +15,11 @@
         <el-card>
           <fieldset>
             <legend style="font-size: 20px;color:#66cccc">xX{{seminarName}}Xx</legend>
-            <p><span style="font-weight: bold;color:#616161">正在展示:</span>
-              <br>组号:{{klassSerial}}-{{teamSerial}} {{teamName}}
-              <br>已有<span style="color: #66cccc;font-weight: bold">{{quesGroups.length}}</span>名同学提问
+            <p v-if="nowIndex!==-1"><span style="font-weight: bold;color:#616161">正在展示:</span>
+              <br>组号:{{KlassSerial}}-{{teamSerial}} {{teamName}}
+              <br>已有<span style="color: #66cccc;font-weight: bold">{{quesNum}}</span>名同学提问
             </p>
+            <p v-else-if="nowIndex===1">展示即将开始</p>
           </fieldset>
         </el-card>
       </div>
@@ -38,12 +39,11 @@
         <el-button type="text" style="float: right" @click="endSeminar">SURE</el-button>
       </el-card>
       <div class="left">
-        <el-menu default-active="1-4-1" class="el-menu-vertical-demo"
-                 :collapse="isCollapse">
+        <el-menu default-active="1-4-1" class="el-menu-vertical-demo" :collapse="isCollapse">
           <el-submenu index="1">
             <template slot="title">
               <i class="iconfont icon-huatong"></i>&nbsp;&nbsp;展示
-              <span slot="title">导航一</span>
+              <span slot="title"></span>
             </template>
             <el-menu-item-group>
               <span slot="title">展示小组</span>
@@ -59,13 +59,14 @@
           <el-submenu index="2">
             <template slot="title">
               <i class="iconfont icon-jushou"></i>&nbsp;&nbsp;提问
-              <span slot="title">导航二</span>
+              <span slot="title"></span>
             </template>
             <el-menu-item-group>
               <span slot="title">提问小组</span>
-              <el-menu-item v-for="(group,index1) in quesGroups"
+              <el-menu-item v-for="(group1,index1) in quesGroups"
                             :key="index1"
-                            index="index1" @click="updateQuesScore">{{group.id}}
+                            index=index1 @click="updateQuesScore(index1)">
+                {{group1.questionSerial}}.{{group1.klassSerial}}-{{group1.teamSerial}}{{group1.teamName}}
               </el-menu-item>
             </el-menu-item-group>
           </el-submenu>
@@ -86,8 +87,8 @@
           </el-button>
         </el-card>
         <el-card id="ques" style="display: none">
-          <div slot="header">
-            <span style="color: #616161;font-weight: bold">{{groupSelected}}小组</span>
+          <div v-if="nowQuesGroup!==null" slot="header">
+            <span style="color: #616161;font-weight: bold">给提问打分</span>
           </div>
           <table style="width: 100%">
             <tr>
@@ -108,7 +109,8 @@
         </el-card>
         <el-card id="update" style="display: none">
           <div slot="header">
-            <span>xxx小组</span>
+            <span>修改展示成绩</span>
+            <!--<span>{{attendanceInfo[tempUpdate].team.klassSerial}}-{{attendanceInfo[tempUpdate].team.teamSerial}}{{attendanceInfo[tempUpdate].team.teamName}}小组</span>-->
           </div>
           <table style="width: 100%">
             <tr>
@@ -124,8 +126,9 @@
           </el-button>
         </el-card>
         <el-card id="update1" style="display: none">
-          <div slot="header">
-            <span>xxx小组</span>
+          <div v-if="quesGroups.length!==0" slot="header">
+            <span>修改提问成绩</span>
+            <!--<span>{{quesGroups[tempQuesUpdate].klassSerial}}-{{quesGroups[tempQuesUpdate].teamSerial}}{{quesGroups[tempQuesUpdate].teamName}}小组</span>-->
           </div>
           <table style="width: 100%">
             <tr>
@@ -159,44 +162,50 @@
     name: "temp",
     data() {
       return {
+        ws: null,
+        webserver: '',
         isCollapse: true,
         course: [],
         classId: '',
         seminarId: '',
+        roundId: '',
         attendanceInfo: [],
         score: '',
-        nowIndex: 0,
+        nowIndex: -1,
         value1: '',
         team: '',
-        klassSerial: '',
+        KlassSerial: '',
         seminarName: '',
         teamSerial: '',
         teamName: '',
         presentationScore: '',
+        questionId: '',
         questionScore: '',
         klassSeminarId: '',
-        groupSelected: '1-1',
         otherScore: '',
         otherQuesScore: '',
-        quesGroups: [{
-          id: '1-1',
-          score: ''
-        },
+        tempUpdate: 1,
+        tempQuesUpdate: 1,
+        quesNum: 0,
+        quesGroups: [
           {
-            id: '2-1',
-            score: ''
-          },
-          {
-            id: '3-1',
-            score: ''
+            questionId: 0,
+            questionSerial: 0,
+            teamSerial: 0,
+            klassSerial: 0,
+            teamName: '',
+            quesScore: 0
           }
         ],
+        nowQuesGroup: {}
+
       }
     },
     created() {
       this.course = this.$route.params.course;
       this.classId = this.$route.params.classId;
       this.seminarId = this.$route.params.seminarId;
+      this.roundId = this.$route.params.roundId;
       let that = this;
       that.$axios({
         method: 'GET',
@@ -211,11 +220,13 @@
             console.log("获得当前展示信息");
             console.log(res.data);
             that.attendanceInfo = res.data;
-            that.seminarName = that.attendanceInfo[that.nowIndex].score.seminarName;
-            that.klassSerial = that.attendanceInfo[that.nowIndex].team.klassSerial;
-            that.teamSerial = that.attendanceInfo[that.nowIndex].team.teamSerial;
-            that.teamName = that.attendanceInfo[that.nowIndex].team.teamName;
-            that.klassSeminarId = that.attendanceInfo[that.nowIndex].team.klassSeminarId;
+            that.seminarName = that.attendanceInfo[that.nowIndex + 1].score.seminarName;
+            that.KlassSerial = that.attendanceInfo[that.nowIndex + 1].team.klassSerial;
+            console.log("KlassSerial" + that.KlassSerial);
+            that.teamSerial = that.attendanceInfo[that.nowIndex + 1].team.teamSerial;
+            console.log("teamId" + that.teamSerial);
+            that.teamName = that.attendanceInfo[that.nowIndex + 1].team.teamName;
+            that.klassSeminarId = that.attendanceInfo[0].klassSeminarId;
 
           }
         }).catch(e => {
@@ -224,6 +235,67 @@
 
     },
     methods: {
+      /*websocket*/
+      initWebSocket() { //初始化weosocket
+        let that = this;
+        this.$axios({
+          method: 'GET',
+          url: '/seminar/' + that.$data.klassSeminarId + '/enterseminar',
+          headers: {
+            'Authorization': window.localStorage['token']
+          }
+        })
+          .then(res => {
+            if (res.status === 200) {
+              window.localStorage['token'] = res.headers.authorization;
+              that.webserver = res.data;
+              console.log("随便一句话");
+              that.ws = new WebSocket(that.webserver);
+              that.ws.onopen = function (evt) {
+                console.log("连接成功");
+              };
+              that.ws.onmessage = that.websocketonmessage;
+              that.ws.onclose = that.websocketclose;
+            }
+          })
+          .catch(e => {
+            console.log(e)
+          })
+      },
+      websocketonmessage(e) { //数据接收
+        //const message = JSON.parse(e.data);
+        let that = this;
+        let message = e.data;
+        console.log(message);
+        console.log("aaa" + message);
+        if (message === "提问") {
+          that.quesNum++;
+        }
+        // else if (message === "提问") {
+        //   that.questionNum++;
+        // }
+        // else if (message === "抽取提问") {
+        //   that.questionNum--;
+        // } else if (message === "请您开始提问") {
+        //   this.$message({
+        //     type: 'success',
+        //     message: '请您开始提问'
+        //   })
+        // } else {
+        //   this.$message({
+        //     type: 'warning',
+        //     message: '很遗憾，您未被选中，请您耐心等待！'
+        //   })
+        // }
+
+      },
+      websocketsend(agentData) {//数据发送
+        this.ws.send(agentData);
+      },
+      websocketclose(e) {  //关闭
+        console.log("connection closed (" + e.code + ")");
+      },
+
       gotoBacklog() {
         this.$router.push({path: '/teacher/Backlog'});
       },
@@ -242,6 +314,30 @@
       //抽取提问
       askQuestions() {
         //拿到提问小组信息
+        this.$axios({
+          method: 'GET',
+          url: '/' + this.attendanceInfo[this.nowIndex].id + '/question',
+          headers: {
+            'Authorization': window.localStorage['token']
+          }
+        })
+          .then(res => {
+            if (res.status === 200) {
+              console.log("提问小组信息");
+              if (res.data === null) {
+                this.$message({
+                  type: 'info',
+                  message: '当前没有同学提问'
+                })
+              } else {
+                this.ws.send("抽取提问");
+              }
+              this.nowQuesGroup = res.data;
+              window.localStorage['token'] = res.headers.authorization;
+            }
+          }).catch(e => {
+          console.log(e);
+        });
         var askQues = document.getElementById("askQues");
         askQues.disabled = true;
         var pre_ = document.getElementById("pre");
@@ -255,15 +351,75 @@
 
 
       },
+      //给展示打分
+      gradePre() {
+        this.$axios({
+          method: 'POST',
+          url: '/seminar/' + this.klassSeminarId + '/team/' + this.attendanceInfo[this.nowIndex].team.teamId + '/enterseminar',
+          data: {
+            presentationScore: this.presentationScore
+          },
+          headers: {
+            'Authorization': window.localStorage['token']
+          }
+        })
+          .then(res => {
+            if (res.status === 200) {
+              window.localStorage['token'] = res.headers.authorization;
+              this.$message({
+                type: 'success',
+                message: '展示打分成功'
+              })
+            }
+          })
+          .catch(e => {
+            console.log(e);
+          });
+      },
       //给提问打分
       gradeQues() {
         var askQues = document.getElementById("askQues");
         askQues.disabled = false;
         //向后端发请求保存提问成绩
+        this.$axios({
+          method: 'PUT',
+          url: '/attendance/question/' + this.questionId,
+          data: {
+            questionScore: this.questionScore
+          }
+        })
+          .then(res => {
+            if (res.status === 200) {
+              this.$message({
+                type: 'success',
+                message: '保存成功！'
+              })
+            }
+          }).catch(e => {
+          console.log(e);
+        })
       },
       //下组展示
       nextGroup() {
-        //向websocket发送attendanceId
+        if (this.nowIndex === -1) {
+          this.initWebSocket();
+        } else {
+          this.$axios({
+            method: 'DELETE',
+            url: '/seminar/' + this.klassSeminarId + '/question',
+            headers: {
+              'Authorization': window.localStorage['token']
+            }
+          })
+            .then(res => {
+              if (res.status === 200) {
+                window.localStorage['token'] = res.headers.authorization;
+              }
+            }).catch(e => {
+            console.log(e);
+          })
+        }
+        this.quesNum = 0;
         this.nowIndex++;
         if ((this.nowIndex > 0) && (this.nowIndex < this.attendanceInfo.length - 1)) {
           var next_ = document.getElementById("nextGroup");
@@ -286,33 +442,18 @@
         }
 
       },
+      //确认修改展示成绩
       updateSuccess() {
         var pre_ = document.getElementById("pre");
         pre_.style.display = "block";
         var update_ = document.getElementById("update");
         update_.style.display = "none";
-      },
-      updateSuccess1() {
-        var pre_ = document.getElementById("pre");
-        pre_.style.display = "block";
-        var update_ = document.getElementById("update1");
-        update_.style.display = "none";
-      },
-      updatePreScore(index) {
-        var pre_ = document.getElementById("pre");
-        pre_.style.display = "none";
-        var update1_ = document.getElementById("update1");
-        update1_.style.display = "none";
-        var ques_ = document.getElementById("ques");
-        ques_.style.display = "none";
-        var update_ = document.getElementById("update");
-        update_.style.display = "block";
         //向后端请求保存修改的展示成绩
         this.$axios({
           method: 'POST',
-          url: '/seminar/' + this.klassSeminarId + '/team/' + this.attendanceInfo[index].team.teamId + '/enterseminar',
+          url: '/seminar/' + this.klassSeminarId + '/team/' + this.attendanceInfo[this.tempUpdate].team.teamId + '/enterseminar',
           data: {
-            presentationScore: this.presentationScore
+            presentationScore: this.otherScore
           },
           headers: {
             'Authorization': window.localStorage['token']
@@ -327,8 +468,51 @@
               })
             }
           });
+
       },
-      updateQuesScore() {
+      //确认修改提问成绩
+      updateSuccess1() {
+        var pre_ = document.getElementById("pre");
+        pre_.style.display = "block";
+        var update_ = document.getElementById("update1");
+        update_.style.display = "none";
+        this.$axios({
+          method: 'PUT',
+          url: '/attendance/question/' + this.questionId,
+          data: {
+            questionScore: this.otherQuesScore
+          },
+          headers: {
+            'Authorization': window.localStorage['token']
+          }
+        })
+          .then(res => {
+            if (res.status === 200) {
+              window.localStorage['token'] = res.headers.authorization;
+              this.$message({
+                type: 'success',
+                message: '修改成功！'
+              })
+            }
+          }).catch(e => {
+          console.log(e);
+        })
+      },
+      //选择要修改展示成绩的小组
+      updatePreScore(index) {
+        this.tempUpdate = index;
+        var pre_ = document.getElementById("pre");
+        pre_.style.display = "none";
+        var update1_ = document.getElementById("update1");
+        update1_.style.display = "none";
+        var ques_ = document.getElementById("ques");
+        ques_.style.display = "none";
+        var update_ = document.getElementById("update");
+        update_.style.display = "block";
+
+      },
+      updateQuesScore(index1) {
+        this.tempQuesUpdate = index1;
         var pre_ = document.getElementById("pre");
         pre_.style.display = "none";
         var ques_ = document.getElementById("ques");
@@ -337,13 +521,51 @@
         update_.style.display = "none";
         var update1_ = document.getElementById("update1");
         update1_.style.display = "block";
-        //向后端请求保存修改的成绩
       },
       endSeminar() {
         //向websocket发送最后一组展示Id
         //设置讨论课状态
-        //设置书面报告
-        this.$router.push({path: '/teacher/BeforeSeminar'});
+        this.$axios({
+          method: 'PUT',
+          url: '/seminar/' + this.seminarId + '/status',
+          data: {
+            status: 2
+          }
+        })
+          .then(res => {
+            if (res.status === 200) {
+              this.$message({
+                type: 'success',
+                message: '讨论课已结束'
+              })
+            }
+          }).catch(e => {
+          console.log(e);
+        });
+        //设置书面报告时间
+        this.$axios({
+          method: 'PUT',
+          url: '/seminar/' + this.seminarId + '/reportddl',
+          data: {
+            reportddl: this.value1
+          }
+        }).then(res => {
+          if (res.status === 200) {
+            console.log("设置成功");
+          }
+        }).catch(e => {
+          console.log(e);
+        });
+        this.$router.push({
+          path: '/teacher/BeforeSeminar',
+          name: 'beforeSeminar',
+          params: {
+            seminarId: this.seminarId,
+            roundId: this.roundId,
+            classId: this.classId,
+            course: this.course
+          }
+        });
       }
     }
   }
@@ -363,12 +585,6 @@
     float: left;
     margin-top: 10px;
   }
-
-  .el-menu-vertical-demo:not(.el-menu--collapse) {
-    width: 200px;
-    min-height: 400px;
-  }
-
   .finish {
     position: fixed;
     top: 0;
@@ -383,8 +599,14 @@
     font-size: 14px;
     display: none;
   }
+
+  .el-menu-vertical-demo:not(.el-menu--collapse) {
+    width: 200px;
+    min-height: 400px;
+  }
 </style>
 <style>
+
   .el-menu-item.is-active {
     color: #66cccc;
   }

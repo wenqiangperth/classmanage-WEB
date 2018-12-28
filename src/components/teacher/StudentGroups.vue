@@ -62,6 +62,7 @@
       return {
         courseId: '',
         courseName: '',
+        course: [],
         info: [{
           klassId: '',
           teamName: '',
@@ -82,39 +83,7 @@
             klassSerial: ''
           }
         ],
-        groups: [
-          {
-            name: '1-1 Untitled',
-            valid: false,
-            members: [
-              {
-                id: 1,
-                account: '24320162202xxx',
-                name: 'bbbbbb',
-                isLeader: true
-              },
-              {
-                id: 2,
-                account: '24320162202xxx',
-                name: 'bbbbbb',
-                isLeader: false
-              },
-              {
-                id: 3,
-                account: '24320162202xxx',
-                name: 'bbbbbb',
-                isLeader: false
-              },
-              {
-                id: 4,
-                account: '24320162202xxx',
-                name: 'bbbbbb',
-                isLeader: false
-
-              }
-            ]
-          }
-        ]
+        groups: []
       }
     },
     created() {
@@ -149,41 +118,74 @@
         .catch(e => {
           console.log(e);
         });
-      that.$axios({
-        method: 'GET',
-        url: '/course/' + that.$data.courseId + '/class',
-        headers: {
-          'Authorization': window.localStorage['token']
-        }
-      })
-        .then(res => {
-          console.log(res.data);
-          if (res.status === 200) {
-            window.localStorage['token'] = res.headers.authorization;
-            let data = res.data;
-            console.log(data);
-            this.classInfo = data;
-          } else if (res.status === 400) {
-            this.$message({
-              type: 'error',
-              message: '错误的ID格式'
-            })
-          } else if (res.status === 404) {
-            this.$message({
-              type: 'error',
-              message: '未找到组队信息'
-            })
+      if (that.course.teamMainCourseId !== null && that.courseId !== that.course.teamMainCourseId) {
+        that.$axios({
+          method: 'GET',
+          url: '/course/' + that.course.teamMainCourseId + '/class',
+          headers: {
+            'Authorization': window.localStorage['token']
           }
         })
-        .catch(e => {
-          console.log(e);
-        });
+          .then(res => {
+            console.log(res.data);
+            if (res.status === 200) {
+              window.localStorage['token'] = res.headers.authorization;
+              let data = res.data;
+              console.log(data);
+              this.classInfo = data;
+            } else if (res.status === 400) {
+              this.$message({
+                type: 'error',
+                message: '错误的ID格式'
+              })
+            } else if (res.status === 404) {
+              this.$message({
+                type: 'error',
+                message: '未找到组队信息'
+              })
+            }
+          })
+          .catch(e => {
+            console.log(e);
+          });
+      } else {
+        that.$axios({
+          method: 'GET',
+          url: '/course/' + that.courseId + '/class',
+          headers: {
+            'Authorization': window.localStorage['token']
+          }
+        })
+          .then(res => {
+            console.log(res.data);
+            if (res.status === 200) {
+              window.localStorage['token'] = res.headers.authorization;
+              let data = res.data;
+              console.log(data);
+              this.classInfo = data;
+            } else if (res.status === 400) {
+              this.$message({
+                type: 'error',
+                message: '错误的ID格式'
+              })
+            } else if (res.status === 404) {
+              this.$message({
+                type: 'error',
+                message: '未找到组队信息'
+              })
+            }
+          })
+          .catch(e => {
+            console.log(e);
+          });
+      }
+
     },
     methods: {
       getParams() {
-        var routerParams = this.$route.params.courseId;
-        this.courseId = routerParams;
-        this.courseName = this.$route.params.courseName;
+        this.course = this.$route.params.course;
+        this.courseId = this.$route.params.course.courseId;
+        this.courseName = this.$route.params.course.courseName;
       },
       gotoBacklog() {
         this.$router.push({path: '/teacher/Backlog'});

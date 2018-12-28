@@ -218,6 +218,7 @@
         websocketclose(e) {  //关闭
           console.log("connection closed (" + e.code + ")");
         },
+
         back() {
             this.$router.push({
               path: '/Courses/Seminaring/Seminaring',

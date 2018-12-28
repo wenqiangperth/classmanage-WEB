@@ -156,8 +156,7 @@
           path: '/teacher/StudentGroups',
           name: 'StudentGroups',
           params: {
-            courseId: course.courseId,
-            courseName: course.courseName
+            course: course
           }
         });
       },

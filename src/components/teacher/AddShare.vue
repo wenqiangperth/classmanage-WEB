@@ -125,7 +125,16 @@
                   this.$message({
                     type: 'success',
                     message: '发送成功！'
-                  })
+                  });
+                  this.$router.push(
+                    {
+                      path: '/teacher/SharePage',
+                      name: 'SharePage',
+                      params: {
+                        courseId: this.courseId
+                      }
+                    }
+                  )
                 } else if (res.status === 403) {
                   this.$message({
                     type: 'warning',
