@@ -92,12 +92,11 @@
     name: "ClassInfo",
     data() {
       return {
-        courseId: 2,
+        courseId: 1,
         courseName: '',
         classInfo: [
           {
-            courseId: '',
-            id: 2,
+            id: 1,
             grade: 2016,
             klassSerial: 1,
             klassTime: '周三7，8节',
@@ -110,7 +109,6 @@
     },
     created() {
       this.getParams();
-      console.log(this.courseId);
       let that = this;
       that.$axios({
         method: 'GET',

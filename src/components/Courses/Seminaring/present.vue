@@ -27,11 +27,11 @@
       <div >
         <el-tag style="font-size: larger;float: left" type="success">
           <i class="el-icon-loading"></i>
-          {{order}}
+          <a v-if="isShow===true">{{SeminaringInfo[index].team.teamName}}</a>
         </el-tag>
         <el-tag style="font-size: larger;float: right" type="info">
           <i class="el-icon-phone-outline"></i>
-          当前已有3人提问
+          当前已有{{questionNum}}人提问
         </el-tag>
       </div>
       <div class="divHeight"></div>
@@ -57,22 +57,33 @@
         name: "present",
       data(){
         return{
+          userId: 219,
           seminarId:'',
           courseId:'',
           courseName:'',
           klassId:'',
           seminarName:'',
+          klassSeminarId: '',
           SeminaringInfo:[],
-          order: '1-3',
+          teamId: '',
+          ws: null,
+          SeminarTitle: '业务流程分析',
+          isShow: false,
+          questionNum: 0,
+          webserver: '',
+          index: -1,
         }
       },
       created(){
+
           let that = this;
           that.seminarId=that.$route.query.seminarId;
           that.courseId=that.$route.query.courseId;
           that.courseName=that.$route.query.courseName;
           that.klassId=that.$route.query.klassId;
           that.seminarName=that.$route.query.seminarName;
+        that.teamId = that.$route.query.teamId;
+        that.klassSeminarId = that.$route.query.klassSeminarId;
           that.$axios({
             method:'GET',
             url:'/seminar/'+that.seminarId+'/class/'+that.klassId+'/attendance',
@@ -81,59 +92,183 @@
             }
           })
             .then(res=>{
+              console.log('获得所得所有attendance:');
               console.log(res);
               if(res.status===200){
-                this.SeminaringInfo=res.data;
+                that.SeminaringInfo = res.data;
+                for (let i = 0; i < that.SeminaringInfo.length; i++) {
+                  if (that.SeminaringInfo[i].isPresent === 1)
+                    that.index = i;
+                }
+                that.$axios({
+                  method: 'GET',
+                  url: '/seminar/' + that.SeminaringInfo[0].klassSeminarId + '/attendance/' + that.SeminaringInfo[0].attendanceId + '/questionNum',
+                  headers: {
+                    'Authorization': window.localStorage['token']
+                  }
+                }).then(res => {
+                }).catch(e => {
+                  console.log(e)
+                })
               }
             })
             .catch(e=>{
               console.log(e)
-            })
+            });
+
+        // this.$axios({
+        //   method:'GET',
+        //   url:'/course/'+this.courseId+'/myTeam',
+        //   headers:{
+        //     'Authorization':window.localStorage['token']
+        //   }
+        // })
+        //   .then(res=>{
+        //     console.log(res);
+        //     if(res.status===200){
+        //       this.teamId=res.data.id;
+        //       console.log('传来的teamId'+this.teamId);
+        //     }
+        //   })
+        //   .catch(e=>{
+        //     console.log(e);
+        //   })
+
+        that.initWebSocket();
+        console.log("teamId:" + this.teamId);
       },
       methods:{
-          back(){
+        threadPoxi() {  // 实际调用的方法
+          //参数
+          const agentData = "mymessage";
+          //若是ws开启状态
+          if (this.websock.readyState === this.websock.OPEN) {
+            this.websocketsend(agentData)
+          }
+          // 若是 正在开启状态，则等待300毫秒
+          else if (this.websock.readyState === this.websock.CONNECTING) {
+            let that = this;//保存当前对象this
+            setTimeout(function () {
+              that.websocketsend(agentData)
+            }, 300);
+          }
+          // 若未开启 ，则等待500毫秒
+          else {
+            this.initWebSocket();
+            let that = this;//保存当前对象this
+            setTimeout(function () {
+              that.websocketsend(agentData)
+            }, 500);
+          }
+        },
+        initWebSocket() { //初始化weosocket
+          this.$axios({
+            method: 'GET',
+            url: '/seminar/' + this.$data.klassSeminarId + '/enterseminar',
+            headers: {
+              'Authorization': window.localStorage['token']
+            }
+          })
+            .then(res => {
+              if (res.status === 200) {
+                this.webserver = res.data;
+                let that = this;
+                that.ws = new WebSocket(that.webserver);
+                that.ws.onopen = function (evt) {
+                  console.log("连接成功");
+                };
+                that.ws.onmessage = that.websocketonmessage;
+                that.ws.onclose = that.websocketclose;
+              }
+            })
+            .catch(e => {
+              console.log(e)
+            })
+        },
+        websocketonmessage(e) { //数据接收
+          //const message = JSON.parse(e.data);
+          let that = this;
+          let message = e.data;
+          console.log(message);
+          console.log("aaa" + message);
+          if (message === "下一个展示") {
+            that.isShow = true;
+            that.index++;
+            that.questionNum = 0;
+          } else if (message === "提问") {
+            that.questionNum++;
+          } else if (message === "抽取提问") {
+            that.questionNum--;
+          } else if (message === "请您开始提问") {
+            this.$message({
+              type: 'success',
+              message: '请您开始提问'
+            })
+          } else {
+            this.$message({
+              type: 'warning',
+              message: '很遗憾，您未被选中，请您耐心等待！'
+            })
+          }
+
+        },
+        websocketsend(agentData) {//数据发送
+          this.ws.send(agentData);
+        },
+        websocketclose(e) {  //关闭
+          console.log("connection closed (" + e.code + ")");
+        },
+        back() {
             this.$router.push({
-              path:'/Courses/Seminaring/Seminaring',
-              name:'Seminaring',
-              query:{
-                seminarId:this.seminarId,
+              path: '/Courses/Seminaring/Seminaring',
+              name: 'Seminaring',
+              query: {
+                seminarId: this.seminarId,
                 courseId: this.courseId,
                 courseName: this.courseName,
                 klassId: this.klassId,
+                teamId: this.teamId,
+                klassSeminarId: this.klassSeminarId
               }
             })
           },
          open() {
-           this.$axios({
-             method:'POST',
-             url:'seminar/'+this.seminarId+'/class/'+this.klassId+'/question',
-             headers:{
-               'Authorization':window.localStorage['token']
-             }
-           })
-             .then(res=>{
-               console.log(res);
-               if(res.status===200){
-                 //提问报名成功
-                 let data=res.data;
-                 this.account=data.account;
-                 this.name=data.name;
-                 this.$alert('请<br/><strong>{{this.name}}1-3: 赵四同学</strong>' +
-                   '</br><strong>{{this.account}}24320162202825</strong></br>提问', '提问成功', {
-                   confirmButtonText: '确定',
-                   dangerouslyUseHTMLString: true,
-                   type: 'success',
-                   center: true,
-                   callback: action => {
-                     this.$message({
-                       type: 'info',
-                       message: `action: ${ action }`
-                     });
-                   }
-                 })
+           let that = this;
+           // if(that.teamId===that.SeminaringInfo[that.index].teamId){
+           //   this.$message({
+           //     type:error,
+           //     message:'当前展示组为您的小组，您暂时无法提问！'
+           //   })
+           // }
+           if (this.index === -2) {
+             this.$message({
+               type: 'error',
+               message: '讨论课尚未开始，无法发起提问！'
+             })
+           } else {
+             that.$axios({
+               method: 'POST',
+               url: 'seminar/' + that.SeminaringInfo[0].klassSeminarId + '/attendance/' + that.SeminaringInfo[0].id + '/team/' + this.teamId + '/question',
+               headers: {
+                 'Authorization': window.localStorage['token']
                }
              })
-             .catch()
+               .then(res => {
+                 console.log(res);
+                 if (res.status === 200) {
+                   that.$message({
+                     type: 'info',
+                     message: res.data
+                   })
+                   if (res.data === "报名提问成功") {
+                     that.ws.send("提问")
+                   }
+                 }
+               })
+               .catch(e => {
+                 console.log(e);
+               })
+           }
         }
       }
     }

@@ -131,6 +131,7 @@
           pptName:'',
           status:'正在进行',
           fileList:[],
+          klassSeminarId: '',
           note:{
             backgroundImage:"url("+require("../../../assets/backpic.jpg")+")",
             backgroundRepeat: "no-repeat",
@@ -193,6 +194,7 @@
             if(res.status===200){
               window.localStorage['token']=res.headers.authorization;
               let temp=res.data;
+              this.klassSeminarId = res.data[1].klassSeminarId;
               console.log('teamId'+this.teamId);
               for(let i=0;i<temp.length;i++){
                 if(this.teamId===temp[i].team.id){
@@ -207,6 +209,7 @@
           });
       },
       methods:{
+
           back(){
             this.$router.push({
               path:'/Courses/TotalSeminars',
@@ -229,6 +232,8 @@
                   courseName: this.courseName,
                   klassId: this.klassId,
                   seminarName:this.seminarInfo.seminarName,
+                  teamId: this.teamId,
+                  klassSeminarId: this.klassSeminarId
                 }
               });
           },
