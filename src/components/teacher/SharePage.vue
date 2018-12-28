@@ -13,40 +13,31 @@
     </div>
 
     <div class="main">
-      <el-card class="pause" id="pause">
-        <i class="el-icon-warning icon0" style="color:red;font-size: 25px"></i>
-        <br><br>
-        <br>是否取消本次共享
-        <br><br><br>
-        <el-button type="text" style="float: right;color: #99CC00" @click="successCancel">
-          SURE
-        </el-button>
-        <el-button type="text" style="float:right;margin-right: 5px;color:#99CC00" @click="cancel">CANCEL</el-button>
-      </el-card>
       <div style="width: 100%;height:60px">
-        <el-button type="success" size="small" plain style="float: right;margin-top: 20px" @click="addShare(courseId)">
+        <el-button type="success" size="small" plain style="float: right;margin-top: 20px" @click="addShare()">
           <i
           class="el-icon-plus" style="font-weight: bolder"></i> 新增共享
         </el-button>
       </div>
       <el-collapse accordion v-for="(item,index) in sharesTeam"
                    :key="index">
-        <el-collapse-item>
+        <el-collapse-item v-if="item.status===1">
           <template slot="title">
-            <i class="el-icon-share el-icon0" style="float: left;margin-left: 20px;"></i>{{item.courseName}}({{item.teacher}})
+            <i class="el-icon-share el-icon0" style="float: left;margin-left: 20px;"></i>{{item.subCourseName}}({{item.subCourseTeacherName}})
           </template>
           <el-card>
             <table>
               <tr>
                 <td style="width: 30%;color:#66cccc">共享类型:</td>
-                <td>{{item.shareType}}</td>
+                <td>共享分组</td>
               </tr>
               <tr>
                 <td style="width: 30%;color:#66cccc">共享情况:</td>
-                <td>{{item.courseType}}</td>
+                <td v-if="courseId===item.mainCourseId">主课程</td>
+                <td v-else-if="courseId===item.subCourseId">从课程</td>
               </tr>
             </table>
-            <el-button type="info" size="small" style="float: right;margin-bottom: 5px" @click="cancelShare">
+            <el-button type="info" size="small" style="float: right;margin-bottom: 5px" @click="cancelShare(item.id)">
               取消共享
             </el-button>
           </el-card>
@@ -58,63 +49,41 @@
 </template>
 
 <script>
+  import {MessageBox} from 'mint-ui';
   export default {
     name: "SharePage",
     data() {
       return {
         courseId: 1,
-        sharesTeam: [
-          {
-            teamSharedId: '',
-            masterCourse: {
-              masterCourseId: '',
-              masterCourseName: '',
-              teacherName: ''
-            },
-            receiveCourse: [{
-              receiveCourseId: '',
-              receiveCourseName: '',
-              teacherName: ''
-            }]
-          }
-        ],
-        shareSeminar: [
-          {
-            seminarSharedId: '',
-            masterCourse: {
-              masterCourseId: '',
-              masterCourseName: '',
-              teacherName: ''
-            },
-            receiveCourse: [{
-              receiveCourseId: '',
-              receiveCourseName: '',
-              teacherName: ''
-            }]
-          }
-        ]
+        sharesTeam: [],
       }
     },
     created() {
       this.getParams();
-      this.$axios({
+      let that = this;
+      that.$axios({
         method: 'GET',
-        url: '/course/' + this.$data.courseId + '/share',
+        url: '/course/' + this.$data.courseId + '/teamshare',
         headers: {
           'Authorization': window.localStorage['token']
         }
       })
         .then(res => {
           if (res.status === 200) {
+            window.localStorage['token'] = res.headers.authorization;
+            console.log("team共享信息");
+            console.log(res.data);
+            that.sharesTeam = res.data;
 
           }
+        })
+        .catch(e => {
+          console.log(e);
         })
     },
     methods: {
       getParams() {
-        var routerParams = this.$route.params.courseId;
-        this.courseId = routerParams;
-        console.log(this.courseId);
+        this.courseId = this.$route.params.courseId;
       },
       returnLogin() {
         this.$router.push({path: '/'});
@@ -125,34 +94,59 @@
       gotoSeminar() {
         this.$router.push({path: '/teacher/SeminarPage'});
       },
-      addShare(courseId) {
+      addShare() {
         this.$router.push({
           path: '/teacher/AddShare',
           name: 'AddShare',
           params: {
-            courseId: courseId
+            courseId: this.courseId
           }
         });
       },
-      cancelShare() {
-        var share = document.getElementById("pause");
-        share.style.display = "block";
-      },
-      cancel() {
-        var share = document.getElementById("pause");
-        share.style.display = "none";
+      cancelShare(teamSharedId) {
+        MessageBox.confirm('此操作将取消共享分组?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$axios({
+            method: 'DELETE',
+            url: '/course/teamshare/' + teamSharedId,
+            headers: {
+              'Authorization': window.localStorage['token']
+            }
+          })
+            .then(res => {
+              if (res.status === 200) {
+                this.$message({
+                  type: 'success',
+                  message: '取消成功!'
+                });
+                window.localStorage['token'] = res.headers.authorization;
+                this.$router.push({
+                  path: '/teacher/SharePage',
+                  name: 'SharePage',
+                  params: {
+                    course: this.course
+                  }
+                })
+
+              }
+            })
+            .catch(e => {
+              console.log(e);
+            })
+
+
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
       },
       gotoHomePage() {
         this.$router.push({path: '/teacher/HomePage'});
-      },
-      successCancel() {
-        this.$notify.success({
-          title: 'Info',
-          message: '取消共享操作成功',
-          showClose: false
-        });
-        var share = document.getElementById("pause");
-        share.style.display = "none";
       }
     },
     watch: {
@@ -162,20 +156,6 @@
 </script>
 
 <style scoped>
-  .pause {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 999;
-    margin: auto;
-    width: 70%;
-    height: 200px;
-    text-align: center;
-    font-size: 14px;
-    display: none;
-  }
 
 </style>
 <style>

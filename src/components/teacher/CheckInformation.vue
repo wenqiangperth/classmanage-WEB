@@ -16,19 +16,19 @@
       <table class="info" cellspacing="0" v-for="(item,index) in groupInfo"
              :key="index">
         <tr class="tr0" v-show="index%2===0">
-          <td style="width: 30%"><label>第{{item.id}}组</label></td>
+          <td style="width: 30%"><label>第{{item.teamOrder}}组</label></td>
           <td>
-            <label v-if="(item.status==='未提交')||(item.status==='未报名')"><span
-              style="color: red">{{item.status}}</span></label>
-            <label v-else>{{item.status}}</label>
+            <label v-if="item.pptUrl===null"><span
+              style="color: red">未提交</span></label>
+            <label v-else>{{item.pptName}}</label>
           </td>
         </tr>
         <tr class="tr1" v-show="index%2===1">
-          <td style="width: 30%"><label>第{{item.id}}组</label></td>
+          <td style="width: 30%"><label>第{{item.teamOrder}}组</label></td>
           <td>
-            <label v-if="(item.status==='未提交')||(item.status==='未报名')"><span
-              style="color: red">{{item.status}}</span></label>
-            <label v-else>{{item.status}}</label>
+            <label v-if="item.pptUrl===null"><span
+              style="color: red">未提交</span></label>
+            <label v-else>{{item.pptName}}</label>
           </td>
         </tr>
       </table>
@@ -47,28 +47,7 @@
         seminarId: '',
         course: [],
         roundId: '',
-        groupInfo: [
-          {
-            id: 1,
-            status: '1-1.ppt'
-          },
-          {
-            id: 2,
-            status: '未提交'
-          },
-          {
-            id: 3,
-            status: '未报名'
-          },
-          {
-            id: 4,
-            status: '4-1.ppt'
-          },
-          {
-            id: 5,
-            status: '5-1.ppt'
-          },
-        ]
+        groupInfo: []
       }
     },
     created() {
@@ -90,6 +69,7 @@
             let data = res.data;
             console.log("展示小组信息");
             console.log(data);
+            that.groupInfo = data;
 
           }
         })

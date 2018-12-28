@@ -145,7 +145,8 @@
           name: 'StudentGrades',
           params: {
             courseId: course.courseId,
-            courseName: course.courseName
+            courseName: course.courseName,
+            account: this.account
           }
         });
       },

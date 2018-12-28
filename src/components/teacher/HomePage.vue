@@ -1,5 +1,5 @@
 <template>
-    <div>
+  <div class="body0">
       <div id="head" class="head">
         <div class="title"><i class="el-icon-close icon1 icon0"></i><span>个人主页</span>
           <el-dropdown class="plus" trigger="click">
@@ -7,7 +7,6 @@
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item><i class="el-icon-date" @click="gotoBacklog">&nbsp;&nbsp;待 办</i></el-dropdown-item>
               <el-dropdown-item><i class="el-icon-service" @click="gotoSeminar">&nbsp;&nbsp;讨论课</i></el-dropdown-item>
-              <el-dropdown-item><i class="el-icon-back" @click="returnLogin">&nbsp;&nbsp;退 出</i></el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -55,16 +54,11 @@
       name: "HomePage",
       data() {
         return {
-          teacher:{
-            account: '123456789',
-            name: '邱明',
-            email:''
-          },
+          teacher: {},
 
         }
       },
       created() {
-        this.getData();
         let that = this;
         that.$axios({
           method: 'GET',
@@ -76,11 +70,8 @@
           .then(response => {
             if (response.status === 200) {
               that.teacher=response.data;
+              console.log(that.teacher);
               window.localStorage['token'] = response.headers.authorization;
-              // that.teacher.account=response.data.account;
-              // that.teacher.name=response.data.name;
-              // that.teacher.email=response.data.email;
-              //that.token=res.headers.authorization;
             }
           })
           .catch((e) => {
@@ -88,9 +79,6 @@
           })
       },
       methods:{
-        getData() {
-          this.account = this.$route.query.account;
-        },
           SetAccount(){
             this.$router.push({
               path:'/teacher/AccountManage',
@@ -116,7 +104,13 @@
           this.$router.push({path: '/teacher/TotalSeminar'});
         },
         gotoBacklog(){
-          this.$router.push({path:'/teacher/Backlog'});
+          this.$router.push({
+            path: '/teacher/Backlog',
+            name: 'Backlog',
+            params: {
+              teacherId: this.teacher.id
+            }
+          });
         }
       },
       watch: {

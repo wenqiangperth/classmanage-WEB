@@ -49,10 +49,57 @@
           </tr>
         </table>
       </el-card>
-      <div style="width: 100%;margin-top: 20px;height:45px" @click="gotoTeamRequires">
-        <label style="font-weight: bold;float: right">组队要求<i class="el-icon-d-arrow-right"
-                                                             style="font-weight: bolder;color: #66cccc;font-size: 16px"></i></label>
-      </div>
+      <el-card class="box-card">
+        <div slot="header" style="float: left">
+          <span style="font-weight: bold;color: #616161">组员基本要求</span>
+        </div>
+        <table
+          style="width: 100%;text-align: center;font-size: 13px">
+          <tr style="height: 35px">
+            <td style="width:30%">小组总人数:</td>
+            <td>
+              {{teamMin}}~{{teamMax}}
+            </td>
+          </tr>
+        </table>
+        <table
+          style="width: 100%;text-align: center;font-size: 13px">
+          <tr style="height: 35px">
+            <td style="width:40%">组内选修课程人数:</td>
+            <td></td>
+          </tr>
+        </table>
+        <table
+          style="width: 100%;text-align: center;font-size: 13px"
+          v-for="item in optionalCourse">
+          <tr style="height: 35px">
+            <td style="width:30%">{{item.courseName}}</td>
+            <td>
+              {{item.minNum}}~{{item.maxNum}}
+            </td>
+          </tr>
+        </table>
+      </el-card>
+      <el-card>
+        <div slot="header" style="float: left">
+          <span style="font-weight: bold;color: #616161">冲突课程</span>
+        </div>
+        <table
+          style="width: 100%;text-align: center;font-size: 13px" v-for="item in conflictCourse">
+          <tr style="height: 35px">
+            <td style="width: 30%">{{item.courseName}}</td>
+            <td>
+              {{item.teacherName}}老师
+            </td>
+          </tr>
+          <tr style="height: 35px">
+            <td></td>
+            <td></td>
+          </tr>
+        </table>
+        <label style="font-size: 12px"><span style="font-weight: bold;color: red">提示：</span>选修不同冲突课程的学生不可同组，注意同课程名不同教师名为不同课程</label>
+      </el-card>
+
       <div id="el-btn" style="width: 100%;margin-top: 20px"
            v-show="(((teamMainCourseId===null)&&(seminarMainCourseId===null))||(teamMainCourseId!==null)&&(teamMainCourseId===courseId)||(seminarMainCourseId!==null)&&(seminarMainCourseId==courseId))">
         <el-button type="success"
@@ -94,14 +141,26 @@
         teamEndTime: '2018-12-06 12:00:00',
         minNum: 0,
         maxNum: 0,
-          maleNum: '2-4',
-          femaleNum: '2-4',
-          defeatCourse: [{
-            name: '.net',
-            teacher: 'Lin'
-          }],
         teamMainCourseId: 1,
-        seminarMainCourseId: 1
+        seminarMainCourseId: 1,
+        teamMin: 6,
+        teamMax: 8,
+        optionalCourse: [
+          {
+            courseId: 1,
+            courseName: 'J2EE',
+            minNum: 6,
+            maxNum: 8
+          }
+        ],
+        conflictCourse: [
+          {
+            courseId: 1,
+            courseName: 'J2EE',
+            teacherId: 1,
+            teacherName: '林坤辉'
+          }
+        ]
       }
     },
     created() {
@@ -122,6 +181,7 @@
             console.log("aaaaa");
             console.log(res.data);
             let data = res.data;
+            /**/
             that.introduction = data.introduction;
             that.tableData1[0].percentage = data.presentationPercentage;
             that.tableData1[1].percentage = data.questionPercentage;
@@ -158,9 +218,6 @@
       },
       gotoTotalSeminar() {
         this.$router.push({path: '/teacher/SeminarPage'});
-      },
-      gotoTeamRequires() {
-        this.$router.push({path: '/teacher/TeamRequires'});
       },
       deleteCourse() {
         MessageBox.confirm('此操作将永久删除该课程?', '提示', {

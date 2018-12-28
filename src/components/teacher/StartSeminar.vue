@@ -81,7 +81,9 @@
             suffix-icon="el-icon-edit"
             v-model="presentationScore">
           </el-input>
-          <el-button type="info" size="small" style="margin-top: 5px;float: right;margin-bottom: 5px">确认</el-button>
+          <el-button type="info" size="small" style="margin-top: 5px;float: right;margin-bottom: 5px" @click="gradePre">
+            确认
+          </el-button>
         </el-card>
         <el-card id="ques" style="display: none">
           <div slot="header">
@@ -97,7 +99,8 @@
             <tr>
               <td style="width: 30%"></td>
               <td>
-                <el-button type="info" size="small" style="margin-top: 5px;float: right;margin-bottom: 5px">确认
+                <el-button type="info" size="small" style="margin-top: 5px;float: right;margin-bottom: 5px"
+                           @click="gradeQues">确认
                 </el-button>
               </td>
             </tr>
@@ -140,7 +143,8 @@
       </div>
     </div>
     <div class="main" style="float: left">
-      <el-button type="success" plain style="width: 40%;float:left;margin-top: 100px" @click="askQuestions">抽取提问
+      <el-button id="askQues" type="success" plain style="width: 40%;float:left;margin-top: 100px"
+                 @click="askQuestions">抽取提问
       </el-button>
       <el-button type="success" plain id="nextGroup" style="width:40%;float:right;margin-top: 100px"
                  @click="nextGroup">
@@ -227,9 +231,19 @@
         this.$router.push({path: '/teacher/HomePage'});
       },
       returnSeminarPage() {
-        this.$router.push({path: '/teacher/SeminarPage'});
+        this.$router.push({
+          path: '/teacher/SeminarPage',
+          name: 'SeminarPage',
+          params: {
+            course: this.course
+          }
+        });
       },
+      //抽取提问
       askQuestions() {
+        //拿到提问小组信息
+        var askQues = document.getElementById("askQues");
+        askQues.disabled = true;
         var pre_ = document.getElementById("pre");
         var ques_ = document.getElementById("ques");
         var update_ = document.getElementById("update");
@@ -238,11 +252,20 @@
         update1_.style.display = "none";
         pre_.style.display = "none";
         ques_.style.display = "block";
+
+
       },
+      //给提问打分
+      gradeQues() {
+        var askQues = document.getElementById("askQues");
+        askQues.disabled = false;
+        //向后端发请求保存提问成绩
+      },
+      //下组展示
       nextGroup() {
+        //向websocket发送attendanceId
         this.nowIndex++;
         if ((this.nowIndex > 0) && (this.nowIndex < this.attendanceInfo.length - 1)) {
-          // this.$router.push({path: '/teacher/StartSeminar'});
           var next_ = document.getElementById("nextGroup");
           next_.innerHTML = "下组展示";
         } else if (this.nowIndex === this.attendanceInfo.length - 1) {
@@ -262,9 +285,6 @@
           finish_.style.display = "block";
         }
 
-      },
-      endSeminar() {
-        this.$router.push({path: '/teacher/AfterSeminar'});
       },
       updateSuccess() {
         var pre_ = document.getElementById("pre");
@@ -287,6 +307,7 @@
         ques_.style.display = "none";
         var update_ = document.getElementById("update");
         update_.style.display = "block";
+        //向后端请求保存修改的展示成绩
         this.$axios({
           method: 'POST',
           url: '/seminar/' + this.klassSeminarId + '/team/' + this.attendanceInfo[index].team.teamId + '/enterseminar',
@@ -316,6 +337,13 @@
         update_.style.display = "none";
         var update1_ = document.getElementById("update1");
         update1_.style.display = "block";
+        //向后端请求保存修改的成绩
+      },
+      endSeminar() {
+        //向websocket发送最后一组展示Id
+        //设置讨论课状态
+        //设置书面报告
+        this.$router.push({path: '/teacher/BeforeSeminar'});
       }
     }
   }

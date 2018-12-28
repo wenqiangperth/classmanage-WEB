@@ -9,9 +9,6 @@
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
             <el-dropdown-item><i class="el-icon-service" @click="gotoSeminar">&nbsp;&nbsp;讨论课</i></el-dropdown-item>
-            <el-dropdown-item>
-              <router-link :to="{name:'Login'}"><i class="el-icon-back icon0"></i>&nbsp;&nbsp;退 出</router-link>
-            </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -138,7 +135,7 @@
       updateSuccess() {
         this.$axios({
           method: 'PUT',
-          url: '/seminar/' + this.seminarId,
+          url: '/seminar/' + this.seminarId + '/class/' + this.classId + '/seminarscore',
           data: {
             results: this.results
           },

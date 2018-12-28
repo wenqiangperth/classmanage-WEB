@@ -12,9 +12,9 @@
       </div>
     </div>
     <div class="empty"></div>
-    <div class="main" style="font-size: 14px">
-      <el-collapse accordion v-for="(round,index) in rounds"
-                   :key="index">
+    <div class="main" style="font-size: 14px" v-for="(round,index) in rounds"
+         :key="index">
+      <el-collapse accordion>
         <el-collapse-item>
           <template slot="title">
             <div style="width: 100%;text-align: left" @click="getScores(index)">
@@ -31,6 +31,7 @@
             </div>
           </div>
 
+
         </el-collapse-item>
       </el-collapse>
       <div>
@@ -41,7 +42,7 @@
           <el-table
             :data="seminarsScore"
             style="width: 100%;"
-            >
+          >
             <el-table-column
               prop="seminarName"
               label="主题"
@@ -95,7 +96,8 @@
               </td>
             </tr>
           </table>
-          <el-button type="info" plain @click="UpdateGrades" style="margin-top: 5px;float: right;margin-bottom: 5px">
+          <el-button type="info" plain @click="UpdateGrades(index)"
+                     style="margin-top: 5px;float: right;margin-bottom: 5px">
             修改
           </el-button>
         </el-dialog>
@@ -110,6 +112,7 @@
     name: "CourseManage",
     data() {
       return {
+        account: '',
         scores: [],
         courseId: '',
         courseName: '',
@@ -147,16 +150,42 @@
         this.$router.push({path: '/'});
       },
       returnCourseManage() {
-        this.$router.push({path: '/teacher/CourseManage'});
+        this.$router.push({
+          path: '/teacher/CourseManage',
+          name: 'CourseManage',
+          params: {
+            account: this.account
+          }
+        });
       },
       gotoSeminar() {
-        this.$router.push({path: '/teacher/SeminarPage'});
+        this.$router.push({path: '/teacher/TotalSeminar'});
       },
       gotoHomePage(){
         this.$router.push({path:'/teacher/HomePage'});
       },
-      UpdateGrades(){
-
+      UpdateGrades(index) {
+        let scores0 = this.scores[index].roundScore;
+        this.$axios({
+          method: 'PUT',
+          url: '',
+          data: {
+            scores: scores0
+          },
+          headers: {
+            'Authorization': window.localStorage['token']
+          }
+        }).then(res => {
+          if (res.status === 200) {
+            window.localStorage['token'] = res.headers.authorization;
+            this.$message({
+              type: 'success',
+              message: '修改成功'
+            })
+          }
+        }).catch(e => {
+          console.log(e);
+        })
       },
       showGrade(index) {
         this.dialogTableVisible = true;

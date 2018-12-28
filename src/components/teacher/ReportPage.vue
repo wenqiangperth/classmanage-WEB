@@ -27,7 +27,7 @@
               <span style="color: red" v-else>未提交</span>
             </td>
             <td>
-              <el-input placeholder="成绩" v-model="item.result"></el-input>
+              <el-input placeholder="成绩" v-model="item.score.reportScore"></el-input>
             </td>
           </tr>
         </table>
@@ -131,13 +131,6 @@
                   window.localStorage['token'] = res.headers.authorization;
                   console.log("下载文件");
                   console.log(res.data);
-                  /*let url=window.URL.createObjectURL(res.data);
-                  let link=document.createElement('a');
-                  link.style.display='none';
-                  link.href=url;
-                  link.setAttribute('download','.docx');
-                  document.body.appendChild(link);
-                  link.click();*/
                   let aTag = document.createElement('a');
                   let blob = new Blob([res.data], {type: ""});
                   aTag.download = this.groupInfo[index].reportUrl;
@@ -205,7 +198,24 @@
 
       },
       editResults() {
-        this.$router.push({path: '/teacher/AfterSeminar'});
+        this.$axios({
+          method: 'PUT',
+          url: '/seminar/' + this.seminarId + '/class/' + this.classId + '/reportscore',
+          data: {
+            groupInfo: this.groupInfo
+          }
+        })
+          .then(res => {
+            if (res.status === 200) {
+              this.$message({
+                type: 'success',
+                message: '修改成功'
+              });
+            }
+          }).catch(e => {
+          console.log(e);
+        })
+
       },
 
     },

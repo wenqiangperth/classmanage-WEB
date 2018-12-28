@@ -6,49 +6,144 @@
         </div>
       </div>
       <div class="main">
-        <table class="table0">
-          <tr>
-            <td class="td0" style="text-align: left">
-              <label @click="handleRequest"><i class="el-icon-warning icon00"></i>来自J2EE-张老师的共享分组请求</label>
-            </td>
-          </tr>
-        </table>
-        <el-button type="info" plain @click="checkHistory"
-                  style="float: right;margin-top: 15px">历史消息</el-button>
-        <div id="history" class="history" style="width: 100%;display: none">
-          <table class="table0">
-            <tr>
-              <td class="td0" style="text-align: left">
-                <label @click="handleRequest"><i class="el-icon-success"></i>来自J2EE-张老师的共享分组请求</label>
-              </td>
-            </tr>
-            <tr>
-              <td class="td0" style="text-align: left">
-                <label @click="handleRequest"><i class="el-icon-error"></i>来自J2EE-张老师的共享分组请求</label>
-              </td>
-            </tr>
-          </table>
-        </div>
-        </div>
+        <el-collapse>
+          <el-collapse-item v-for="(item,index) in teamShares" :key="index" v-if="item.status===null">
+            <template slot="title">
+              <i class="el-icon-time el-icon0"></i>收到{{item.subCourseName}}--{{item.subCourseTeacherName}}老师的共享分组请求
+            </template>
+            <div style="width: 100%;height:45px">
+              <i class="el-icon-check icon" @click="acceptShare(index)"></i>
+              <i class="el-icon-close icon2" @click="refuseShare(index)"></i>
+            </div>
+          </el-collapse-item>
+        </el-collapse>
+      </div>
     </div>
 </template>
 
 <script>
     export default {
         name: "Backlog",
+      data() {
+        return {
+          teacherId: 0,
+          teamShares: [],
+          teamValid: []
+        }
+      },
+      created() {
+        this.teacherId = this.$route.params.teacherId;
+        let that = this;
+        that.$axios({
+          method: 'GET',
+          url: '/request/teamshare',
+          params: {
+            teacherId: that.teacherId
+          },
+          headers: {
+            'Authorization': window.localStorage['token']
+          }
+        })
+          .then(res => {
+            if (res.status === 200) {
+              window.localStorage['token'] = res.headers.authorization;
+              console.log("共享组队申请");
+              console.log(res.data);
+              that.teamShares = res.data;
+            }
+          }).catch(e => {
+          console.log(e);
+        });
+        that.$axios({
+          method: 'GET',
+          url: '/request/teamvalid',
+          params: {
+            teacherId: that.teacherId
+          },
+          headers: {
+            'Authorization': window.localStorage['token']
+          }
+        })
+          .then(res => {
+            if (res.status === 200) {
+              window.localStorage['token'] = res.headers.authorization;
+              console.log("组队合法申请");
+              console.log(res.data);
+              that.teamValid = res.data;
+            }
+          }).catch(e => {
+          console.log(e);
+        })
+      },
       methods:{
           returnHomePage(){
             this.$router.push({path:'/teacher/HomePage'});
           },
-        handleRequest(){
-            this.$router.push({path:'/teacher/SharePage'});
+        acceptShare(index) {
+          this.$axios({
+            method: 'PUT',
+            url: '/request/teamshare/' + this.teamShares[index].id,
+            data: {
+              status: 1
+            },
+            headers: {
+              'Authorization': window.localStorage['token']
+            }
+          })
+            .then(res => {
+              if (res.status === 200) {
+                window.localStorage['token'] = res.headers.authorization;
+                this.$message({
+                  type: 'success',
+                  message: '您已接受共享分组'
+                });
+                this.$axios({
+                  method: 'GET',
+                  url: '/request/teamshare',
+                  params: {
+                    teacherId: this.teacherId
+                  },
+                  headers: {
+                    'Authorization': window.localStorage['token']
+                  }
+                })
+                  .then(res => {
+                    if (res.status === 200) {
+                      window.localStorage['token'] = res.headers.authorization;
+                      console.log("共享组队申请");
+                      console.log(res.data);
+                      this.teamShares = res.data;
+                    }
+                  }).catch(e => {
+                  console.log(e);
+                })
+              }
+            }).catch(e => {
+            console.log(e);
+          })
         },
-        checkHistory(){
-            var history=document.getElementById("history");
-            if(history.style.display==="none")
-              history.style.display="block";
-            else if(history.style.display==="block")
-              history.style.display="none";
+        refuseShare(index) {
+          this.$axios({
+            method: 'PUT',
+            url: '/request/teamshare/' + this.teamShares[index].id,
+            data: {
+              status: 0
+            },
+            headers: {
+              'Authorization': window.localStorage['token']
+            }
+          })
+            .then(res => {
+              if (res.status === 200) {
+                window.localStorage['token'] = res.headers.authorization;
+                this.$message({
+                  type: 'success',
+                  message: '您已拒绝接受共享'
+                })
+              }
+            }).catch(e => {
+            console.log(e);
+          })
         }
       }
     }
@@ -58,5 +153,23 @@
 .icon00{
   color: red;
   font-size:20px;
+}
+
+.icon {
+  font-weight: bolder;
+  font-size: 25px;
+  float: left;
+  line-height: 45px;
+  margin-left: 60px;
+  color: #66cccc;
+}
+
+.icon2 {
+  font-weight: bolder;
+  font-size: 25px;
+  float: right;
+  line-height: 45px;
+  margin-right: 60px;
+  color: #616161;
 }
 </style>

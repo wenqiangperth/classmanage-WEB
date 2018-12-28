@@ -158,7 +158,13 @@
         console.log("courseId" + this.courseId);
       },
       returnSeminarPage() {
-        this.$router.push({path: '/teacher/SeminarPage'});
+        this.$router.push({
+          path: '/teacher/SeminarPage',
+          name: 'SeminarPage',
+          params: {
+            course: this.course
+          }
+        });
       },
       NewSuccess() {
         this.$axios({
