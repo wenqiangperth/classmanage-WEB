@@ -16,7 +16,7 @@
           <fieldset>
             <legend style="font-size: 20px;color:#66cccc">xX{{seminarName}}Xx</legend>
             <p v-if="nowIndex!==-1"><span style="font-weight: bold;color:#616161">正在展示:</span>
-              <br>组号:{{KlassSerial}}-{{teamSerial}} {{teamName}}
+              <br>组号:{{klassSerial}}-{{teamSerial}} {{teamName}}
               <br>已有<span style="color: #66cccc;font-weight: bold">{{quesNum}}</span>名同学提问
             </p>
             <p v-else-if="nowIndex===1">展示即将开始</p>
@@ -174,7 +174,7 @@
         nowIndex: -1,
         value1: '',
         team: '',
-        KlassSerial: '',
+        klassSerial: '',
         seminarName: '',
         teamSerial: '',
         teamName: '',
@@ -221,13 +221,31 @@
             console.log(res.data);
             that.attendanceInfo = res.data;
             that.seminarName = that.attendanceInfo[that.nowIndex + 1].score.seminarName;
-            that.KlassSerial = that.attendanceInfo[that.nowIndex + 1].team.klassSerial;
-            console.log("KlassSerial" + that.KlassSerial);
+            that.klassSerial = that.attendanceInfo[that.nowIndex + 1].team.klassSerial;
+            console.log("KlassSerial" + that.klassSerial);
             that.teamSerial = that.attendanceInfo[that.nowIndex + 1].team.teamSerial;
             console.log("teamId" + that.teamSerial);
             that.teamName = that.attendanceInfo[that.nowIndex + 1].team.teamName;
             that.klassSeminarId = that.attendanceInfo[0].klassSeminarId;
-
+            for (let i = 0; i < that.attendanceInfo.length; i++) {
+              if (that.attendanceInfo[i].isPresent === 1)
+                that.index = i;
+            }
+            that.$axios({
+              method: 'GET',
+              url: '/seminar/' + that.SeminaringInfo[0].klassSeminarId + '/attendance/' + that.SeminaringInfo[that.index].id + '/questionnumber',
+              headers: {
+                'Authorization': window.localStorage['token']
+              }
+            }).then(res => {
+              if (res.status === 200) {
+                console.log("当前提问人数：");
+                console.log(res);
+                that.quesNum = res.data;
+              }
+            }).catch(e => {
+              console.log(e)
+            })
           }
         }).catch(e => {
         console.log(e);
@@ -314,15 +332,17 @@
       //抽取提问
       askQuestions() {
         //拿到提问小组信息
+        let that = this;
         this.$axios({
           method: 'GET',
-          url: '/' + this.attendanceInfo[this.nowIndex].id + '/question',
+          url: '/attendance/' + this.attendanceInfo[this.nowIndex].id + '/question',
           headers: {
             'Authorization': window.localStorage['token']
           }
         })
           .then(res => {
             if (res.status === 200) {
+              that.nowQuesGroup = res.data;
               console.log("提问小组信息");
               if (res.data === null) {
                 this.$message({
@@ -330,9 +350,8 @@
                   message: '当前没有同学提问'
                 })
               } else {
-                this.ws.send("抽取提问");
+                that.ws.send("抽取提问" + that.nowQuesGroup.id);
               }
-              this.nowQuesGroup = res.data;
               window.localStorage['token'] = res.headers.authorization;
             }
           }).catch(e => {
@@ -401,8 +420,24 @@
       },
       //下组展示
       nextGroup() {
+        let that = this;
         if (this.nowIndex === -1) {
           this.initWebSocket();
+          this.$axios({
+            method: 'PUT',
+            url: '/seminar/' + this.seminarId + '/status',
+            data: {
+              status: 1,
+              klassId: this.classId
+            }
+          })
+            .then(res => {
+              if (res.status === 200) {
+
+              }
+            }).catch(e => {
+            console.log(e);
+          });
         } else {
           this.$axios({
             method: 'DELETE',
@@ -414,6 +449,7 @@
             .then(res => {
               if (res.status === 200) {
                 window.localStorage['token'] = res.headers.authorization;
+                that.ws.send("下一组展示");
               }
             }).catch(e => {
             console.log(e);
@@ -421,7 +457,7 @@
         }
         this.quesNum = 0;
         this.nowIndex++;
-        if ((this.nowIndex > 0) && (this.nowIndex < this.attendanceInfo.length - 1)) {
+        if ((this.nowIndex > -1) && (this.nowIndex < this.attendanceInfo.length - 1)) {
           var next_ = document.getElementById("nextGroup");
           next_.innerHTML = "下组展示";
         } else if (this.nowIndex === this.attendanceInfo.length - 1) {
@@ -529,7 +565,8 @@
           method: 'PUT',
           url: '/seminar/' + this.seminarId + '/status',
           data: {
-            status: 2
+            status: 2,
+            klassId: this.classId
           }
         })
           .then(res => {

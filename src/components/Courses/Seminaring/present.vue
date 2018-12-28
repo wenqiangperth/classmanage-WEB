@@ -100,13 +100,17 @@
                   if (that.SeminaringInfo[i].isPresent === 1)
                     that.index = i;
                 }
+                console.log('index:' + that.index);
                 that.$axios({
                   method: 'GET',
-                  url: '/seminar/' + that.SeminaringInfo[0].klassSeminarId + '/attendance/' + that.SeminaringInfo[0].attendanceId + '/questionNum',
+                  url: '/seminar/' + that.SeminaringInfo[0].klassSeminarId + '/attendance/' + that.SeminaringInfo[that.index].id + '/questionnumber',
                   headers: {
                     'Authorization': window.localStorage['token']
                   }
                 }).then(res => {
+                  console.log("当前提问人数：");
+                  console.log(res);
+                  that.questionNum = res.data;
                 }).catch(e => {
                   console.log(e)
                 })
@@ -191,7 +195,7 @@
           let message = e.data;
           console.log(message);
           console.log("aaa" + message);
-          if (message === "下一个展示") {
+          if (message === "下一组展示") {
             that.isShow = true;
             that.index++;
             that.questionNum = 0;
@@ -249,7 +253,7 @@
            } else {
              that.$axios({
                method: 'POST',
-               url: 'seminar/' + that.SeminaringInfo[0].klassSeminarId + '/attendance/' + that.SeminaringInfo[0].id + '/team/' + this.teamId + '/question',
+               url: 'seminar/' + that.SeminaringInfo[0].klassSeminarId + '/attendance/' + that.SeminaringInfo[that.index].id + '/team/' + this.teamId + '/question',
                headers: {
                  'Authorization': window.localStorage['token']
                }
