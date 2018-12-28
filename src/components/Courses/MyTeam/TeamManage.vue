@@ -30,7 +30,7 @@
         <div style="font-weight: bold">组长：{{leader.name}}--{{leader.account}}</div>
         <div v-for="member in myTeam.students" class="text item">
           {{member.studentName}}--{{member.account}}
-          <i style="float: right; color: red" class="el-icon-error" @click="dele(member.account)"></i>
+          <i style="float: right; color: red" class="el-icon-error" @click="dele(member.id)"></i>
         </div>
       </el-card>
       <div class="divHeight"></div>
@@ -49,7 +49,9 @@
             label="添加队友"
             fixed="left">
             <template slot-scope="scope">
-              <el-checkbox text-color="red"></el-checkbox>
+              <el-button
+                size="mini"
+                @click="handleEdit(scope.$index, scope.row)">添加</el-button>
             </template>
           </el-table-column>
           <el-table-column
@@ -148,7 +150,7 @@
             console.log(res);
             if(res.status===200){
               this.teamId=res.data.id;
-              console.log('传来的teamId'+this.teamId);
+              console.log('传来的teamId:'+this.teamId);
               that.$axios({
                 method:'GET',
                 url:'/team/'+this.teamId,
@@ -204,7 +206,7 @@
         //删除组员
         dele(index){
           console.log('删除的是谁'+index);
-          if(index===this.leader.account){
+          if(index===this.myTeam.leaderId){
             this.$message({
               type:'error',
               message:'组长无法执行自删除操作，可以选择解散小组。'
@@ -220,15 +222,17 @@
             }).then(() => {
               this.$axios({
                 method:'PUT',
-                url:'team/'+this.$data.teamId+'/remove',
-                params:{
-                  id:index,
-                  teamId:this.teamId
+                url:'/team/'+this.$data.teamId+'/remove',
+                headers:{
+                  'Authorization':window.localStorage['token']
+                },
+                data:{
+                  id:index
                 }
               })
                 .then(res=>{
-                  let data=res.data;
-                  if(data.status===204){
+                  console.log(res);
+                  if(res.status===200){
                     this.$message({
                       type: 'success',
                       message: '删除成功!'
@@ -285,7 +289,63 @@
               courseId: this.courseId
             }
           })
-        }
+        },
+        handleEdit(index, row){
+          console.log(row.id);
+            this.$confirm('确定添加'+row.studentName, '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning',
+              center: true
+            }).then(() => {
+              this.myTeam.students.length++;
+              console.log('现在人数'+this.myTeam.students.length);
+              if(this.myTeam.students.length<6||this.myTeam.students.length===6){
+              //给后端发送请求，判断添加此人合不合法
+                console.log('发给后端');
+                this.myTeam.students.length=6;
+              }
+              else if(this.myTeam.students.length===7){
+                this.$message({type:'error', message:'组队人数不得超过6人！'});
+                this.myTeam.students.length--;
+              }
+            }).catch(() => {
+              this.$message({
+                type: 'success',
+                message: '添加成功'
+              })
+            })
+          // if(this.i>5){
+          //   this.$message({
+          //     type:'error',
+          //     message:'小组人数不得超过6人！'
+          //   })
+          // }
+          // if(this.i<=5){
+          //   this.$confirm('确定添加'+row.studentName, '提示', {
+          //     confirmButtonText: '取消',
+          //     cancelButtonText: '确定',
+          //     type: 'warning',
+          //     center: true
+          //   }).then(() => {
+          //     this.$message({
+          //       type: 'info',
+          //       message: '已取消添加!'
+          //     });
+          //   }).catch(() => {
+          //     this.$message({
+          //       type: 'success',
+          //       message: '添加成功'
+          //     });
+          //     this.members[this.i].id=row.id;
+          //     this.members[this.i].studentName=row.studentName;
+          //     this.i=this.i+1;
+          //     console.log('看这里'+this.i);
+          //     console.log('组员：');
+          //     console.log(this.members);
+          //   });
+          // }
+        },
       }
     }
 </script>

@@ -96,7 +96,7 @@
 
         this.$axios({
           method:'GET',
-          url:'/course/'+this.courseId+'/myTeam',
+          url:'/course/'+this.courseId+'/myteam',
           headers:{
             'Authorization':window.localStorage['token']
           }

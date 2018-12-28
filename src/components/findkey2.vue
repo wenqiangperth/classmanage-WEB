@@ -46,7 +46,7 @@
             this.$router.push({path:'/Account/ManageAccount'})
           },
           submit(){
-           let that = this
+           let that = this;
             if(that.password1 !== that.password){
               this.$message({
                 type:'error',
@@ -65,10 +65,10 @@
                 }
               })
                 .then(response => {
-                  window.localStorage["token"]=response.headers.authorization;
+                  window.localStorage['token']=response.headers.authorization;
                   console.log(response);
                   if(response.status === 200){
-                    alert("已成功修改密码")
+                    alert("已成功修改密码");
                     this.$router.push({path:'/'})
                   }
                   else if(response.status===400)

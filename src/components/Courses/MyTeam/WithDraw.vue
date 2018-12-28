@@ -1,8 +1,8 @@
 <template>
-    <div>
+    <div :style="note">
       <header class="home-title">
         <div class="homeTitle">
-          <i class="el-icon-arrow-left"></i>
+          <i class="el-icon-arrow-left" @click="back"></i>
           <label>OOAD </label>
           <el-dropdown trigger="click" >
             <span class="el-dropdown-link">
@@ -22,33 +22,43 @@
         </div>
       </header>
 
-      <el-tag style="float: right">{{klass}}</el-tag>
+      <div class="main" style="opacity: 0.8;">
+        <el-tag type="success" style="font-size:16px;float: right;margin-bottom: 30px">
+          {{tableData.klassSerial}}-{{tableData.teamSerial}}: {{tableData.teamName}}
+        </el-tag>
 
-      <template>
-        <el-table
-          :data="tableData2"
-          style="width: 100%"
-          :row-class-name="tableRowClassName">
-          <el-table-column
-            type="index"
-            width="50">
-          </el-table-column>
-          <el-table-column
-            prop="Na"
-            label="姓名"
-            width="120">
-          </el-table-column>
-          <el-table-column
-            prop="No"
-            label="学号"
-            width="140">
-          </el-table-column>
-        </el-table>
-      </template>
+        <el-tag type="success" style="width:100%;background-color: transparent;font-size: 18px">
+          组长：{{leader.leaderName}}
+        </el-tag>
 
-      <div class="withdraw">
-        <el-button type="danger" @click="open" plain>退出小组</el-button>
+        <template>
+          <el-table
+            :data="tableData.students"
+            style="width: 100%;"
+            :row-class-name="tableRowClassName">
+            <el-table-column
+              type="index"
+              width="100">
+            </el-table-column>
+            <el-table-column
+              prop="studentName"
+              label="姓名"
+              width="120">
+            </el-table-column>
+            <el-table-column
+              prop="account"
+              label="学号"
+              width="140">
+            </el-table-column>
+          </el-table>
+        </template>
+
+        <div class="withdraw">
+          <el-button type="danger" @click="withdraw" plain>退出小组</el-button>
+        </div>
+
       </div>
+      <div style="height: 200px;"></div>
     </div>
 </template>
 
@@ -60,17 +70,18 @@
           teamId:'',
           courseId:'',
           klass: '2016-(1)',
-          tableData2:[
-            { Na:'王强',No: '24320162201122'},
-            { Na:'赵某',No:'24320162200000' },
-            { Na:'高某',No:'24232001213213' },
-            { Na:'方某',No:'24323425233232' },
-            { Na:'叶某',No:'24329753973845' }
-          ]
+          leader:[{leaderName:'',account:''}],
+          tableData:[],
+          note:{
+            backgroundImage:"url("+require("../../../assets/sky.jpg")+")",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "100% 100%"
+          },
+          userId:'',
         }
       },
       created(){
-        this.teamId=this.$route.query.teamId;
+        // this.teamId=this.$route.query.teamId;
         this.courseId=this.$route.query.courseId;
         console.log(this.teamId);
         this.$axios({
@@ -80,6 +91,30 @@
             'Authorization':window.localStorage['token']
           }
         })
+          .then(res=>{
+          console.log(res);
+          if(res.status===200){
+            this.tableData=res.data;
+            this.checkLeader();
+          }
+        })
+          .catch(e=>{
+            console.log(e);
+          })
+
+        this.$axios({
+          method:'GET',
+          url:'/user/information',
+          headers:{
+            'Authorization':window.localStorage['token']
+          }
+        }).then(res=>{
+          console.log(res);
+          if(res.status===200){
+            this.userId=res.data.id;
+            console.log('userId为： '+this.userId);
+          }
+        }).catch(e=>{console.log(e);})
       },
       methods:{
           tableRowClassName({row,rowIndex}){
@@ -88,7 +123,8 @@
             }
             return '';
           },
-          open() {
+          withdraw() {
+            console.log(this.userId);
             this.$confirm('确定退出小组, 是否继续?', '提示', {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
@@ -97,18 +133,26 @@
             }).then(() => {
               this.$axios({
                 method:'PUT',
-                url:'/team/'+this.$data.teamId+'/remove',
+                url:'/team/'+this.$data.tableData.id+'/remove',
                 headers:{
                   'Authorization':window.localStorage['token']
+                },
+                data:{
+                  id:this.userId
                 }
               }).then(res=>{
                 console.log(res);
-                if(res.status===204){
+                if(res.status===200){
                   this.$message({
                     type: 'success',
                     message: '退出成功!'
                   });
-                  this.$router.push({path:'/Courses/MyTeam/TeamInfo'});
+                  this.$router.push({
+                    path:'/Courses/MyTeam/TeamInfo',
+                    query:{
+                      courseId:this.courseId
+                    }
+                  });
 
                 }else{
                   alert("退出失败，请重新尝试！")
@@ -121,6 +165,24 @@
                 message: '已放弃退出'
               });
             });
+          },
+          back(){
+            this.$router.push({
+              path:'/Courses/MyTeam/TeamInfo',
+              name:'TeamInfo',
+              query:{
+                courseId: this.courseId
+              }
+            })
+          },
+          checkLeader(){
+            for(let i=0;i<this.tableData.students.length;i++){
+              if(this.tableData.leaderId===this.tableData.students[i].id){
+                this.leader.leaderName=this.tableData.students[i].studentName;
+                this.leader.account=this.tableData.students[i].account;
+              }
+            }
+            console.log(this.leader.leaderName);
           }
       }
 
@@ -155,10 +217,10 @@
     transform: translateX(90%);
   }
 
-  .el-table .success-row {
-    background: #66cccc;
-    border-radius: 3px;
-  }
+  /*.el-table .success-row {*/
+    /*background: #66cccc;*/
+    /*border-radius: 3px;*/
+  /*}*/
 
   .withdraw{
     margin: 40px 0 0 0;

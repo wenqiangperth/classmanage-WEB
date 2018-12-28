@@ -206,7 +206,11 @@
                   }else{
                     //进入组员信息界面
                     this.$router.push({
-                      path:'/Courses/MyTeam/WithDraw'
+                      path:'/Courses/MyTeam/WithDraw',
+                      name:'WithDraw',
+                      query:{
+                        courseId: this.courseId
+                      }
                     })
                   }
                 }
