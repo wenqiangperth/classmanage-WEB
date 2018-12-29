@@ -110,7 +110,7 @@
         <table style="width: 100%" v-for="(role,index) in memberRole" :key="index">
           <tr style="width: 100%;height: 45px">
             <td style="width: 40%">
-              <el-select v-model="role.name" placeholder="请选择">
+              <el-select v-model="courseId" placeholder="请选择">
                 <el-option
                   v-for="item in data1"
                   :key="item.courseId"
@@ -120,10 +120,10 @@
               </el-select>
             </td>
             <td style="width: 30%">
-              <el-input v-model="role.minNum" placeholder="下限"></el-input>
+              <el-input v-model="minNum" placeholder="下限"></el-input>
             </td>
             <td>
-              <el-input v-model="role.maxNum" placeholder="上限"></el-input>
+              <el-input v-model="maxNum" placeholder="上限"></el-input>
             </td>
           </tr>
         </table>
@@ -215,8 +215,11 @@
           teamStartTime: '',
           teamEndTime: '',
         },
+        courseId:'',
         minCount: '',
         maxCount: '',
+        minNum: '',
+        maxNum: '',
         courses: [
           {courseId: 1, courseName: 'J2EE', teacherName: '邱明'},
           {courseId: 2, courseName: 'J2EE', teacherName: '邱明'}
@@ -225,8 +228,7 @@
           {
             courseId: 1,
             name: '',
-            minNum: '',
-            maxNum: ''
+
           },
         ],
         numRequires: [
@@ -238,8 +240,6 @@
         conflictCourse: [],
         data0: [],
         data1:[],
-        minNum:'',
-        maxNum:'',
 
 
       }
@@ -278,6 +278,11 @@
             // teamStartTime: this.course.teamStartTime,
             // teamEndTime: this.course.teamEndTime
             course: this.course,
+            courseId:this.courseId,
+            minCount: this.minCount,
+            maxCount: this.maxCount,
+            minNum: this.minNum,
+            max: this.maxNum
           },
           headers: {
             'Authorization': window.localStorage['token']
