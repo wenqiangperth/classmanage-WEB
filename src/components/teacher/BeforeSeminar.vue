@@ -80,7 +80,8 @@
         roundId: '',
         currentSeminarInfo: {},
         status: '',
-        course: []
+        course: [],
+        klassSeminarId: ''
       }
     },
     created() {
@@ -96,6 +97,7 @@
         if (res.status === 200) {
           window.localStorage['token'] = res.headers.authorization;
           let data_ = res.data;
+          console.log("当前信息");
           console.log(data_);
           that.currentSeminarInfo = data_;
         }
@@ -111,10 +113,14 @@
           'Authorization': window.localStorage['token']
         }
       }).then(res => {
-        console.log(res);
+        console.log("aaaaa");
+        console.log(res.data);
         if (res.status === 200) {
           window.localStorage['token'] = res.headers.authorization;
           that.status = res.data.status;
+          this.klassSeminarId = res.data.id;
+          console.log("bbbb");
+          console.log(this.klassSeminarId);
         }
       })
         .catch(e => {
@@ -134,13 +140,13 @@
         });
       },
       startSeminar() {
-        this.$router.push({
-          path: '/teacher/StartSeminar',
+        this.$route.push({
           name: 'StartSeminar',
           params: {
             classId: this.classId,
             seminarId: this.seminarId,
-            course: this.course
+            course: this.course,
+            klassSeminarId: this.klassSeminarId
           }
         });
       },

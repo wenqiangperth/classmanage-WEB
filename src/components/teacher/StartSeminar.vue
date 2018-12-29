@@ -51,7 +51,7 @@
                             :key="index0"
                             index="index0"
                             v-model="index0"
-                            @click="updatePreScore(index0)">
+                            @click.native="updatePreScore(index0)">
                 {{group.team.klassSerial}}-{{group.team.teamSerial}}{{group.team.teamName}}
               </el-menu-item>
             </el-menu-item-group>
@@ -206,6 +206,10 @@
       this.classId = this.$route.params.classId;
       this.seminarId = this.$route.params.seminarId;
       this.roundId = this.$route.params.roundId;
+      this.getParams();
+      //this.klassSeminarId=this.$route.params.klassSeminarId;
+      console.log("klassSeminarId");
+      console.log(this.klassSeminarId);
       let that = this;
       that.$axios({
         method: 'GET',
@@ -252,7 +256,13 @@
       });
 
     },
+    watch: {
+      '$route': 'getParams'
+    },
     methods: {
+      getParams() {
+        this.klassSeminarId = this.$route.params.klassSeminarId;
+      },
       /*websocket*/
       initWebSocket() { //初始化weosocket
         let that = this;
@@ -419,6 +429,7 @@
         })
       },
       //下组展示
+
       nextGroup() {
         let that = this;
         if (this.nowIndex === -1) {

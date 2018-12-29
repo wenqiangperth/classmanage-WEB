@@ -303,9 +303,6 @@
             console.log(e);
           })
       },
-      setTeamRequires() {
-        this.$router.push({path: '/teacher/SetTeamRequires'});
-      },
       addObject() {
         this.memberRole.push({});
       },
