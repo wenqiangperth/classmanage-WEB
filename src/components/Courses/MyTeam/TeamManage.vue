@@ -307,8 +307,6 @@
         },
         handleEdit(index, row){
             console.log(row.id);
-            // let transId = JSON.parse(row.id);   //转为字符串
-            // console.log(transId);
             this.$confirm('确定添加'+row.studentName, '提示', {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
@@ -370,6 +368,13 @@
             window.localStorage['token']=res.headers.authorization;
             if(res.status===200){
               this.$message({type:'success',message:'解散小组成功！'})
+              this.$router.push({
+                path:'/Courses/MyTeam/TeamInfo',
+                name:'TeamInfo',
+                query:{
+                  courseId: this.courseId
+                }
+              })
             }
           }).catch(e=>{console.log(e);})})
 

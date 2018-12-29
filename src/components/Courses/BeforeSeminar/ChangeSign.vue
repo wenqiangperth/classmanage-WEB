@@ -132,6 +132,7 @@
         that.courseId=that.$route.query.courseId;
         that.courseName=that.$route.query.courseName;
         that.klassId=that.$route.query.klassId;
+        that.teamId=that.$route.query.teamId;
         that.$axios({
           method:'GET',
           url:'/seminar/'+that.seminarId,
@@ -152,7 +153,7 @@
 
         this.$axios({
           method:'GET',
-          url:'/course/'+this.courseId+'/myTeam',
+          url:'/course/'+this.courseId+'/myteam',
           headers:{
             'Authorization':window.localStorage['token']
           }

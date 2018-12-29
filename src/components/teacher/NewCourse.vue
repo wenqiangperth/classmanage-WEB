@@ -30,17 +30,35 @@
         <div slot="header">
           <span class="font_style">成绩计算规则</span>
         </div>
-        <table
-          v-for="(item,index) in course.tableData1"
-          :key="index"
-          style="width: 100%">
-          <tr class="tr0">
-            <td class="td0">{{item.make_up}}</td>
-            <td>
-              <el-input size="mini" v-model="item.percentage" style="width: 45px"></el-input><label>%</label>
-            </td>
-          </tr>
-        </table>
+        <!--<table-->
+          <!--v-for="(item,index) in course.tableData1"-->
+          <!--:key="index"-->
+          <!--style="width: 100%">-->
+          <!--<tr class="tr0">-->
+            <!--<td class="td0">{{item.make_up}}</td>-->
+            <!--<td>-->
+              <!--<el-input size="mini" v-model="item.percentage" style="width: 45px"></el-input><label>%</label>-->
+            <!--</td>-->
+          <!--</tr>-->
+        <!--</table>-->
+        <tr class="tr0">
+          <td class="td0">展示占比：</td>
+          <td>
+            <el-input size="mini" v-model="course.presentationPercentage" style="width: 45px"></el-input><label>%</label>
+          </td>
+        </tr>
+        <tr class="tr0">
+          <td class="td0">提问占比：</td>
+          <td>
+            <el-input size="mini" v-model="course.questionPercentage" style="width: 45px"></el-input><label>%</label>
+          </td>
+        </tr>
+        <tr class="tr0">
+          <td class="td0">报告占比：</td>
+          <td>
+            <el-input size="mini" v-model="course.reportPercentage" style="width: 45px"></el-input><label>%</label>
+          </td>
+        </tr>
       </el-card>
       <el-card style="width: 100%">
         <table
@@ -49,7 +67,7 @@
             <td style="width: 28%">组队开始:</td>
             <td style="text-align: right">
               <el-date-picker
-                v-model="course.startTime"
+                v-model="course.teamStartTime"
                 type="datetime"
                 placeholder="选择日期时间"
                 style="width:100%">
@@ -60,7 +78,7 @@
             <td style="width: 28%">组队截止:</td>
             <td style="text-align: right">
               <el-date-picker
-                v-model="course.endTime"
+                v-model="course.teamEndTime"
                 type="datetime"
                 placeholder="选择日期时间"
                 style="width: 100%">
@@ -77,10 +95,10 @@
           <tr style="width: 100%;height:45px">
             <td style="width:40%">小组总人数:</td>
             <td style="width: 30%">
-              <el-input v-model="memberMin" placeholder="下限"></el-input>
+              <el-input v-model="minCount" placeholder="下限"></el-input>
             </td>
             <td>
-              <el-input v-model="memberMax" placeholder="下限"></el-input>
+              <el-input v-model="maxCount" placeholder="上限"></el-input>
             </td>
           </tr>
           <tr style="width: 100%;height:45px">
@@ -94,9 +112,9 @@
             <td style="width: 40%">
               <el-select v-model="role.name" placeholder="请选择">
                 <el-option
-                  v-for="item in courses"
+                  v-for="item in data1"
                   :key="item.courseId"
-                  :label="item.courseName+item.teacherName"
+                  :label="item.courseName+item.studentOrTeacherName"
                   :value="item.courseId">
                 </el-option>
               </el-select>
@@ -121,7 +139,7 @@
                   v-for="(item0,index) in numRequires"
                   :key="index"
                   :label="item0.require"
-                  :value="index">
+                  :value="item0.flag">
                 </el-option>
               </el-select>
             </td>
@@ -135,20 +153,34 @@
         <div slot="header">
           <span class="title0">冲突课程:</span>
         </div>
-        <table style="width: 100%" v-for="(items,index) in conflictCourse" :key="index">
+        <!--<table style="width: 100%" v-for="(items,index) in conflictCourse" :key="index">-->
+          <!--<tr style="width: 100%;height: 45px">-->
+            <!--<td style="width: 60%">-->
+              <!--<el-select v-model="items.courseId" placeholder="请选择">-->
+                <!--<el-option-->
+                  <!--v-for="item in courses"-->
+                  <!--:key="item.courseId"-->
+                  <!--:label="item.courseName+item.teacherName"-->
+                  <!--:value="item.courseId">-->
+                <!--</el-option>-->
+              <!--</el-select>-->
+            <!--</td>-->
+            <!--<td style="width: 30%"></td>-->
+            <!--<td></td>-->
+          <!--</tr>-->
+        <!--</table>-->
+        <table style="width: 100%" v-for="(role,index) in memberRole" :key="index">
           <tr style="width: 100%;height: 45px">
-            <td style="width: 60%">
-              <el-select v-model="items.courseId" placeholder="请选择">
+            <td style="width: 40%">
+              <el-select v-model="role.name" placeholder="请选择">
                 <el-option
-                  v-for="item in courses"
+                  v-for="item in data1"
                   :key="item.courseId"
-                  :label="item.courseName+item.teacherName"
+                  :label="item.courseName+item.studentOrTeacherName"
                   :value="item.courseId">
                 </el-option>
               </el-select>
             </td>
-            <td style="width: 30%"></td>
-            <td></td>
           </tr>
         </table>
         <div style="width: 100%;height:70px">
@@ -175,30 +207,16 @@
     data() {
       return {
         course: {
-          id: 0,
           courseName: '',
           introduction: '',
-          tableData1: [{
-            make_up: '课堂展示',
-            percentage: '10',
-          },
-            {
-              make_up: '课堂提问',
-              percentage: '20',
-            },
-            {
-              make_up: '书面报告',
-              percentage: '30',
-            }],
-          startTime: '',
-          endTime: '',
-          minNum: '',
-          maxNum: '',
-          teacherId: 1,
-
+          presentationPercentage:'',
+          questionPercentage:'',
+          reportPercentage:'',
+          teamStartTime: '',
+          teamEndTime: '',
         },
-        memberMin: '',
-        memberMax: '',
+        minCount: '',
+        maxCount: '',
         courses: [
           {courseId: 1, courseName: 'J2EE', teacherName: '邱明'},
           {courseId: 2, courseName: 'J2EE', teacherName: '邱明'}
@@ -212,29 +230,37 @@
           },
         ],
         numRequires: [
-          {id: 1, require: '均满足'},
-          {id: 2, require: '满足其一'}
+          {flag: 0, require: '均满足'},
+          {flag: 1, require: '满足其一'}
         ],
         requires1: '',
         differConflicts: [],
-        conflictCourse: [
-          {
-            courseId: 1,
-            courseName: 'OOAD',
-            teacherName: '邱明'
-          }
-        ],
-        options3: [{
-          value: '选项1',
-          label: '软件工程**老师',
-        }, {
-          value: '选项2',
-          label: 'OOAD**老师',
-        }],
+        conflictCourse: [],
         data0: [],
+        data1:[],
+        minNum:'',
+        maxNum:'',
+
+
       }
     },
 
+    created(){
+      let that=this;
+      that.$axios({
+        method:'GET',
+        url:'/course/AllCourse',
+        headers:{
+          'Authorization':window.localStorage['token']
+        }
+      }).then(res=>{
+        console.log(res);
+        if(res.status===200){
+          that.data1=res.data;
+          this.conflictCourse=res.data;
+        }
+      })
+    },
     methods: {
       returnCourseManage() {
         this.$router.push({path: '/teacher/CourseManage'});
@@ -244,13 +270,14 @@
           method: 'POST',
           url: '/course',
           data: {
-            courseName: this.course.courseName,
-            introduction: this.course.introduction,
-            presentationPercentage: this.course.tableData1[0].percentage,
-            questionPercentage: this.course.tableData1[1].percentage,
-            reportPercentage: this.course.tableData1[2].percentage,
-            teamStartTime: this.course.startTime,
-            teamEndTime: this.course.endTime
+            // courseName: this.course.courseName,
+            // introduction: this.course.introduction,
+            // presentationPercentage: this.course.presentationPercentage,
+            // questionPercentage: this.course.questionPercentage,
+            // reportPercentage: this.reportPercentage,
+            // teamStartTime: this.course.teamStartTime,
+            // teamEndTime: this.course.teamEndTime
+            course: this.course,
           },
           headers: {
             'Authorization': window.localStorage['token']

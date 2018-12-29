@@ -177,6 +177,12 @@
             })
           },
           submitForm(ruleForm) {
+            console.log('提交的数据：');
+            console.log(this.name+'-');
+            console.log(this.courseId+'-');
+            console.log(this.classId);
+            console.log(this.leader);
+            console.log(this.members);
             this.$refs[ruleForm].validate((valid) => {
               if (valid) {
                 alert('submit!');
@@ -192,11 +198,11 @@
                 'Authorization':window.localStorage['token']
               },
               data:{
-                name:this.name,
+                teamName:this.name,
                 courseId:this.courseId,
-                classId:this.classId,
-                leader:this.leader,
-                members:this.members,
+                klassId:this.classId,
+                leaderId:this.leader.id,
+                students:this.members,
               }
             })
               .then(res=>{
@@ -227,10 +233,10 @@
             }
             if(that.student==='')
               that.Unteam = that.Unteam;
-          },
+          },//搜索指定学生功能，待做
 
         handleEdit(index, row){
-          console.log(row.id);
+          console.log(row.studentName+row.id);
           if(this.i>5){
             this.$message({
               type:'error',
@@ -239,16 +245,11 @@
           }
           if(this.i<=5){
             this.$confirm('确定添加'+row.studentName, '提示', {
-              confirmButtonText: '取消',
-              cancelButtonText: '确定',
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
               type: 'warning',
               center: true
             }).then(() => {
-              this.$message({
-                type: 'info',
-                message: '已取消添加!'
-              });
-            }).catch(() => {
               this.$message({
                 type: 'success',
                 message: '添加成功'
@@ -259,6 +260,12 @@
               console.log('看这里'+this.i);
               console.log('组员：');
               console.log(this.members);
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消添加!'
+              });
+
             });
           }
         },

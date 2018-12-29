@@ -42,31 +42,31 @@
                 {{seminar.seminarName}}
               </el-button>
 
-              <el-dialog
-                title="成绩"
-                :visible.sync="dialogTableVisible"
-                width="90%">
-                <el-table
-                  :data="tableData"
-                  style="width: 100%">
-                  <el-table-column
-                    prop="name"
-                    label="项目"
-                    width="180"
-                    align="center">
-                  </el-table-column>
-                  <el-table-column
-                    prop="data"
-                    label="成绩"
-                    width="180"
-                    align="center">
-                  </el-table-column>
-                </el-table>
-              </el-dialog>
             </div>
           </div>
         </el-collapse-item>
       </el-collapse>
+      <el-dialog
+        title="成绩"
+        :visible.sync="dialogTableVisible"
+        width="90%">
+        <el-table
+          :data="tableData"
+          style="width: 100%">
+          <el-table-column
+            prop="name"
+            label="项目"
+            width="180"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            prop="data"
+            label="成绩"
+            width="180"
+            align="center">
+          </el-table-column>
+        </el-table>
+      </el-dialog>
 
     </div>
     <div style="height: 400px;"></div>
@@ -128,7 +128,7 @@
         //根据courseId获得teamId
         this.$axios({
           method:'GET',
-          url:'course/'+this.courseId+'/myTeam',
+          url:'course/'+this.courseId+'/myteam',
           headers:{
             'Authorization':window.localStorage['token']
           }

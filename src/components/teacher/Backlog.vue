@@ -17,6 +17,17 @@
             </div>
           </el-collapse-item>
         </el-collapse>
+        <el-collapse>
+          <el-collapse-item v-for="(item,index1) in teamValid" v-if="item.status===null">
+            <template slot="title">
+              <i class="el-icon-time el-icon0"></i>收到{{item.team.teamName}}的组队合法请求:{{item.reason}}
+            </template>
+            <div style="width: 100%;height:45px">
+              <i class="el-icon-check icon" @click="acceptAppli(index1)"></i>
+              <i class="el-icon-close icon2" @click="refuseAppli(index1)"></i>
+            </div>
+          </el-collapse-item>
+        </el-collapse>
       </div>
     </div>
 </template>
@@ -144,7 +155,50 @@
             }).catch(e => {
             console.log(e);
           })
-        }
+        },
+        acceptAppli(index){
+
+          this.$axios({
+            method:'PUT',
+            url:'/request/teamvalid/'+ this.teamValid[index].id,
+            headers:{
+              'Authorization':window.localStorage['token']
+            },
+            data:{
+              status: 1
+            }
+          }).then(res=>{
+            console.log(res);
+            if(res.status===200){
+              window.localStorage['token']=res.headers.authorization;
+              this.$message({
+                type:'success',
+                message:'您已接收该申请！'
+              })
+            }
+          }).catch(e=>{console.log(e);})
+        },
+        refuseAppli(index){
+          this.$axios({
+            method:'PUT',
+            url:'/request/teamvalid/'+ this.teamValid[index].id,
+            headers:{
+              'Authorization':window.localStorage['token']
+            },
+            data:{
+              status: 0
+            }
+          }).then(res=>{
+            console.log(res);
+            if(res.status===200){
+              window.localStorage['token']=res.headers.authorization;
+              this.$message({
+                type:'info',
+                message:'您已拒绝该申请！'
+              })
+            }
+          }).catch(e=>{console.log(e);})
+        },
       }
     }
 </script>

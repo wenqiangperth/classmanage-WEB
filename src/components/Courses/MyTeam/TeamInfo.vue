@@ -36,7 +36,7 @@
               <div style="font-size: 17px;font-weight: bold">
                 <i class="header-icon el-icon-search"></i>
                 {{team.klassSerial}}-{{team.teamSerial}}  : {{team.teamName}}
-                <a v-if="team.status===2" style="color:green;font-size: 20px">
+                <a v-if="team.status===1" style="color:green;font-size: 20px">
                   <i class="el-icon-success"></i>
                 </a>
                 <a v-else-if="team.status===0" style="color: red;font-size: 20px">
@@ -173,13 +173,35 @@
             this.$router.push({path:'/Courses/MyCourse'})
           },
           MakeTeam(){
-            this.$router.push({
-              path:'/Courses/MyTeam/MakeTeam',
-              name:'MakeTeam',
-              query:{
-                courseId:this.courseId
+            this.$axios({
+              method:'GET',
+              url:'course/'+this.courseId+'/myteam',
+              headers:{
+                'Authorization':window.localStorage['token']
               }
             })
+              .then(res=>{
+                console.log('我的组队信息：');
+                console.log(res);
+                if(res.status===200){
+                  this.$message({
+                    type:'error',
+                    message:'您已加入小组，无法创建小组！'
+                  })
+                }else if(res.status===500){
+                }
+              })
+              .catch(e=>{
+                console.log(e);
+                this.$router.push({
+                  path:'/Courses/MyTeam/MakeTeam',
+                  name:'MakeTeam',
+                  query:{
+                    courseId:this.courseId
+                  }
+                })
+              })
+
           },
           EnterTeam(){
             this.$axios({

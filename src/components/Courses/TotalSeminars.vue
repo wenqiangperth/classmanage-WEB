@@ -138,6 +138,7 @@
         },
         EnterSeminar(index){
           let seminarId=this.courses[index].id;
+          let that =this;
           this.$axios({
             method:'GET',
             url:'/seminar/'+seminarId+'/class/'+this.$data.klassId,
@@ -237,11 +238,11 @@
                     .then(res=>{
                       console.log(res);
                       if(res.status===200){
-                        this.seminarInfo=res.data;
+                        that.seminarInfo=res.data;
                         let teamOrder;
-                        for(let i=0;i<this.seminarInfo.length;i++){
-                          if(this.teamId===this.seminarInfo[i].teamId)
-                            teamOrder=this.seminarInfo[i].teamOrder;
+                        for(let i=0;i<that.seminarInfo.length;i++){
+                          if(this.teamId===that.seminarInfo[i].teamId)
+                            teamOrder=that.seminarInfo[i].teamOrder;
                         }
                         console.log('teamOrder'+teamOrder);
                         if(teamOrder>=1){      //展示顺序不为空表示已报名，进入修改报名界面
@@ -250,10 +251,10 @@
                             name:'ChangeSign',
                             query:{
                               seminarId: seminarId,
-                              courseId: this.courseId,
-                              courseName: this.courseName,
-                              klassId: this.klassId,
-
+                              courseId: that.courseId,
+                              courseName: that.courseName,
+                              klassId: that.klassId,
+                              teamId: that.teamId,
                             }
                           })
                         }
@@ -263,16 +264,27 @@
                             // name:'Seminaring',
                             query:{
                               seminarId:seminarId,
-                              courseId: this.courseId,
-                              courseName: this.courseName,
-                              klassId: this.klassId
+                              courseId: that.courseId,
+                              courseName: that.courseName,
+                              klassId: that.klassId
                             }
                           })
                         }
                       }
                     })
                     .catch(e=>{
-                      console.log(e)
+                      console.log(e);
+                      this.$router.push({
+                        path:'/Courses/BeforeSeminar/ChangeSign',
+                        name:'ChangeSign',
+                        query:{
+                          seminarId: seminarId,
+                          courseId: that.courseId,
+                          courseName: that.courseName,
+                          klassId: that.klassId,
+                          teamId: that.teamId,
+                        }
+                      })
                     })
 
                 }

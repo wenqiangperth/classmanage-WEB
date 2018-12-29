@@ -158,7 +158,16 @@
                   alert("退出失败，请重新尝试！")
                 }
               })
-                .catch(e=>{console.log(e)})
+                .catch(e=>{
+                  console.log(e);
+                  this.$router.push({
+                    path:'/Courses/MyTeam/TeamInfo',
+                    query:{
+                      courseId:this.courseId
+                    }
+                  });
+
+                })
             }).catch(() => {
               this.$message({
                 type: 'info',

@@ -74,6 +74,7 @@
             klassId:'',
             maxTeam:'',
             seminarInfo:[],
+            teamId:'',
             note:{
               backgroundImage:"url("+require("../../../assets/seminarpic.jpg")+")",
               backgroundRepeat: "no-repeat",
@@ -128,6 +129,19 @@
           .catch(e=>{
             console.log(e)
           })
+
+        that.$axios({
+          method:'GET',
+          url:'/course/'+that.courseId+'/myteam',
+          headers:{
+            'Authorization':window.localStorage['token']
+          }
+        }).then(res=>{
+          console.log(res);
+          if(res.status===200){
+            that.teamId=res.data.id;
+          }
+        })
       },
       methods:{
         // open() {
@@ -186,6 +200,8 @@
               else return false},
           }).then(({ value }) => {
             let teamOrder=value;
+            console.log('展示的顺序：'+ teamOrder);
+            console.log('teamId'+this.teamId);
             this.$axios({
               method:'POST',
               url:'/seminar/'+this.$data.seminarId+'/class/'+this.$data.klassId+'/attendance',
@@ -193,6 +209,7 @@
                 'Authorization':window.localStorage['token']
               },
               data:{
+                teamId: this.teamId,
                 teamOrder: teamOrder,
               }
             })
@@ -204,8 +221,8 @@
                     message: '你的展示顺序: ' + value
                   });
                   this.$router.push({
-                    path:'/Courses/BeforeSeminar/ChangeSign',    //报名成功进入可修改报名界面
-                    name:'ChangeSign',
+                    path:'/Courses/TotalSeminars',    //报名成功进入可修改报名界面
+                    name:'TotalSeminars',
                     query:{
                       seminarId:this.seminarId,
                       courseId: this.courseId,

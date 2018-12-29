@@ -46,30 +46,32 @@
             this.$router.push({path:'/Account/ManageAccount'})
           },
           submit(){
-           let that = this;
-            if(that.password1 !== that.password){
+            if(this.password1 !== this.password){
               this.$message({
                 type:'error',
                 message:'密码不一致，请重新输入！'
               })
             }
             else{
-              that.$axios({
+              this.$axios({
                 method: 'PUT',
                 url:'/user/password',
                 headers:{
                   'Authorization': window.localStorage['token']
                 },
                 data:{
-                  password: that.password
+                  password: this.password
                 }
               })
                 .then(response => {
                   window.localStorage['token']=response.headers.authorization;
                   console.log(response);
                   if(response.status === 200){
-                    alert("已成功修改密码");
-                    this.$router.push({path:'/'})
+                    this.$message({
+                      type:'success',
+                      message:'密码修改成功！'
+                    });
+                    this.$router.push({path:'/'});
                   }
                   else if(response.status===400)
                     alert("密码设置错误，请重新输入")

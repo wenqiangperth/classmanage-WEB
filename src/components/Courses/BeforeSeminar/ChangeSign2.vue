@@ -64,9 +64,9 @@
         <div class="cancel" style="background-color: red;">
           <a @click="delete2">取消报名</a>
         </div>
-        <div class="cancel" style="background-color: #5CACEE;">
-          <a @click="sign">修改报名</a>
-        </div>
+        <!--<div class="cancel" style="background-color: #5CACEE;">-->
+          <!--<a @click="sign">修改报名</a>-->
+        <!--</div>-->
       </div>
       <div style="height: 200px;"></div>
     </div>
@@ -196,16 +196,16 @@
                       type: 'success',
                       message: '你的展示顺序: ' + value
                     });
-                    // this.$router.push({
-                    //   path:'/Courses/BeforeSeminar/ChangeSign',    //报名成功进入可修改报名界面
-                    //   name:'ChangeSign',
-                    //   query:{
-                    //     seminarId:this.seminarId,
-                    //     courseId: this.courseId,
-                    //     courseName: this.courseName,
-                    //     klassId: this.klassId
-                    //   }
-                    // })
+                    this.$router.push({
+                      path:'/Courses/TotalSeminars',    //报名成功进入可修改报名界面
+                      name:'TotalSeminars',
+                      query:{
+                        seminarId:this.seminarId,
+                        courseId: this.courseId,
+                        courseName: this.courseName,
+                        klassId: this.klassId
+                      }
+                    })
                   }
                   else{
                     this.$message({
@@ -269,6 +269,16 @@
                     type: 'success',
                     message: '取消报名成功!'
                   });
+                  this.$router.push({
+                    path:'/Courses/TotalSeminars',    //报名成功进入可修改报名界面
+                    name:'TotalSeminars',
+                    query:{
+                      seminarId:this.seminarId,
+                      courseId: this.courseId,
+                      courseName: this.courseName,
+                      klassId: this.klassId
+                    }
+                  })
                 }else if(res.status===403){
                   this.$message({
                     type: 'error',
