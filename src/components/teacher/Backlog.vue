@@ -44,52 +44,56 @@
       },
       created() {
         this.teacherId = this.$route.params.teacherId;
-        let that = this;
-        that.$axios({
-          method: 'GET',
-          url: '/request/teamshare',
-          params: {
-            teacherId: that.teacherId
-          },
-          headers: {
-            'Authorization': window.localStorage['token']
-          }
-        })
-          .then(res => {
-            if (res.status === 200) {
-              window.localStorage['token'] = res.headers.authorization;
-              console.log("共享组队申请");
-              console.log(res.data);
-              that.teamShares = res.data;
-            }
-          }).catch(e => {
-          console.log(e);
-        });
-        that.$axios({
-          method: 'GET',
-          url: '/request/teamvalid',
-          params: {
-            teacherId: that.teacherId
-          },
-          headers: {
-            'Authorization': window.localStorage['token']
-          }
-        })
-          .then(res => {
-            if (res.status === 200) {
-              window.localStorage['token'] = res.headers.authorization;
-              console.log("组队合法申请");
-              console.log(res.data);
-              that.teamValid = res.data;
-            }
-          }).catch(e => {
-          console.log(e);
-        })
+        this.methodCall();
+
       },
       methods:{
           returnHomePage(){
             this.$router.push({path:'/teacher/HomePage'});
           },
+        methodCall() {
+          let that = this;
+          that.$axios({
+            method: 'GET',
+            url: '/request/teamshare',
+            params: {
+              teacherId: that.teacherId
+            },
+            headers: {
+              'Authorization': window.localStorage['token']
+            }
+          })
+            .then(res => {
+              if (res.status === 200) {
+                window.localStorage['token'] = res.headers.authorization;
+                console.log("共享组队申请");
+                console.log(res.data);
+                that.teamShares = res.data;
+              }
+            }).catch(e => {
+            console.log(e);
+          });
+          that.$axios({
+            method: 'GET',
+            url: '/request/teamvalid',
+            params: {
+              teacherId: that.teacherId
+            },
+            headers: {
+              'Authorization': window.localStorage['token']
+            }
+          })
+            .then(res => {
+              if (res.status === 200) {
+                window.localStorage['token'] = res.headers.authorization;
+                console.log("组队合法申请");
+                console.log(res.data);
+                that.teamValid = res.data;
+              }
+            }).catch(e => {
+            console.log(e);
+          })
+        },
         acceptShare(index) {
           this.$axios({
             method: 'PUT',
@@ -131,7 +135,8 @@
               }
             }).catch(e => {
             console.log(e);
-          })
+          });
+          this.methodCall();
         },
         refuseShare(index) {
           this.$axios({
@@ -155,6 +160,7 @@
             }).catch(e => {
             console.log(e);
           })
+          this.methodCall();
         },
         acceptAppli(index){
 
@@ -177,6 +183,7 @@
               })
             }
           }).catch(e=>{console.log(e);})
+          this.methodCall();
         },
         refuseAppli(index){
           this.$axios({
@@ -198,6 +205,7 @@
               })
             }
           }).catch(e=>{console.log(e);})
+          this.methodCall();
         },
       }
     }

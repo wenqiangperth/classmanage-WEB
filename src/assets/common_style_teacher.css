@@ -14,9 +14,10 @@
 }
 
 .plus {
-  float: right;
-  margin-right: 3%;
+  position: absolute;
+  right: 3%;
   line-height: 70px;
+  /*margin-right: 3%;*/
 
 }
 .icon1 {
