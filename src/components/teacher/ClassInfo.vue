@@ -13,8 +13,10 @@
     </div>
     <div class="main">
       <div class="empty"></div>
-      <div @click="addClass(courseId)" style="width: 100%;height: 50px;margin-top: 30px">
-        <label style="float: right;color:#616161;font-weight: bold;">新建班级</label>
+      <div style="width: 100%;height: 50px;margin-top: 30px">
+        <el-button size="small" type="text" @click="addClass(courseId)"
+                   style="float: right;color:#616161;font-weight: bold;">新建班级
+        </el-button>
       </div>
       <div style="width: 100%"
            v-for="(item,index) in classInfo"
