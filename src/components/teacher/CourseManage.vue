@@ -17,7 +17,7 @@
       <div class="empty"></div>
       <div class="new_course">
         <el-button type="text" size="small" @click="NewCourse(courses.studentOrTeacherId)"
-                   style="float: right;font-weight: bold;color:#616161">新建课程
+                   style="float: right;font-weight: bold;color:#616161;margin-right: 5px;font-size: 15px">新建课程
         </el-button>
       </div>
       <el-collapse accordion background-color="#66CCCC" v-for="(items,index) in courses"
