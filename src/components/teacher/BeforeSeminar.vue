@@ -140,6 +140,21 @@
         });
       },
       startSeminar() {
+        this.$axios({
+          method: 'PUT',
+          url: '/seminar/' + this.seminarId + '/status',
+          data: {
+            status: 1,
+            klassId: this.classId
+          }
+        })
+          .then(res => {
+            if (res.status === 200) {
+
+            }
+          }).catch(e => {
+          console.log(e);
+        });
         this.$router.push({
           path: '/teacher/StartSeminar',
           name: 'StartSeminar',
