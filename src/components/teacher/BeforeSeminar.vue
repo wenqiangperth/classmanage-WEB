@@ -118,9 +118,9 @@
         if (res.status === 200) {
           window.localStorage['token'] = res.headers.authorization;
           that.status = res.data.status;
-          this.klassSeminarId = res.data.id;
-          console.log("bbbb");
-          console.log(this.klassSeminarId);
+          that.klassSeminarId = res.data.id;
+          console.log("aaaaaaaaaaaaaa");
+          console.log(that.klassSeminarId);
         }
       })
         .catch(e => {
@@ -141,6 +141,7 @@
       },
       startSeminar() {
         this.$router.push({
+          path: '/teacher/StartSeminar',
           name: 'StartSeminar',
           params: {
             classId: this.classId,

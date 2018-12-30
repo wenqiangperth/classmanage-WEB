@@ -103,11 +103,12 @@
                 console.log('index:' + that.index);
                 that.$axios({
                   method: 'GET',
-                  url: '/seminar/' + that.SeminaringInfo[0].klassSeminarId + '/attendance/' + that.SeminaringInfo[that.index].id + '/questionnumber',
+                  url: '/seminar/' + that.SeminaringInfo[0].klassSeminarId + '/attendance/' + that.SeminaringInfo[that.index + 1].id + '/questionnumber',
                   headers: {
                     'Authorization': window.localStorage['token']
                   }
                 }).then(res => {
+                  window.localStorage['token'] = res.headers.authorization;
                   console.log("当前提问人数：");
                   console.log(res);
                   that.questionNum = res.data;
@@ -196,6 +197,7 @@
           console.log(message);
           console.log("aaa" + message);
           if (message === "下一组展示") {
+            console.log("dfsfs");
             that.isShow = true;
             that.index++;
             that.questionNum = 0;
@@ -245,7 +247,7 @@
            //     message:'当前展示组为您的小组，您暂时无法提问！'
            //   })
            // }
-           if (this.index === -2) {
+           if (this.index === -1) {
              this.$message({
                type: 'error',
                message: '讨论课尚未开始，无法发起提问！'
@@ -253,7 +255,7 @@
            } else {
              that.$axios({
                method: 'POST',
-               url: 'seminar/' + that.SeminaringInfo[0].klassSeminarId + '/attendance/' + that.SeminaringInfo[that.index].id + '/team/' + this.teamId + '/question',
+               url: '/seminar/' + that.SeminaringInfo[0].klassSeminarId + '/attendance/' + that.SeminaringInfo[that.index].id + '/team/' + this.teamId + '/question',
                headers: {
                  'Authorization': window.localStorage['token']
                }

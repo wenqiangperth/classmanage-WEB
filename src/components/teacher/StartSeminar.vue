@@ -188,30 +188,24 @@
         tempUpdate: 1,
         tempQuesUpdate: 1,
         quesNum: 0,
-        quesGroups: [
-          {
-            questionId: 0,
-            questionSerial: 0,
-            teamSerial: 0,
-            klassSerial: 0,
-            teamName: '',
-            quesScore: 0
-          }
-        ],
+        quesGroups: [],
         nowQuesGroup: {}
 
       }
     },
     created() {
-      this.course = this.$route.params.course;
-      this.classId = this.$route.params.classId;
-      this.seminarId = this.$route.params.seminarId;
-      this.roundId = this.$route.params.roundId;
-      this.getParams();
-      //this.klassSeminarId=this.$route.params.klassSeminarId;
-      console.log("klassSeminarId");
-      console.log(this.klassSeminarId);
       let that = this;
+      that.course = that.$route.params.course;
+      that.classId = that.$route.params.classId;
+      that.klassSeminarId = that.$route.params.klassSeminarId;
+      that.seminarId = that.$route.params.seminarId;
+      console.log("seminarId");
+      console.log(that.seminarId);
+      that.roundId = that.$route.params.roundId;
+
+      console.log("lllllll");
+      console.log(this.klassSeminarId);
+      // let that = this;
       that.$axios({
         method: 'GET',
         url: '/seminar/' + that.seminarId + '/class/' + that.classId + '/attendance',
@@ -234,42 +228,22 @@
             that.klassSeminarId = that.attendanceInfo[0].klassSeminarId;
             for (let i = 0; i < that.attendanceInfo.length; i++) {
               if (that.attendanceInfo[i].isPresent === 1)
-                that.index = i;
+                that.nowIndex = i;
             }
-            that.$axios({
-              method: 'GET',
-              url: '/seminar/' + that.SeminaringInfo[0].klassSeminarId + '/attendance/' + that.SeminaringInfo[that.index].id + '/questionnumber',
-              headers: {
-                'Authorization': window.localStorage['token']
-              }
-            }).then(res => {
-              if (res.status === 200) {
-                console.log("当前提问人数：");
-                console.log(res);
-                that.quesNum = res.data;
-              }
-            }).catch(e => {
-              console.log(e)
-            })
+
           }
         }).catch(e => {
         console.log(e);
       });
-
-    },
-    watch: {
-      '$route': 'getParams'
+      this.initWebSocket();
     },
     methods: {
-      getParams() {
-        this.klassSeminarId = this.$route.params.klassSeminarId;
-      },
       /*websocket*/
       initWebSocket() { //初始化weosocket
         let that = this;
         this.$axios({
           method: 'GET',
-          url: '/seminar/' + that.$data.klassSeminarId + '/enterseminar',
+          url: '/seminar/' + that.$data.seminarId + '/class/' + that.$data.classId + '/enterseminar',
           headers: {
             'Authorization': window.localStorage['token']
           }
@@ -290,6 +264,29 @@
           .catch(e => {
             console.log(e)
           })
+      },
+      threadPoxi(agentData) {  // 实际调用的方法
+        //参数
+        //const  = "mymessage";
+        //若是ws开启状态
+        if (this.ws.readyState === this.ws.OPEN) {
+          this.websocketsend(agentData)
+        }
+        // 若是 正在开启状态，则等待300毫秒
+        else if (this.ws.readyState === this.ws.CONNECTING) {
+          let that = this;//保存当前对象this
+          setTimeout(function () {
+            that.websocketsend(agentData)
+          }, 300);
+        }
+        // 若未开启 ，则等待500毫秒
+        else {
+          this.initWebSocket();
+          let that = this;//保存当前对象this
+          setTimeout(function () {
+            that.websocketsend(agentData)
+          }, 500);
+        }
       },
       websocketonmessage(e) { //数据接收
         //const message = JSON.parse(e.data);
@@ -361,7 +358,7 @@
                   message: '当前没有同学提问'
                 })
               } else {
-                that.ws.send("抽取提问" + that.nowQuesGroup.id);
+                that.ws.send("抽取提问" + that.nowQuesGroup.studentId);
               }
               window.localStorage['token'] = res.headers.authorization;
             }
@@ -384,8 +381,8 @@
       //给展示打分
       gradePre() {
         this.$axios({
-          method: 'POST',
-          url: '/seminar/' + this.klassSeminarId + '/team/' + this.attendanceInfo[this.nowIndex].team.teamId + '/enterseminar',
+          method: 'PUT',
+          url: '/seminar/' + this.klassSeminarId + '/team/' + this.attendanceInfo[this.nowIndex].team.id + '/presentationscore',
           data: {
             presentationScore: this.presentationScore
           },
@@ -416,10 +413,17 @@
           url: '/attendance/question/' + this.questionId,
           data: {
             questionScore: this.questionScore
+          },
+          headers: {
+            'Authorization': window.localStorage['token']
           }
         })
           .then(res => {
             if (res.status === 200) {
+              window.localStorage['token'] = res.headers.authorization;
+              this.gradeQues.push(this.nowQuesGroup);
+              console.log("aaaaaaaaaaaa");
+              console.log(this.gradeQues);
               this.$message({
                 type: 'success',
                 message: '保存成功！'
@@ -430,30 +434,32 @@
         })
       },
       //下组展示
-
       nextGroup() {
         let that = this;
-        if (this.nowIndex === -1) {
-          this.initWebSocket();
-          this.$axios({
+        that.ws.send("下一组展示");
+        if (that.nowIndex === -1) {
+          that.$axios({
             method: 'PUT',
-            url: '/seminar/' + this.seminarId + '/status',
+            url: '/seminar/' + that.seminarId + '/status',
             data: {
               status: 1,
-              klassId: this.classId
+              klassId: that.classId
+            }, headers: {
+              'Authorization': window.localStorage['token']
             }
           })
             .then(res => {
               if (res.status === 200) {
-
+                console.log("isok?")
+                window.localStorage['token'] = res.headers.authorization;
               }
             }).catch(e => {
             console.log(e);
           });
         } else {
-          this.$axios({
+          that.$axios({
             method: 'DELETE',
-            url: '/seminar/' + this.klassSeminarId + '/question',
+            url: '/seminar/' + that.klassSeminarId + '/question',
             headers: {
               'Authorization': window.localStorage['token']
             }
@@ -467,32 +473,63 @@
             console.log(e);
           })
         }
-        this.nowIndex++;
-        this.$axios({
+        console.log("确定是这个位置吗");
+        that.nowIndex++;
+        if (that.ws === null) {
+          console.log("kao")
+        }
+        //that.threadPoxi("下一组展示")
+
+        //当前提问人数
+        that.$axios({
+          method: 'GET',
+          url: '/seminar/' + that.attendanceInfo[0].klassSeminarId + '/attendance/' + that.attendanceInfo[that.nowIndex].id + '/questionnumber',
+          headers: {
+            'Authorization': window.localStorage['token']
+          }
+        }).then(res => {
+          if (res.status === 200) {
+            console.log("当前提问人数：");
+            console.log(res);
+            that.quesNum = res.data;
+            this.ws.send("下一组展示");
+          }
+        }).catch(e => {
+          console.log(e)
+        })
+
+        that.$axios({
           method: 'PUT',
-          url: '/attendance/' + this.attendanceInfo[this.nowIndex].id + '/status',
+          url: '/attendance/' + that.attendanceInfo[that.nowIndex].id + '/status',
           data: {
             status: 1
+          }, headers: {
+            'Authorization': window.localStorage['token']
           }
         })
           .then(res => {
             if (res.status === 200) {
+              window.localStorage['token'] = res.headers.authorization;
               console.log("设置小组展示状态为1");
             }
           })
           .catch(e => {
             console.log(e);
           });
-        if (this.nowIndex > 0) {
-          this.$axios({
+
+        if (that.nowIndex > 0) {
+          that.$axios({
             method: 'PUT',
-            url: '/attendance/' + this.attendanceInfo[this.nowIndex - 1].id + '/status',
+            url: '/attendance/' + that.attendanceInfo[that.nowIndex - 1].id + '/status',
             data: {
               status: 0
+            }, headers: {
+              'Authorization': window.localStorage['token']
             }
           })
             .then(res => {
               if (res.status === 200) {
+                window.localStorage['token'] = res.headers.authorization;
                 console.log("设置上一小组展示状态为0");
               }
             })
@@ -501,6 +538,7 @@
             });
         }
         this.quesNum = 0;
+
 
         if ((this.nowIndex > -1) && (this.nowIndex < this.attendanceInfo.length - 1)) {
           var next_ = document.getElementById("nextGroup");
@@ -530,11 +568,13 @@
         var update_ = document.getElementById("update");
         update_.style.display = "none";
         //向后端请求保存修改的展示成绩
+        let that = this;
+        console.log(that.tempUpdate + "perth");
         this.$axios({
-          method: 'POST',
-          url: '/seminar/' + this.klassSeminarId + '/team/' + this.attendanceInfo[this.tempUpdate].team.teamId + '/enterseminar',
+          method: 'PUT',
+          url: '/seminar/' + that.klassSeminarId + '/team/' + that.attendanceInfo[that.tempUpdate].team.id + '/presentationscore',
           data: {
-            presentationScore: this.otherScore
+            presentationScore: that.otherScore
           },
           headers: {
             'Authorization': window.localStorage['token']
@@ -582,6 +622,7 @@
       //选择要修改展示成绩的小组
       updatePreScore(index) {
         this.tempUpdate = index;
+        console.log("aaabbb" + this.tempUpdate);
         var pre_ = document.getElementById("pre");
         pre_.style.display = "none";
         var update1_ = document.getElementById("update1");
@@ -612,10 +653,13 @@
           data: {
             status: 2,
             klassId: this.classId
+          }, headers: {
+            'Authorization': window.localStorage['token']
           }
         })
           .then(res => {
             if (res.status === 200) {
+              window.localStorage['token'] = res.headers.authorization;
               this.$message({
                 type: 'success',
                 message: '讨论课已结束'
@@ -629,10 +673,13 @@
           url: '/attendance/' + this.attendanceInfo[this.nowIndex].id + '/status',
           data: {
             status: 0
+          }, headers: {
+            'Authorization': window.localStorage['token']
           }
         })
           .then(res => {
             if (res.status === 200) {
+              window.localStorage['token'] = res.headers.authorization;
               console.log("设置最后小组展示状态为0");
             }
           })
@@ -645,9 +692,12 @@
           url: '/seminar/' + this.seminarId + '/reportddl',
           data: {
             reportddl: this.value1
+          }, headers: {
+            'Authorization': window.localStorage['token']
           }
         }).then(res => {
           if (res.status === 200) {
+            window.localStorage['token'] = res.headers.authorization;
             console.log("设置成功");
           }
         }).catch(e => {
