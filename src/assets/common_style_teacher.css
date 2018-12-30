@@ -11,13 +11,12 @@
   text-align: center;
   line-height: 70px;
 }
-.plus{
-  float:right;
+
+.plus {
+  float: right;
   margin-right: 3%;
   line-height: 70px;
-  color: white;
-  font-size: 25px;
-  font-weight: bolder;
+
 }
 .icon1 {
   float: left;
@@ -28,6 +27,7 @@
 .icon0 {
   font-weight: bold;
   font-size: 22px;
+  color: white;
 }
 
 .table0{

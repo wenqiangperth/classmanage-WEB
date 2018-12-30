@@ -223,10 +223,6 @@
     height: 50px;
   }
 
-  .icon2 {
-    float: right;
-  }
-
   .btn_info {
     width: 100%;
   }
