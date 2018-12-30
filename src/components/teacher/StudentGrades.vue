@@ -34,7 +34,7 @@
           width="90%">
           <el-table
             :data="seminarsScore"
-            style="width: 60%;"
+            style="width: 100%;"
           >
             <el-table-column
               prop="seminarName"
@@ -66,7 +66,7 @@
               </template>
             </el-table-column>
           </el-table>
-          <table style="width: 60%">
+          <table style="width: 100%">
             <tr style="width: 100%">
               <td style="text-align: center;width: 30%">总成绩</td>
               <td style="text-align: center;width: 30%">
@@ -208,7 +208,7 @@
 </style>
 <style>
   .customWidth {
-    width: 87%;
+    width: 60%;
   }
   .el-dialog__body {
     padding: 10px 20px 50px 20px;

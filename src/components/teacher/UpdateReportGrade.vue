@@ -37,35 +37,6 @@
     data() {
       return {
         reports: [
-          {
-            groupId: '3-1',
-            reportUrl: '3-1业务流程.ppt',
-            result: '5.0'
-          },
-          {
-            groupId: '3-2',
-            reportUrl: '3-2业务流程.ppt',
-            result: '5.0'
-          }, {
-            groupId: '3-3',
-            reportUrl: '3-3业务流程.ppt',
-            result: '5.0'
-          },
-          {
-            groupId: '3-4',
-            reportUrl: '3-4业务流程.ppt',
-            result: '空'
-          },
-          {
-            groupId: '3-5',
-            reportUrl: '3-5业务流程.ppt',
-            result: '5.0'
-          },
-          {
-            groupId: '3-6',
-            reportUrl: '3-6业务流程.ppt',
-            result: '5.0'
-          }
         ]
       }
     },
