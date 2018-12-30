@@ -16,10 +16,11 @@
           <fieldset>
             <legend style="font-size: 20px;color:#66cccc">xX{{seminarName}}Xx</legend>
             <p v-if="nowIndex!==-1"><span style="font-weight: bold;color:#616161">正在展示:</span>
-              <br>组号:{{klassSerial}}-{{teamSerial}} {{teamName}}
+              <br>组号:{{attendanceInfo[nowIndex].team.klassSerial}}-{{attendanceInfo[nowIndex].team.teamSerial}}
+              {{attendanceInfo[nowIndex].score.seminarName}}
               <br>已有<span style="color: #66cccc;font-weight: bold">{{quesNum}}</span>名同学提问
             </p>
-            <p v-else-if="nowIndex===1">展示即将开始</p>
+            <p v-else-if="nowIndex===-1">展示即将开始</p>
           </fieldset>
         </el-card>
       </div>
@@ -219,12 +220,13 @@
             console.log("获得当前展示信息");
             console.log(res.data);
             that.attendanceInfo = res.data;
-            that.seminarName = that.attendanceInfo[that.nowIndex + 1].score.seminarName;
-            that.klassSerial = that.attendanceInfo[that.nowIndex + 1].team.klassSerial;
-            console.log("KlassSerial" + that.klassSerial);
-            that.teamSerial = that.attendanceInfo[that.nowIndex + 1].team.teamSerial;
-            console.log("teamId" + that.teamSerial);
-            that.teamName = that.attendanceInfo[that.nowIndex + 1].team.teamName;
+            console.log(that.attendanceInfo);
+            /* that.seminarName = that.attendanceInfo[that.nowIndex + 1].score.seminarName;
+             that.klassSerial = that.attendanceInfo[that.nowIndex + 1].team.klassSerial;
+             console.log("KlassSerial" + that.klassSerial);
+             that.teamSerial = that.attendanceInfo[that.nowIndex + 1].team.teamSerial;
+             console.log("teamId" + that.teamSerial);
+             that.teamName = that.attendanceInfo[that.nowIndex + 1].team.teamName;*/
             that.klassSeminarId = that.attendanceInfo[0].klassSeminarId;
             for (let i = 0; i < that.attendanceInfo.length; i++) {
               if (that.attendanceInfo[i].isPresent === 1)
@@ -466,7 +468,8 @@
           url: '/attendance/' + that.attendanceInfo[that.nowIndex].id + '/status',
           data: {
             status: 1
-          }, headers: {
+          },
+          headers: {
             'Authorization': window.localStorage['token']
           }
         })

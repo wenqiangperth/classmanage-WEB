@@ -34,8 +34,8 @@
 
         </el-collapse-item>
       </el-collapse>
-      <div>
-        <el-dialog
+      <div style="width: 100%">
+        <el-dialog custom-class="customWidth"
           title="成绩"
           :visible.sync="dialogTableVisible"
           width="90%">
@@ -46,12 +46,12 @@
             <el-table-column
               prop="seminarName"
               label="主题"
-              width="80"
+              style="width: 30%"
               align="center">
             </el-table-column>
             <el-table-column
               label="展示"
-              width="75"
+              style="width: 24%"
               align="center">
               <template slot-scope="scope">
                 <el-input v-model="scope.row.presentationScore"></el-input>
@@ -59,7 +59,7 @@
             </el-table-column>
             <el-table-column
               label="提问"
-              width="75"
+              style="width: 24%"
               align="center">
               <template slot-scope="scope">
                 <el-input v-model="scope.row.questionScore"></el-input>
@@ -67,7 +67,6 @@
             </el-table-column>
             <el-table-column
               label="报告"
-              width="75"
               align="center">
               <template slot-scope="scope">
                 <el-input v-model="scope.row.reportScore"></el-input>
@@ -221,8 +220,12 @@
     height: 40px;
   }
 
+
 </style>
 <style>
+  .customWidth {
+    width: 87%;
+  }
   .el-dialog__body {
     padding: 10px 20px 50px 20px;
   }

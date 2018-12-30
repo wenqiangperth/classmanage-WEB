@@ -12,9 +12,9 @@
       </div>
     </div>
     <div class="main">
-      <div class="new_course" @click="addClass(courseId)" style="width: 100%;height: 50px">
-        <i class="el-icon-plus icon2" style="font-weight: bolder;color: #66cccc"><span
-          style="color: dimgrey">新建班级</span></i>
+      <div class="empty"></div>
+      <div @click="addClass(courseId)" style="width: 100%;height: 50px;margin-top: 30px">
+        <label style="float: right;color:#616161;font-weight: bold;">新建班级</label>
       </div>
       <div style="width: 100%"
            v-for="(item,index) in classInfo"
@@ -285,9 +285,8 @@
 </script>
 
 <style scoped>
-  .icon2 {
-    float: right;
-    margin-top: 20px;
-    margin-bottom: 10px;
+  .empty {
+    width: 100%;
+    height: 30px;
   }
 </style>

@@ -16,11 +16,10 @@
     <div class="main">
       <div class="empty"></div>
       <div class="new_course" @click="NewCourse(courses.studentOrTeacherId)">
-        <i class="el-icon-plus icon2" style="font-weight: bolder;color: #66cccc"><span
-          style="color: dimgrey">新建课程</span></i>
+        <label style="float: right;font-weight: bold;color:#616161">新建课程</label>
       </div>
       <el-collapse accordion background-color="#66CCCC" v-for="(items,index) in courses"
-                   :key="index">
+                   :key="index" style="width: 100%">
         <el-collapse-item>
           <template slot="title">
             <div style="font-weight: bold">
