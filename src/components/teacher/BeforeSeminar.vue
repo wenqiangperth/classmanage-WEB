@@ -140,7 +140,7 @@
         });
       },
       startSeminar() {
-        this.$route.push({
+        this.$router.push({
           name: 'StartSeminar',
           params: {
             classId: this.classId,
@@ -230,11 +230,14 @@
 <style scoped>
 
   .tr0 {
+    width: 100%;
     height: 45px;
     background-color: rgba(97, 97, 97, 0.05);
   }
 
   .tr1 {
+
+    width: 100%;
     height: 45px;
     background-color: rgba(102, 204, 204, 0.05);
   }

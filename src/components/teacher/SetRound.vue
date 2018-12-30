@@ -4,7 +4,7 @@
       <div class="title"><i class="el-icon-close icon1 icon0" @click="returnSeminarPage"></i>轮次设置</div>
     </div>
     <div class="main">
-      <el-card class="box-card">
+      <el-card style="width: 100%">
         <div slot="header">
           <span class="font_style">讨论课:</span>
           <!--<el-button type="success" size="small" plain style="float: right" @click="addSeminar"><i
@@ -14,17 +14,17 @@
         <table
           style="width: 100%;text-align: center"
           v-for="seminar in seminars">
-          <tr>
+          <tr style="width: 100%">
             <td>{{seminar.seminarName}}</td>
           </tr>
         </table>
       </el-card>
-      <el-card class="box-card">
+      <el-card style="width: 100%">
         <div slot="header">
           <span class="font_style">成绩设置:</span>
         </div>
         <table style="width: 100%;">
-          <tr>
+          <tr style="width: 100%">
             <td style="width: 50%;text-align: center">展示:</td>
             <td>
               <el-select v-model="roundInfo.presentationScoreMethod" placeholder="请选择">
@@ -37,7 +37,7 @@
               </el-select>
             </td>
           </tr>
-          <tr>
+          <tr style="width: 100%">
             <td style="width: 50%;text-align: center">提问:</td>
             <td>
               <el-select v-model="roundInfo.questionScoreMethod" placeholder="请选择">
@@ -50,7 +50,7 @@
               </el-select>
             </td>
           </tr>
-          <tr>
+          <tr style="width: 100%">
             <td style="width: 50%;text-align: center">报告:</td>
             <td>
               <el-select v-model="roundInfo.reportScoreMethod" placeholder="请选择">
@@ -65,7 +65,7 @@
           </tr>
         </table>
       </el-card>
-      <el-card class="box-card">
+      <el-card style="width: 100%">
         <div slot="header">
           <span class="font_style">本轮讨论课报名次数:</span>
         </div>
@@ -73,7 +73,7 @@
           v-for="item in roundInfo.klassRounds"
           style="width: 100%"
         >
-          <tr>
+          <tr style="width: 100%">
             <td style="width: 50%;text-align: center">{{item.klassSerial}}班:</td>
             <td>
               <el-input-number size="mini" v-model="item.enrollNumber"></el-input-number>

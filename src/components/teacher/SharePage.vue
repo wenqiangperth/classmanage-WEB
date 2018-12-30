@@ -25,13 +25,13 @@
           <template slot="title">
             <i class="el-icon-share el-icon0" style="float: left;margin-left: 20px;"></i>{{item.subCourseName}}({{item.subCourseTeacherName}})
           </template>
-          <el-card>
-            <table>
-              <tr>
+          <el-card style="width: 100%">
+            <table style="width: 100%">
+              <tr style="width: 100%">
                 <td style="width: 30%;color:#66cccc">共享类型:</td>
                 <td>共享分组</td>
               </tr>
-              <tr>
+              <tr style="width: 100%">
                 <td style="width: 30%;color:#66cccc">共享情况:</td>
                 <td v-if="courseId===item.mainCourseId">主课程</td>
                 <td v-else-if="courseId===item.subCourseId">从课程</td>

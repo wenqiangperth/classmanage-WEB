@@ -102,11 +102,13 @@
 
 <style scoped>
   .tr0 {
+    width: 100%;
     height: 45px;
     background-color: rgba(97, 97, 97, 0.05);
   }
 
   .tr1 {
+    width: 100%;
     height: 45px;
     background-color: rgba(102, 204, 204, 0.05);
   }
@@ -114,6 +116,6 @@
   .info {
     width: 100%;
     font-size: 14px;
-    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", Arial, sans-serif;
+    font-family: 黑体;
   }
 </style>

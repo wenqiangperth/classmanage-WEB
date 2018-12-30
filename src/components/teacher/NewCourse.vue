@@ -4,9 +4,9 @@
       <div class="title"><i class="el-icon-close icon1 icon0" @click="returnCourseManage"></i>新建课程</div>
     </div>
     <div class="main" style="font-size: 13px">
-      <el-card class="box-card">
+      <el-card style="width: 100%">
         <table style="width: 100%">
-          <tr>
+          <tr style="width: 100%">
             <td style="width: 28%;" class="font_style">课程名称</td>
             <td>
               <el-input v-model="course.courseName">
@@ -14,7 +14,7 @@
               </el-input>
             </td>
           </tr>
-          <tr>
+          <tr style="width: 100%">
             <td style="width: 28%;" class="font_style">课程要求</td>
             <td>
               <el-input class="textArea"
@@ -26,7 +26,7 @@
           </tr>
         </table>
       </el-card>
-      <el-card class="box-card">
+      <el-card style="width: 100%">
         <div slot="header">
           <span class="font_style">成绩计算规则</span>
         </div>
@@ -41,29 +41,34 @@
             <!--</td>-->
           <!--</tr>-->
         <!--</table>-->
-        <tr class="tr0">
-          <td class="td0">展示占比：</td>
-          <td>
-            <el-input size="mini" v-model="course.presentationPercentage" style="width: 45px"></el-input><label>%</label>
-          </td>
-        </tr>
-        <tr class="tr0">
-          <td class="td0">提问占比：</td>
-          <td>
-            <el-input size="mini" v-model="course.questionPercentage" style="width: 45px"></el-input><label>%</label>
-          </td>
-        </tr>
-        <tr class="tr0">
-          <td class="td0">报告占比：</td>
-          <td>
-            <el-input size="mini" v-model="course.reportPercentage" style="width: 45px"></el-input><label>%</label>
-          </td>
-        </tr>
+        <table style="width:100%">
+          <tr style="width: 100%">
+            <td style="width: 28%">展示占比：</td>
+            <td>
+              <el-input size="mini" v-model="course.presentationPercentage" style="width: 45px"></el-input>
+              <label>%</label>
+            </td>
+          </tr>
+          <tr style="width: 100%">
+            <td style="width: 28%">提问占比：</td>
+            <td>
+              <el-input size="mini" v-model="course.questionPercentage" style="width: 45px"></el-input>
+              <label>%</label>
+            </td>
+          </tr>
+          <tr style="width: 100%">
+            <td style="width: 28%">报告占比：</td>
+            <td>
+              <el-input size="mini" v-model="course.reportPercentage" style="width: 45px"></el-input>
+              <label>%</label>
+            </td>
+          </tr>
+        </table>
       </el-card>
       <el-card style="width: 100%">
         <table
           style="width:100%">
-          <tr>
+          <tr style="width: 100%">
             <td style="width: 28%">组队开始:</td>
             <td style="text-align: right">
               <el-date-picker
@@ -74,7 +79,7 @@
               </el-date-picker>
             </td>
           </tr>
-          <tr>
+          <tr style="width: 100%">
             <td style="width: 28%">组队截止:</td>
             <td style="text-align: right">
               <el-date-picker
@@ -87,7 +92,7 @@
             </tr>
           </table>
       </el-card>
-      <el-card class="card">
+      <el-card style="width: 100%">
         <div slot="header">
           <span class="title0">组队基本要求:</span>
         </div>
@@ -149,7 +154,7 @@
           <span style="font-weight: bold;color: red">提示:</span><label>均满足指选课人数均需达到要求，满足其一指任意选课人数满足即可(多指冲突课程)</label>
         </div>
       </el-card>
-      <el-card class="card">
+      <el-card style="width: 100%">
         <div slot="header">
           <span class="title0">冲突课程:</span>
         </div>
@@ -319,16 +324,6 @@
 </script>
 
 <style scoped>
-
-  .box-card {
-    width: 100%;
-  }
-
-  .td0 {
-    width: 50%;
-    text-align: center;
-    height:35px;
-  }
 
 
 </style>

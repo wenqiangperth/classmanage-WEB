@@ -10,9 +10,9 @@
         </el-dropdown>
       </div>
     </div>
-    <div class="empty"></div>
-    <div class="main">
 
+    <div class="main">
+      <div class="empty"></div>
       <div style="width: 100%" v-for="(items,index) in courses" :key="index">
         <div class="div0" @click="gotoCourseSeminar(index)">
           <i class="iconfont icon-kecheng" style="margin-left: 10px"></i>&nbsp;&nbsp;{{items.courseName}}

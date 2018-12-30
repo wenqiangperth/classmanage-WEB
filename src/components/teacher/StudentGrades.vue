@@ -11,9 +11,10 @@
         </el-dropdown>
       </div>
     </div>
-    <div class="empty"></div>
+
     <div class="main" style="font-size: 14px" v-for="(round,index) in rounds"
          :key="index">
+      <div class="empty"></div>
       <el-collapse accordion>
         <el-collapse-item>
           <template slot="title">

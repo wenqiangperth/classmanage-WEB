@@ -204,10 +204,6 @@
 </script>
 
 <style scoped>
-.icon00{
-  color: red;
-  font-size:20px;
-}
 
 .icon {
   font-weight: bolder;

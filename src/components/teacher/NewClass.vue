@@ -4,10 +4,10 @@
       <div class="title"><i class="el-icon-close icon1 icon0" @click="returnClassInfo"></i>新建班级</div>
     </div>
     <div class="main">
-      <el-card>
+      <el-card style="width: 100%">
         <div slot="header">
           <table style="width: 100%">
-            <tr>
+            <tr style="width: 100%">
               <td style="width: 35%"><span>班级名:</span></td>
               <td style="width: 35%">
                 <el-input v-model="classInfo.grade" placeholder="年级"></el-input>
@@ -19,19 +19,19 @@
           </table>
         </div>
         <table style="width: 100%">
-          <tr>
+          <tr style="width: 100%">
             <td style="width: 35%">上课时间:</td>
             <td>
               <el-input v-model="classInfo.classTime" placeholder="周三1,2节"></el-input>
             </td>
           </tr>
-          <tr>
+          <tr style="width: 100%">
             <td style="width: 35%">上课地点:</td>
             <td>
               <el-input v-model="classInfo.classLocation" placeholder="海韵教学楼101"></el-input>
             </td>
           </tr>
-          <tr style="height: 50px">
+          <tr style="height: 50px;width: 100%">
             <td style="width: 35%">学生名单:</td>
             <td>
               <el-upload

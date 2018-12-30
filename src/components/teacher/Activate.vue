@@ -8,11 +8,9 @@
       <table class="table0">
         <tr>
           <td class="td0">
-            <el-tooltip class="item" effect="dark" content="密码长度8-32位，须包含数字字母符号至少两种或以上" placement="bottom">
               <el-input id="pass" type="password" v-model="newPassword" placeholder="新密码">
                 <i slot="suffix" class="el-input__icon el-icon-view icon2 icon0" @click="showPassword"></i>
               </el-input>
-            </el-tooltip>
           </td>
         </tr>
         <tr>

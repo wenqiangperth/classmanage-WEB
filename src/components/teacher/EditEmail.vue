@@ -16,10 +16,7 @@
       <el-form label-width="80px">
         <el-form-item></el-form-item>
         <el-form-item label="新e-mail:">
-          <el-tooltip class="item" effect="dark" content="邮箱格式如：user@host.domainnames" placement="bottom">
-            <el-input v-model="email" placeholder="填写新邮箱">
-            </el-input>
-          </el-tooltip>
+          <el-input v-model="email" placeholder="填写新邮箱"></el-input>
         </el-form-item>
       </el-form>
 

@@ -14,9 +14,9 @@
       </div>
     </div>
     <div class="main">
-      <el-card>
+      <el-card style="width: 100%">
         <table style="width: 100%;text-align: center">
-          <tr>
+          <tr style="width: 100%">
             <td style="width: 15%" class="font_style">组号</td>
             <td style="width: 21.25%;" class="font_style">展示</td>
             <td style="width: 21.25%;" class="font_style">提问</td>
@@ -27,7 +27,7 @@
         <table style="width: 100%;text-align: center"
                v-for="(item,index) in results"
                :key="index">
-          <tr>
+          <tr style="width: 100%">
             <td style="width: 15%">{{classSerial}}-{{item.teamSerial}}</td>
             <td style="width: 21.25%;">
               <el-input class="input0" placeholder="成绩" v-model="item.score.presentationScore"></el-input>
@@ -45,7 +45,7 @@
         </table>
       </el-card>
 
-      <div>
+      <div style="width: 100%">
         <el-button type="success" class="btn" plain
                    style="margin-top: 40px"
                    @click="updateSuccess">确认修改
@@ -165,9 +165,6 @@
           console.log(e);
         })
 
-      },
-      returnAfterSeminar() {
-        this.$router.push({path: '/teacher/AfterSeminar'});
       }
 
     }

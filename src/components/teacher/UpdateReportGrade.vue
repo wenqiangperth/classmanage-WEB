@@ -3,7 +3,7 @@
     <div id="head" class="head">
       <div class="title">
         <i class="el-icon-back icon1 icon0" @click="Back"></i>
-        OOAD--书面报告
+        修改报告成绩
         <el-dropdown class="plus" trigger="click">
           <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
@@ -15,11 +15,11 @@
       </div>
     </div>
     <div class="main">
-      <el-card>
+      <el-card style="width: 100%">
         <table style="width: 100%"
                v-for="(item,index) in reports"
                :key="index">
-          <tr id="tr0">
+          <tr id="tr0" style="width: 100%">
             <td style="width: 20%">{{item.groupId}}</td>
             <td style="width: 55%;"><a href="#" style="text-decoration: none;color: #66cccc">{{item.reportUrl}}</a></td>
             <td>
@@ -28,7 +28,7 @@
           </tr>
         </table>
       </el-card>
-      <div>
+      <div style="width: 100%">
         <el-button type="success" class="btn" plain
                    style="margin-top: 10px"
                    @click="updateSuccess">确认修改

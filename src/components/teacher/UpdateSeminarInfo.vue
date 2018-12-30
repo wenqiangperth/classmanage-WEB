@@ -5,9 +5,9 @@
     </div>
     <div class="main">
       <div style="width: 100%;height: 15px"></div>
-      <el-card class="box-card">
+      <el-card style="width: 100%">
         <table style="width: 100%">
-          <tr>
+          <tr style="width: 100%">
             <td style="width: 28%">主题</td>
             <td>
               <el-input v-model="seminarName">
@@ -15,7 +15,7 @@
               </el-input>
             </td>
           </tr>
-          <tr>
+          <tr style="width: 100%">
             <td style="width: 28%">要求</td>
             <td>
               <el-input class="textArea"
@@ -26,13 +26,13 @@
               </el-input>
             </td>
           </tr>
-          <tr style="height:50px">
+          <tr style="height:50px;width: 100%">
             <td style="width: 28%">次序号:</td>
             <td style="text-align: right">
               <el-input-number size="mini" v-model="seminarSerial"></el-input-number>
             </td>
           </tr>
-          <tr>
+          <tr style="width: 100%">
             <td style="width: 28%;height: 35px">是否可见:</td>
             <td style="text-align: right">
               <el-switch
@@ -46,10 +46,10 @@
           </tr>
         </table>
       </el-card>
-      <el-card class="box-card">
+      <el-card style="width: 100%">
         <table
           style="width:100%">
-          <tr>
+          <tr style="width: 100%">
             <td style="width: 26%">报名开始</td>
             <td style="text-align: right">
               <el-date-picker
@@ -60,7 +60,7 @@
               </el-date-picker>
             </td>
           </tr>
-          <tr>
+          <tr style="width: 100%">
             <td style="width: 26%">报名截止</td>
             <td style="text-align: right">
               <el-date-picker
@@ -71,13 +71,13 @@
               </el-date-picker>
             </td>
           </tr>
-          <tr>
+          <tr style="width: 100%">
             <td style="width: 26%">报名组数</td>
             <td style="text-align: right">
               <el-input-number size="mini" v-model="signUpNum"></el-input-number>
             </td>
           </tr>
-          <tr>
+          <tr style="width: 100%">
             <td style="width: 26%">报名顺序</td>
             <td style="text-align: right">
               <el-select v-model="value" placeholder="请选择">
@@ -90,7 +90,7 @@
               </el-select>
             </td>
           </tr>
-          <tr>
+          <tr style="width: 100%">
             <td style="width: 26%">round</td>
             <td style="text-align: right">
               <el-select v-model="roundSerial" placeholder="请选择">
@@ -328,9 +328,6 @@
 
 <style scoped>
 
-  .box-card {
-    width: 100%;
-  }
 
 </style>
 

@@ -6,29 +6,27 @@
     <div class="main">
       <div style="width:100%;height:15px"></div>
       <table class="table0">
-        <tr>
+        <tr style="width: 100%">
           <td class="td0">
             <el-input id="pass2" type="password" v-model="oldPassword" placeholder="原密码">
               <i slot="suffix" class="el-input__icon el-icon-view icon2 icon0" @click="showPassword2"></i>
             </el-input>
           </td>
         </tr>
-        <tr>
+        <tr style="width: 100%">
           <td class="td0">
-            <el-tooltip class="item" effect="dark" content="密码长度8-32位，须包含数字字母符号至少两种或以上" placement="bottom">
               <el-input id="pass" type="password" v-model="newPassword" placeholder="新密码">
                 <i slot="suffix" class="el-input__icon el-icon-view icon2 icon0" @click="showPassword"></i>
               </el-input>
-            </el-tooltip>
           </td>
         </tr>
-        <tr>
+        <tr style="width: 100%">
           <td class="td0"></td>
         </tr>
-        <tr>
+        <tr style="width: 100%">
           <td class="td0"></td>
         </tr>
-        <tr>
+        <tr style="width: 100%">
           <td class="td0"></td>
         </tr>
 

@@ -7,17 +7,18 @@
     <div class="main">
       <div style="width: 100%;height: 25px"></div>
       <table class="table0">
-        <tr><td class="td0">
+        <tr style="width: 100%">
+          <td class="td0">
           <el-input class="input0" type="text" placeholder="学号/教工号" v-model="account"></el-input>
         </td></tr>
 
-        <tr>
+        <tr style="width: 100%">
           <td class="td0"></td>
         </tr>
-        <tr>
+        <tr style="width: 100%">
           <td class="td0"></td>
         </tr>
-        <tr>
+        <tr style="width: 100%">
           <td class="td0"><el-button class="btn" type="success" @click="SetPassword" plain>找回密码</el-button></td>
         </tr>
       </table>

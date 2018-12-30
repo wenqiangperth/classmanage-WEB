@@ -14,17 +14,17 @@
     <div class="main">
       <div style="width:100%;height:25px"></div>
       <table class="info" cellspacing="0" v-for="(item,index) in groupInfo"
-             :key="index">
+             :key="index" style="width: 100%">
         <tr class="tr0" v-show="index%2===0">
           <td style="width: 30%"><label>第{{index+1}}组</label></td>
           <td>
-            <a href="#" style="text-decoration: none" @click="download(index)">{{item}}</a>
+            <label @click="download(index)">{{item}}</label>
           </td>
         </tr>
         <tr class="tr1" v-show="index%2===1">
           <td style="width: 30%"><label>第{{index+1}}组</label></td>
           <td>
-            <a href="#" style="text-decoration: none">{{item}}</a>
+            <label @click="download(index)">{{item}}</label>
           </td>
         </tr>
       </table>
@@ -181,11 +181,13 @@
 
 <style scoped>
   .tr0 {
+    width: 100%;
     height: 45px;
     background-color: rgba(97, 97, 97, 0.05);
   }
 
   .tr1 {
+    width: 100%;
     height: 45px;
     background-color: rgba(102, 204, 204, 0.05);
   }

@@ -3,7 +3,7 @@
     <div id="head" class="head">
       <div class="title"><i class="el-icon-back icon1 icon0" @click="returnCourseManage"></i>组队信息
         <el-dropdown class="plus" trigger="click">
-          <i class="el-icon-plus icon1 icon0"></i>
+          <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
             <el-dropdown-item><i class="el-icon-service" @click="gotoSeminar">&nbsp;&nbsp;讨论课</i></el-dropdown-item>
@@ -11,8 +11,9 @@
         </el-dropdown>
       </div>
     </div>
-    <div class="empty"></div>
+
     <div class="main">
+      <div class="empty"></div>
       <el-collapse accordion v-for="(item,index) in info"
                    :key="index">
         <el-collapse-item>

@@ -3,7 +3,7 @@
     <div id="head" class="head">
       <div class="title"><i class="el-icon-back icon0 icon1" @click="gotoHomePage"></i><span>我的课程</span>
         <el-dropdown class="plus" trigger="click">
-          <i class="el-icon-plus icon0 icon1"></i>
+          <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
             <el-dropdown-item><i class="el-icon-service" @click="gotoTotalSeminar">&nbsp;&nbsp;讨论课</i>
@@ -12,8 +12,9 @@
         </el-dropdown>
       </div>
     </div>
-    <div class="empty"></div>
+
     <div class="main">
+      <div class="empty"></div>
       <div class="new_course" @click="NewCourse(courses.studentOrTeacherId)">
         <i class="el-icon-plus icon2" style="font-weight: bolder;color: #66cccc"><span
           style="color: dimgrey">新建课程</span></i>

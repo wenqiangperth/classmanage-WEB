@@ -12,7 +12,7 @@
     </div>
     <div class="main">
       <div style="width:100%">
-        <el-card>
+        <el-card style="width: 100%">
           <fieldset>
             <legend style="font-size: 20px;color:#66cccc">xX{{seminarName}}Xx</legend>
             <p v-if="nowIndex!==-1"><span style="font-weight: bold;color:#616161">正在展示:</span>
@@ -144,16 +144,17 @@
           </el-button>
         </el-card>
       </div>
+      <div style="width: 100%">
+        <el-button id="askQues" type="success" plain style="width: 40%;float:left;margin-top: 100px"
+                   @click="askQuestions">抽取提问
+        </el-button>
+        <el-button type="success" plain id="nextGroup" style="width:40%;float:right;margin-top: 100px"
+                   @click="nextGroup">
+          开始展示
+        </el-button>
+      </div>
     </div>
-    <div class="main" style="float: left">
-      <el-button id="askQues" type="success" plain style="width: 40%;float:left;margin-top: 100px"
-                 @click="askQuestions">抽取提问
-      </el-button>
-      <el-button type="success" plain id="nextGroup" style="width:40%;float:right;margin-top: 100px"
-                 @click="nextGroup">
-        开始展示
-      </el-button>
-    </div>
+
   </div>
 </template>
 

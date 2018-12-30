@@ -15,11 +15,11 @@
       </div>
     </div>
     <div class="main">
-      <el-card>
+      <el-card style="width: 100%">
         <table style="width: 100%"
                v-for="(item,index) in groupInfo"
                :key="index">
-          <tr id="tr0">
+          <tr id="tr0" style="width: 100%">
             <td style="width: 20%">第{{item.teamOrder}}组</td>
             <td style="width: 55%;">
               <span style="color: #66cccc" @click="downloadReport1(item.id,index)"
@@ -32,13 +32,13 @@
           </tr>
         </table>
       </el-card>
-      <div>
+      <div style="width: 100%">
         <el-button type="success" class="btn" plain
                    style="margin-top: 60px"
                    @click="downloadReport">批量下载
         </el-button>
       </div>
-      <div>
+      <div style="width: 100%">
         <el-button type="success" class="btn" plain
                    style="margin-top: 10px"
                    @click="editResults">修改

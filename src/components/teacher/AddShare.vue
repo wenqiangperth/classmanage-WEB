@@ -1,18 +1,17 @@
 <template>
   <div class="body0">
     <div id="head" class="head">
-      <div class="title"><i class="el-icon-back icon1 icon0" @click="returnSharePage"></i>新增共享
-      </div>
+      <div class="title"><i class="el-icon-back icon1 icon0" @click="returnSharePage"></i>新增共享</div>
     </div>
     <div class="main">
       <div style="width: 100%;height:40px"></div>
-      <el-card>
-        <table>
-          <tr>
+      <el-card style="width: 100%">
+        <table style="width: 100%">
+          <tr style="width: 100%">
             <td style="width: 30%;color:#66cccc">共享类型:</td>
             <td>共享分组</td>
           </tr>
-          <tr>
+          <tr style="width: 100%">
             <td style="width: 30%;color:#66cccc">共享对象:</td>
             <td>
               <el-select id="select" v-model="index1" placeholder="请选择">
@@ -29,7 +28,7 @@
 
         </table>
       </el-card>
-      <el-button class="btn" type="success" plain style="margin-top: 20px" @click="successShare()"> 确认共享
+      <el-button class="btn" type="success" plain style="margin-top: 20px" @click="successShare"> 确认共享
       </el-button>
     </div>
   </div>

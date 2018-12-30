@@ -11,9 +11,8 @@
           </el-dropdown>
         </div>
       </div>
-
       <div class="main">
-        <el-card>
+        <el-card style="width: 100%">
           <fieldset>
             <legend style="font-size: 20px;color:#66cccc;">xxXX课堂管理系统XXxx </legend>
             <span style="float: left;font-weight: bold">欢迎您: {{teacher.name}}老师！</span>
@@ -22,7 +21,7 @@
             <p></p>
           </fieldset>
         </el-card>
-        <el-row>
+        <el-row style="width: 100%">
           <el-col :span="12">
             <el-card shadow="hover" class="card">
               <div @click="gotoCourseManage">

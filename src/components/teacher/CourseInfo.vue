@@ -12,15 +12,16 @@
         </el-dropdown>
       </div>
     </div>
-    <div class="empty" style="height: 10px;width: 100%"></div>
+
     <div class="main">
-      <el-card>
+      <div class="empty" style="height: 10px;width: 100%"></div>
+      <el-card style="width: 100%">
         <div slot="header">
           <span style="font-weight: bold;color: #616161;float: left">简介</span>
         </div>
         <p style="font-size: 13px">{{introduction}}</p>
       </el-card>
-      <el-card class="box-card">
+      <el-card style="width: 100%">
         <div slot="header" style="float: left">
           <span style="font-weight: bold;color: #616161">成绩计算规则</span>
         </div>
@@ -28,7 +29,7 @@
           v-for="(item,index) in tableData1"
           :key="index"
           style="width: 100%;font-size: 13px">
-          <tr style="height: 30px">
+          <tr style="height: 30px;width: 100%">
             <td style="width:30%">{{item.make_up}}</td>
             <td style="text-align: center">
               {{item.percentage}}%
@@ -36,26 +37,26 @@
           </tr>
         </table>
       </el-card>
-      <el-card>
+      <el-card style="width: 100%">
         <table
           style="width: 100%;text-align: center;font-size: 13px">
-          <tr style="height: 30px">
+          <tr style="height: 30px;width: 100%">
             <td style="width: 30%">组队开始:</td>
             <td>{{teamStartTime}}</td>
           </tr>
-          <tr style="height: 30px">
+          <tr style="height: 30px;width:100%">
             <td style="width: 30%">组队截止:</td>
             <td>{{teamEndTime}}</td>
           </tr>
         </table>
       </el-card>
-      <el-card class="box-card">
+      <el-card style="width: 100%">
         <div slot="header" style="float: left">
           <span style="font-weight: bold;color: #616161">组员基本要求</span>
         </div>
         <table
           style="width: 100%;text-align: center;font-size: 13px">
-          <tr style="height: 35px">
+          <tr style="height: 35px;width: 100%">
             <td style="width:30%">小组总人数:</td>
             <td>
               {{teamMin}}~{{teamMax}}
@@ -64,7 +65,7 @@
         </table>
         <table
           style="width: 100%;text-align: center;font-size: 13px">
-          <tr style="height: 35px">
+          <tr style="height: 35px;width: 100%">
             <td style="width:40%">组内选修课程人数:</td>
             <td></td>
           </tr>
@@ -72,7 +73,7 @@
         <table
           style="width: 100%;text-align: center;font-size: 13px"
           v-for="item in optionalCourse">
-          <tr style="height: 35px">
+          <tr style="height: 35px;width: 100%">
             <td style="width:30%">{{item.courseName}}</td>
             <td>
               {{item.minNum}}~{{item.maxNum}}
@@ -80,19 +81,19 @@
           </tr>
         </table>
       </el-card>
-      <el-card>
+      <el-card style="width: 100%">
         <div slot="header" style="float: left">
           <span style="font-weight: bold;color: #616161">冲突课程</span>
         </div>
         <table
           style="width: 100%;text-align: center;font-size: 13px" v-for="item in conflictCourse">
-          <tr style="height: 35px">
+          <tr style="height: 35px;width: 100%">
             <td style="width: 30%">{{item.courseName}}</td>
             <td>
               {{item.teacherName}}老师
             </td>
           </tr>
-          <tr style="height: 35px">
+          <tr style="height: 35px;width: 100%">
             <td></td>
             <td></td>
           </tr>

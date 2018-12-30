@@ -20,20 +20,20 @@
            v-for="(item,index) in classInfo"
            :key="index"
       >
-        <el-card>
+        <el-card style="width: 100%">
           <div slot="header">
             <span style="font-weight: bold">{{item.grade}}-{{item.klassSerial}}</span>
           </div>
           <table style="width: 100%;font-weight: bold;color: dimgrey">
-            <tr>
+            <tr style="width: 100%">
               <td style="width: 35%">讨论课时间:</td>
               <td>{{item.klassTime}}</td>
             </tr>
-            <tr>
+            <tr style="width: 100%">
               <td style="width: 35%">讨论课地点:</td>
               <td>{{item.klassLocation}}</td>
             </tr>
-            <tr>
+            <tr style="width: 100%">
               <td style="width: 35%">学生名单:</td>
               <!--<td>{{item.nameList.name}}</td>-->
               <td>
@@ -55,16 +55,16 @@
                 </el-upload>
               </td>
             </tr>
-            <tr>
+            <tr style="width: 100%">
               <td style="width: 35%"></td>
               <td></td>
             </tr>
           </table>
           <table style="width: 100%;text-align: center">
-            <tr style="height: 20px">
+            <tr style="height: 20px;width: 100%">
               <td></td>
             </tr>
-            <tr style="height: 20px">
+            <tr style="height: 20px;width: 100%">
               <td>
                 <el-button type="success" plain size="small" style="width: 40%" @click="Submit">提交</el-button>
               </td>
@@ -72,7 +72,7 @@
                 <el-button type="info" size="small" style="width: 40%" @click="DeleteClass(item.id)">删除</el-button>
               </td>
             </tr>
-            <tr style="height: 20px">
+            <tr style="height: 20px;width: 100%">
               <td></td>
             </tr>
           </table>
