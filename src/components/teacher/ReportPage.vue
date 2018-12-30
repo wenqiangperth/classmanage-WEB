@@ -4,14 +4,6 @@
       <div class="title">
         <i class="el-icon-back icon1 icon0" @click="Back"></i>
         书面报告
-        <el-dropdown class="plus" trigger="click">
-          <i class="el-icon-plus icon0"></i>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
-            <el-dropdown-item><i class="el-icon-service" @click="gotoTotalSeminar">&nbsp;&nbsp;讨论课</i>
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
       </div>
     </div>
     <div class="main">
@@ -104,12 +96,6 @@
             classId: this.classId
           }
         })
-      },
-      gotoHomePage() {
-        this.$router.push({path: '/teacher/HomePage'});
-      },
-      gotoTotalSeminar() {
-        this.$router.push({path: '/teacher/TotalSeminar'});
       },
       downloadReport1(id, index) {
         MessageBox.confirm('确定下载该报告吗?', '提示', {

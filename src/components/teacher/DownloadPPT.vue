@@ -3,7 +3,9 @@
     <div id="head" class="head">
       <div class="title"><i class="el-icon-back icon1 icon0" @click="Back"></i>OOAD
         <el-dropdown class="plus" trigger="click">
-          <i class="el-icon-plus icon0"></i>
+          <span class="el-dropdown-link">
+            <i class="el-icon-plus icon0"></i>
+          </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
             <el-dropdown-item><i class="el-icon-service" @click="gotoSeminar"></i>&nbsp;&nbsp;讨论课</el-dropdown-item>

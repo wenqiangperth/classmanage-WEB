@@ -2,12 +2,6 @@
   <div>
     <div id="head" class="head">
       <div class="title"><i>&nbsp;</i>讨论课
-        <el-dropdown class="plus" trigger="click">
-          <i class="el-icon-plus icon0"></i>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item><i class="el-icon-bell" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
       </div>
     </div>
 

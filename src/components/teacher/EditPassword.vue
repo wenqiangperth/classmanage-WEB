@@ -52,7 +52,7 @@
     },
     methods: {
       returnLogin() {
-        this.$router.push({path: '/'});
+        this.$router.push({path: '/teacher/AccountManage'});
       },
       modifyPassword() {
         this.$axios({

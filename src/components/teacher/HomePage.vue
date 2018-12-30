@@ -3,7 +3,9 @@
       <div id="head" class="head">
         <div class="title"><i class="el-icon-close icon1 icon0"></i><span>个人主页</span>
           <el-dropdown class="plus" trigger="click">
-            <i class="el-icon-plus icon0" style="font:25px bolder;color:white"></i>
+            <span class="el-dropdown-link">
+            <i class="el-icon-plus icon0"></i>
+            </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item><i class="el-icon-date" @click="gotoBacklog">&nbsp;&nbsp;待 办</i></el-dropdown-item>
               <el-dropdown-item><i class="el-icon-service" @click="gotoSeminar">&nbsp;&nbsp;讨论课</i></el-dropdown-item>
