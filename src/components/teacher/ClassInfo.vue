@@ -13,7 +13,7 @@
     </div>
     <div class="main">
       <div class="empty"></div>
-      <div style="width: 100%;height: 50px;margin-top: 30px">
+      <div style="width: 100%;height: 50px;">
         <el-button size="small" type="text" @click="addClass(courseId)"
                    style="float: right;color:#616161;font-weight: bold;">新建班级
         </el-button>
