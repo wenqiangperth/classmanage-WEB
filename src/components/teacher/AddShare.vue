@@ -43,7 +43,8 @@
         courseId: 0,
         courses: [],
         index1: '',
-        teacherId: ''
+        teacherId: '',
+        account: ''
       }
     },
     created() {
@@ -90,6 +91,7 @@
     methods: {
       getParams() {
         this.courseId = this.$route.params.courseId;
+        this.account = this.$route.params.account;
       },
       returnSharePage() {
         this.$router.push({
@@ -155,6 +157,13 @@
             message: '已取消'
           });
         });
+        this.$router.push({
+          path: '/teacher/CourseManage',
+          name: 'CourseManage',
+          query: {
+            account: this.account
+          }
+        })
       },
     },
 

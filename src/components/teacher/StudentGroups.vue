@@ -26,7 +26,7 @@
             </div>
             <el-table
               :data="item.students"
-              style="width: 100%;margin: auto"
+              style="width: 90%;margin: auto"
             >
               <el-table-column
                 prop="account"

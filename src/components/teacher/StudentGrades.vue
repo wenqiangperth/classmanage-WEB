@@ -34,7 +34,7 @@
           width="90%">
           <el-table
             :data="seminarsScore"
-            style="width: 100%;"
+            style="width: 60%;"
           >
             <el-table-column
               prop="seminarName"
@@ -66,21 +66,21 @@
               </template>
             </el-table-column>
           </el-table>
-          <table style="width: 100%">
+          <table style="width: 60%">
             <tr style="width: 100%">
-              <td width="85" style="text-align: center">总成绩</td>
-              <td style="text-align: center">
+              <td style="text-align: center;width: 30%">总成绩</td>
+              <td style="text-align: center;width: 30%">
                 <el-input width="75" v-model="roundScore.presentationScore" :disabled="true"></el-input>
               </td>
-              <td style="text-align: center">
+              <td style="text-align: center;width: 30%">
                 <el-input width="75" v-model="roundScore.questionScore" :disabled="true"></el-input>
               </td>
-              <td style="text-align: center">
+              <td style="text-align: center;width: 30%">
                 <el-input width="75" v-model="roundScore.reportScore" :disabled="true"></el-input>
               </td>
             </tr>
           </table>
-          <table style="width: 100%">
+          <table style="width: 60%">
             <tr style="width: 100%">
               <td style="width: 40%">本轮总成绩</td>
               <td>
@@ -89,7 +89,7 @@
             </tr>
           </table>
           <el-button type="info" plain @click="UpdateGrades(index)"
-                     style="margin-top: 5px;float: right;margin-bottom: 5px">
+                     style="margin-top: 5px;float: right;margin-bottom: 15px">
             修改
           </el-button>
         </el-dialog>

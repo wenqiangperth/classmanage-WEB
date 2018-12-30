@@ -49,7 +49,7 @@
            v-if="(course.seminarMainCourseId!==null)&&(course.courseId !== course.seminarMainCourseId)"></div>
       <div style="width: 100%" v-else>
         <el-button class="btn" type="success" plain @click="NewSeminar(course.courseId,roundInfo)"
-                   style="margin-top: 10px"><i class="el-icon-plus" style="font-weight: bolder"></i>&nbsp;&nbsp;新建讨论课
+                   style="margin-top: 10px">新建讨论课
         </el-button>
       </div>
 

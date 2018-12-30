@@ -192,19 +192,8 @@
         this.$router.push({path: '/teacher/TotalSeminar'});
       },
       checkInfo(status, classId, seminarId) {
-        if (status === 2) {
-          this.$router.push({
-            path: '/teacher/DownloadPPT',
-            name: 'DownloadPPT',
-            params: {
-              seminarId: seminarId,
-              classId: classId,
-              roundId: this.roundId,
-              course: this.course
-            }
-          })
-        } else if ((status === 0) || (status === 1)) {
-          this.$router.push({
+
+        this.$router.push({
             path: '/teacher/CheckInformation',
             name: 'CheckInformation',
             params: {
@@ -214,7 +203,6 @@
               classId: classId
             }
           });
-        }
       },
       checkReport(seminarId, classId) {
         this.$router.push({

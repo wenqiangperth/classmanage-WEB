@@ -203,7 +203,7 @@
           name: 'SharePage',
           params: {
             courseId: course.courseId,
-            courseName: course.courseName
+            account: this.account
           }
         });
       },

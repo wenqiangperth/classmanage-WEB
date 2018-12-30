@@ -15,14 +15,13 @@
     </div>
 
     <div class="main">
-      <div style="width: 100%;height:60px">
-        <el-button type="success" size="small" plain style="float: right;margin-top: 20px" @click="addShare()">
-          <i
-          class="el-icon-plus" style="font-weight: bolder"></i> 新增共享
+      <div style="width: 100%;height:60px;">
+        <el-button type="text" size="small" plain style="float: right;margin-top: 20px" @click="addShare">
+          新增共享
         </el-button>
       </div>
       <el-collapse accordion v-for="(item,index) in sharesTeam"
-                   :key="index">
+                   :key="index" style="margin-top: 20px">
         <el-collapse-item v-if="item.status===1">
           <template slot="title">
             <i class="el-icon-share el-icon0" style="float: left;margin-left: 20px;"></i>{{item.subCourseName}}({{item.subCourseTeacherName}})
@@ -58,6 +57,7 @@
       return {
         courseId: 1,
         sharesTeam: [],
+        account: ''
       }
     },
     created() {
@@ -86,6 +86,7 @@
     methods: {
       getParams() {
         this.courseId = this.$route.params.courseId;
+        this.account = this.$route.params.account;
       },
       returnLogin() {
         this.$router.push({path: '/'});
