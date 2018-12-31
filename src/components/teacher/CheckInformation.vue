@@ -22,7 +22,7 @@
           <td>
             <label v-if="item.pptUrl===null"><span
               style="color: red">未提交</span></label>
-            <label v-else>{{item.pptName}}</label>
+            <label v-else @click="downloadPPT1(index)">{{item.pptName}}</label>
           </td>
         </tr>
         <tr class="tr1" v-show="index%2===1">
@@ -30,16 +30,24 @@
           <td>
             <label v-if="item.pptUrl===null"><span
               style="color: red">未提交</span></label>
-            <label v-else>{{item.pptName}}</label>
+            <label v-else @click="downloadPPT1(index)">{{item.pptName}}</label>
           </td>
         </tr>
       </table>
+    </div>
+
+    <div style="width: 100%">
+      <el-button type="success" class="btn" plain
+                 style="margin-top: 60px"
+                 @click="downloadPPT">批量下载
+      </el-button>
     </div>
 
   </div>
 </template>
 
 <script>
+  import {MessageBox} from 'mint-ui';
   export default {
     name: "CheckInfo",
     data() {
@@ -98,6 +106,92 @@
       gotoHomePage() {
         this.$router.push({path: '/teacher/HomePage'});
       },
+      downloadPPT1(index) {
+        MessageBox.confirm('确定下载该报告吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'info'
+        })
+          .then(() => {
+            this.$axios({
+              method: 'GET',
+              url: '/attendance/' + this.groupInfo[index].id + '/ppt',
+              responseType: 'blob',
+              headers: {
+                'Authorization': window.localStorage['token']
+              }
+            })
+              .then(res => {
+                if (res.status === 200) {
+                  window.localStorage['token'] = res.headers.authorization;
+                  console.log("下载文件");
+                  console.log(res.data);
+                  let aTag = document.createElement('a');
+                  let blob = new Blob([res.data], {type: ""});
+                  aTag.download = this.groupInfo[index].pptUrl;
+                  aTag.href = URL.createObjectURL(blob);
+                  aTag.click();
+                  URL.revokeObjectURL(blob);
+                  this.$message({
+                    type: 'success',
+                    message: '下载成功!'
+                  });
+                }
+              })
+              .catch(e => {
+                console.log(e);
+              })
+          }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        })
+      },
+      downloadPPT() {
+        MessageBox.confirm('确定下载所有ppt吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'info'
+        })
+          .then(() => {
+            this.$axios({
+              method: 'GET',
+              url: '/seminar/' + this.$data.seminarId + '/class/' + this.$data.classId + '/ppt',
+              responseType: 'blob',
+              headers: {
+                'Authorization': window.localStorage['token']
+              }
+            })
+              .then(res => {
+                if (res.status === 200) {
+                  window.localStorage['token'] = res.headers.authorization;
+                  console.log("下载文件");
+                  console.log(res.data);
+                  let url = window.URL.createObjectURL(res.data);
+                  let link = document.createElement('a');
+                  link.style.display = 'none';
+                  link.href = url;
+                  link.setAttribute('download', '*.zip');
+                  document.body.appendChild(link);
+                  link.click();
+                  this.$message({
+                    type: 'success',
+                    message: '下载成功!'
+                  });
+                }
+              })
+              .catch(e => {
+                console.log(e);
+              })
+          }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        })
+
+      }
     }
   }
 </script>
