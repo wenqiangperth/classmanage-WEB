@@ -80,18 +80,24 @@
               </td>
             </tr>
           </table>
-          <table style="width: 60%">
+          <table style="width: 100%">
             <tr style="width: 100%">
               <td style="width: 40%">本轮总成绩</td>
               <td>
                 <el-input v-model="roundScore.totalScore" :disabled="true"></el-input>
               </td>
             </tr>
+            <tr style="width: 100%">
+              <td style="width: 40%"></td>
+              <td>
+                <el-button type="info" plain @click="UpdateGrades(index)"
+                           style="margin-top: 5px;float: right;margin-bottom: 15px">
+                  修改
+                </el-button>
+              </td>
+            </tr>
           </table>
-          <el-button type="info" plain @click="UpdateGrades(index)"
-                     style="margin-top: 5px;float: right;margin-bottom: 15px">
-            修改
-          </el-button>
+
         </el-dialog>
       </div>
 
