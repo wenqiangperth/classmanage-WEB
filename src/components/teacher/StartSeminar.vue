@@ -481,7 +481,7 @@
             method: 'PUT',
             url: '/attendance/' + that.attendanceInfo[that.nowIndex].id + '/status',
             data: {
-              status: 1
+              isPresent: 1
             },
             headers: {
               'Authorization': window.localStorage['token']
@@ -503,7 +503,7 @@
               method: 'PUT',
               url: '/attendance/' + that.attendanceInfo[that.nowIndex - 1].id + '/status',
               data: {
-                status: 0
+                isPresent: 0
               },
               headers: {
                 'Authorization': window.localStorage['token']
@@ -639,7 +639,7 @@
         method: 'PUT',
         url: '/attendance/' + this.attendanceInfo[this.nowIndex-1].id + '/status',
         data: {
-          status: 0
+          isPresent: 0
         }, headers: {
           'Authorization': window.localStorage['token']
         }

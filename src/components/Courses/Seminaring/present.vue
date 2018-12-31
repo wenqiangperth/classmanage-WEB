@@ -26,8 +26,8 @@
           {{seminarName}}
         </div>
         <div >
-          <el-tag style="font-size: larger;float: left" type="success" v-if="isShow===true">
-            <i class="el-icon-loading" v-if="isShow===true"></i>
+          <el-tag style="font-size: larger;float: left" type="success">
+            <i class="el-icon-loading"></i>
             <a>{{SeminaringInfo[index].team.teamName}}</a>
           </el-tag>
           <el-tag style="font-size: larger;float: right" type="info">
@@ -40,7 +40,7 @@
         <ul id="Files">
           <li v-for="item in SeminaringInfo">
             <i class="el-icon-star-on"></i>
-            {{item.team.teamSerial}}:{{item.team.teamName}}
+            {{item.team.teamName}}
             <el-tag style="float: right">展示顺序：{{item.teamOrder}}</el-tag>
           </li>
         </ul>
@@ -108,20 +108,23 @@
                     that.index = i;
                 }
                 console.log('当前展示顺序index:' + that.index);
-                that.$axios({
-                  method: 'GET',
-                  url: '/seminar/' + that.SeminaringInfo[0].klassSeminarId + '/attendance/' + that.SeminaringInfo[that.index].id + '/questionnumber',
-                  headers: {
-                    'Authorization': window.localStorage['token']
-                  }
-                }).then(res => {
-                  window.localStorage['token'] = res.headers.authorization;
-                  console.log("当前提问人数：");
-                  console.log(res);
-                  that.questionNum = res.data;
-                }).catch(e => {
-                  console.log(e)
-                })
+                //如果有正在展示组，查看该组提问人数，小组？
+                if(this.index!==-1){
+                  that.$axios({
+                    method: 'GET',
+                    url: '/seminar/' + that.SeminaringInfo[0].klassSeminarId + '/attendance/' + that.SeminaringInfo[that.index].id + '/questionnumber',
+                    headers: {
+                      'Authorization': window.localStorage['token']
+                    }
+                  }).then(res => {
+                    window.localStorage['token'] = res.headers.authorization;
+                    console.log("当前提问人数：");
+                    console.log(res);
+                    that.questionNum = res.data;
+                  }).catch(e => {
+                    console.log(e)
+                  })
+                }
               }
             })
             .catch(e=>{
