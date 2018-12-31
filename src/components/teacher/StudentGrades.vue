@@ -32,6 +32,63 @@
           title="成绩"
           :visible.sync="dialogTableVisible"
           width="90%">
+          <table style="width: 100%;text-align: center;font-weight: bold;color: #616161">
+            <tr style="width: 100%">
+              <td style="width: 30%">主题</td>
+              <td style="width: 24%">展示</td>
+              <td style="width: 24%">提问</td>
+              <td>报告</td>
+            </tr>
+          </table>
+          <table style="width: 100%;text-align: center;font-weight: bold;color: #616161"
+                 v-for="item in seminarsScore">
+            <tr style="width: 100%">
+              <td style="width: 30%">
+                <el-input v-model="item.seminarName"></el-input>
+              </td>
+              <td style="width: 24%">
+                <el-input v-model="item.presentationScore"></el-input>
+              </td>
+              <td style="width: 24%">
+                <el-input v-model="item.questionScore"></el-input>
+              </td>
+              <td>
+                <el-input v-model="item.reportScore"></el-input>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%">
+            <tr style="width: 100%">
+              <td style="text-align: center;width: 30%">总成绩</td>
+              <td style="text-align: center;width: 30%">
+                <el-input width="75" v-model="roundScore.presentationScore" :disabled="true"></el-input>
+              </td>
+              <td style="text-align: center;width: 30%">
+                <el-input width="75" v-model="roundScore.questionScore" :disabled="true"></el-input>
+              </td>
+              <td style="text-align: center;width: 30%">
+                <el-input width="75" v-model="roundScore.reportScore" :disabled="true"></el-input>
+              </td>
+            </tr>
+          </table>
+          <table style="width: 100%">
+            <tr style="width: 100%">
+              <td style="width: 40%">本轮总成绩</td>
+              <td>
+                <el-input v-model="roundScore.totalScore" :disabled="true"></el-input>
+              </td>
+            </tr>
+            <tr style="width: 100%">
+              <td style="width: 40%"></td>
+              <td>
+                <el-button type="info" plain @click="UpdateGrades(index)"
+                           style="margin-top: 5px;float: right;margin-bottom: 15px">
+                  修改
+                </el-button>
+              </td>
+            </tr>
+          </table>
+          <!--
           <el-table
             :data="seminarsScore"
             style="width: 100%;"
@@ -66,37 +123,7 @@
               </template>
             </el-table-column>
           </el-table>
-          <table style="width: 100%">
-            <tr style="width: 100%">
-              <td style="text-align: center;width: 30%">总成绩</td>
-              <td style="text-align: center;width: 30%">
-                <el-input width="75" v-model="roundScore.presentationScore" :disabled="true"></el-input>
-              </td>
-              <td style="text-align: center;width: 30%">
-                <el-input width="75" v-model="roundScore.questionScore" :disabled="true"></el-input>
-              </td>
-              <td style="text-align: center;width: 30%">
-                <el-input width="75" v-model="roundScore.reportScore" :disabled="true"></el-input>
-              </td>
-            </tr>
-          </table>
-          <table style="width: 100%">
-            <tr style="width: 100%">
-              <td style="width: 40%">本轮总成绩</td>
-              <td>
-                <el-input v-model="roundScore.totalScore" :disabled="true"></el-input>
-              </td>
-            </tr>
-            <tr style="width: 100%">
-              <td style="width: 40%"></td>
-              <td>
-                <el-button type="info" plain @click="UpdateGrades(index)"
-                           style="margin-top: 5px;float: right;margin-bottom: 15px">
-                  修改
-                </el-button>
-              </td>
-            </tr>
-          </table>
+          -->
 
         </el-dialog>
       </div>
