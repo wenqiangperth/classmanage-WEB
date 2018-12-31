@@ -145,12 +145,16 @@
         this.$axios({
           method: 'PUT',
           url: '/seminar/' + this.seminarId + '/status',
+          headers:{
+            'Authorization':window.localStorage['token']
+          },
           data: {
             status: 1,
             klassId: this.classId
           }
         })
           .then(res => {
+            console.log(res);
             if (res.status === 200) {
 
             }

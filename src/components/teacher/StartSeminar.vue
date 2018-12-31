@@ -223,12 +223,12 @@
             console.log(res.data);
             that.attendanceInfo = res.data;
             console.log(that.attendanceInfo);
-            /* that.seminarName = that.attendanceInfo[that.nowIndex + 1].score.seminarName;
-             that.klassSerial = that.attendanceInfo[that.nowIndex + 1].team.klassSerial;
-             console.log("KlassSerial" + that.klassSerial);
-             that.teamSerial = that.attendanceInfo[that.nowIndex + 1].team.teamSerial;
-             console.log("teamId" + that.teamSerial);
-             that.teamName = that.attendanceInfo[that.nowIndex + 1].team.teamName;*/
+            that.seminarName = that.attendanceInfo[that.nowIndex + 1].score.seminarName;
+            /* that.klassSerial = that.attendanceInfo[that.nowIndex + 1].team.klassSerial;
+            console.log("KlassSerial" + that.klassSerial);
+            that.teamSerial = that.attendanceInfo[that.nowIndex + 1].team.teamSerial;
+            console.log("teamId" + that.teamSerial);
+            that.teamName = that.attendanceInfo[that.nowIndex + 1].team.teamName;*/
             that.klassSeminarId = that.attendanceInfo[0].klassSeminarId;
             for (let i = 0; i < that.attendanceInfo.length; i++) {
               if (that.attendanceInfo[i].isPresent === 1)
@@ -531,7 +531,6 @@
         }
 
       }
-    }
     ,
     //确认修改展示成绩
     updateSuccess() {
@@ -688,6 +687,7 @@
           course: this.course
         }
       });
+    }
     }
   }
 </script>

@@ -7,25 +7,23 @@
 
     <div class="main">
       <div class="empty"></div>
-      <el-collapse accordion v-for="(item,index) in info"
-                   :key="index">
-        <el-collapse-item>
+      <el-collapse  accordion>
+        <el-collapse-item v-for="(item,index) in info"
+                          :key="index">
           <template slot="title">
-            <div style="font-weight: bold" v-for="cid in classInfo">
-              &nbsp;&nbsp<span v-show="cid.id===item.klassId"><i class="header-icon el-icon-star-off el-icon0"></i>&nbsp;&nbsp;{{cid.klassSerial}}-{{item.teamSerial}}-{{item.teamName}}</span>
-              <span v-if="(item.status===0)&&(cid.id===item.klassId)" style="color: red;"><i class="el-icon-warning"
-                                                                                             style="font-size: 18px"></i></span>
-              <span v-else-if="(item.status===2)&&(cid.id===item.klassId)" style="color: red;"><i class="el-icon-time"
-                                                                                                  style="font-size: 18px"></i></span>
+            <div style="font-weight: bold;width: 100%" @click="checkTeam(index)">
+              &nbsp;&nbsp<span><i class="header-icon el-icon-star-off el-icon0"></i>&nbsp;&nbsp;{{item.klassSerial}}-{{item.teamSerial}}-{{item.teamName}}</span>
+              <span v-if="item.status===0" style="color: red;"><i class="el-icon-warning" style="font-size: 18px"></i></span>
+              <span v-else-if="item.status===2" style="color: red;"><i class="el-icon-time" style="font-size: 18px"></i></span>
             </div>
           </template>
           <el-card style="width:100%">
-            <div slot="header" v-for="leader in item.students">
+            <div slot="header" v-for="leader in students">
               <span v-show="leader.id===item.leaderId"
                     style="font-weight:bold;color: #616161">组长:{{leader.studentName}}</span>
             </div>
             <el-table
-              :data="item.students"
+              :data="students"
               style="width: 90%;margin: auto"
             >
               <el-table-column
@@ -62,15 +60,9 @@
           teamName: '',
           teamSerial: '',
           leaderId: '',
-          students: [
-            {
-              id: '',
-              account: '',
-              studentName: ''
-            }
-          ],
           status: ''
         }],
+        students: [],
         classInfo: [
           {
             id: '',
@@ -83,6 +75,7 @@
     created() {
       this.getParams();
       let that = this;
+      //获得所有组队信息
       that.$axios({
         method: 'GET',
         url: '/course/' + that.$data.courseId + '/team',
@@ -112,7 +105,8 @@
         .catch(e => {
           console.log(e);
         });
-      if (that.course.teamMainCourseId !== null && that.courseId !== that.course.teamMainCourseId) {
+
+      /*if (that.course.teamMainCourseId !== null && that.courseId !== that.course.teamMainCourseId) {
         that.$axios({
           method: 'GET',
           url: '/course/' + that.course.teamMainCourseId + '/class',
@@ -172,7 +166,7 @@
           .catch(e => {
             console.log(e);
           });
-      }
+      }*/
 
     },
     methods: {
@@ -183,6 +177,24 @@
       },
       returnCourseManage() {
         this.$router.push({path: '/teacher/CourseManage'});
+      },
+      checkTeam(index){
+        this.$axios({
+          method:'GET',
+          url:'/team/'+this.info[index].id,
+          params:{
+            courseId:this.info[index].courseId
+          },
+          headers: {
+            'Authorization': window.localStorage['token']
+          }
+        })
+          .then(res=>{
+            if(res.status===200){
+              console.log(res.data);
+              this.students=res.data.students;
+            }
+          })
       }
     },
     watch: {

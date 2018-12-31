@@ -34,14 +34,15 @@
           </td>
         </tr>
       </table>
+      <div style="width: 100%">
+        <el-button type="success" class="btn" plain
+                   style="margin-top: 60px"
+                   @click="downloadPPT">批量下载
+        </el-button>
+      </div>
     </div>
 
-    <div style="width: 100%">
-      <el-button type="success" class="btn" plain
-                 style="margin-top: 60px"
-                 @click="downloadPPT">批量下载
-      </el-button>
-    </div>
+
 
   </div>
 </template>

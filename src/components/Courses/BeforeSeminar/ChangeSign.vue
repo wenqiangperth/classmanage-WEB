@@ -77,7 +77,7 @@
         <label v-if="pptName===null" style="text-align: center;color: red">
           未提交
         </label>
-        <label v-else style="text-align: center;color: green">
+        <label v-else-if="pptName!==null" style="text-align: center;color: green">
           已提交
         </label>
         <el-button @click="openIntro" style="width:100%; height: 50px;text-decoration: underline;background-color: #fff">点此查看讨论课介绍</el-button>

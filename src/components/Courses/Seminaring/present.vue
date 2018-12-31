@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div >
       <header class="home-title">
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
@@ -21,33 +21,35 @@
           </el-dropdown>
         </div>
       </header>
-      <div class="title">
-        {{seminarName}}
+      <div class="main" style="opacity: 0.85;">
+        <div class="title">
+          {{seminarName}}
+        </div>
+        <div >
+          <el-tag style="font-size: larger;float: left" type="success" v-if="isShow===true">
+            <i class="el-icon-loading" v-if="isShow===true"></i>
+            <a>{{SeminaringInfo[index].team.teamName}}</a>
+          </el-tag>
+          <el-tag style="font-size: larger;float: right" type="info">
+            <i class="el-icon-phone-outline"></i>
+            当前已有{{questionNum}}人提问
+          </el-tag>
+        </div>
+        <div class="divHeight"></div>
+
+        <ul id="Files">
+          <li v-for="item in SeminaringInfo">
+            <i class="el-icon-star-on"></i>
+            {{item.team.teamSerial}}:{{item.team.teamName}}
+            <el-tag style="float: right">展示顺序：{{item.teamOrder}}</el-tag>
+          </li>
+        </ul>
+
+        <div class="question">
+          <a @click="open">Q & A</a>
+        </div>
+
       </div>
-      <div >
-        <el-tag style="font-size: larger;float: left" type="success">
-          <i class="el-icon-loading"></i>
-          <a v-if="isShow===true">{{SeminaringInfo[index].team.teamName}}</a>
-        </el-tag>
-        <el-tag style="font-size: larger;float: right" type="info">
-          <i class="el-icon-phone-outline"></i>
-          当前已有{{questionNum}}人提问
-        </el-tag>
-      </div>
-      <div class="divHeight"></div>
-
-      <ul id="Files">
-        <li v-for="item in SeminaringInfo">
-          <i class="el-icon-star-on"></i>
-          {{item.team.teamSerial}}:{{item.team.teamName}}
-          <el-tag style="float: right">展示顺序：{{item.teamOrder}}</el-tag>
-        </li>
-      </ul>
-
-      <div class="question">
-      <a @click="open">Q & A</a>
-    </div>
-
 
   </div>
 </template>
@@ -72,6 +74,11 @@
           questionNum: 0,
           webserver: '',
           index: -1,
+          note:{
+            backgroundImage:"url("+require("../../../assets/sky.jpg")+")",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "100% 100%",
+          }
         }
       },
       created(){
@@ -82,8 +89,8 @@
           that.courseName=that.$route.query.courseName;
           that.klassId=that.$route.query.klassId;
           that.seminarName=that.$route.query.seminarName;
-        that.teamId = that.$route.query.teamId;
-        that.klassSeminarId = that.$route.query.klassSeminarId;
+          that.teamId = that.$route.query.teamId;
+          that.klassSeminarId = that.$route.query.klassSeminarId;
           that.$axios({
             method:'GET',
             url:'/seminar/'+that.seminarId+'/class/'+that.klassId+'/attendance',
@@ -100,10 +107,10 @@
                   if (that.SeminaringInfo[i].isPresent === 1)
                     that.index = i;
                 }
-                console.log('index:' + that.index);
+                console.log('当前展示顺序index:' + that.index);
                 that.$axios({
                   method: 'GET',
-                  url: '/seminar/' + that.SeminaringInfo[0].klassSeminarId + '/attendance/' + that.SeminaringInfo[that.index + 1].id + '/questionnumber',
+                  url: '/seminar/' + that.SeminaringInfo[0].klassSeminarId + '/attendance/' + that.SeminaringInfo[that.index].id + '/questionnumber',
                   headers: {
                     'Authorization': window.localStorage['token']
                   }
@@ -195,7 +202,7 @@
           let that = this;
           let message = e.data;
           console.log(message);
-          console.log("aaa" + message);
+          console.log("传来的消息是：" + message);
           if (message === "下一组展示") {
             console.log("dfsfs");
             that.isShow = true;
@@ -266,7 +273,7 @@
                    that.$message({
                      type: 'info',
                      message: res.data
-                   })
+                   });
                    if (res.data === "报名提问成功") {
                      that.ws.send("提问")
                    }

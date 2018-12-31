@@ -26,12 +26,23 @@
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>{{myTeam.klassSerial}}-{{myTeam.teamSerial}}:{{myTeam.teamName}}</span>
-            <el-button style="float: right; padding: 3px 0" type="text">操作</el-button>
+            <a v-if="myTeam.status===1" style="color:green;font-size: 20px">
+              <i class="el-icon-success"></i>
+            </a>
+            <a v-else-if="myTeam.status===0" style="color: red;font-size: 20px">
+              <i class="el-icon-warning"></i>
+            </a>
+            <a v-else style="color: orange;font-size: 20px">
+              <i class="el-icon-info"></i>
+            </a>
           </div>
           <div style="font-weight: bold">组长：{{leader.name}}--{{leader.account}}</div>
           <div v-for="member in myTeam.students" class="text item">
-            {{member.studentName}}--{{member.account}}
-            <i style="float: right; color: red" class="el-icon-error" @click="dele(member.id)"></i>
+            <div v-if="leader.account===member.account"></div>
+            <div v-else>
+              {{member.studentName}}--{{member.account}}
+              <i style="float: right; color: red" class="el-icon-error" @click="dele(member.id)"></i>
+            </div>
           </div>
         </el-card>
         <div class="divHeight"></div>
@@ -58,12 +69,12 @@
             <el-table-column
               prop="studentName"
               label="姓名"
-              width="130">
+              width="90">
             </el-table-column>
             <el-table-column
               prop="account"
               label="学号"
-              width="130">
+              width="150">
             </el-table-column>
           </el-table>
         </template>
@@ -71,7 +82,7 @@
 
         <el-row>
           <el-button type="danger" @click="dismiss">解散小组</el-button>
-          <el-button type="warning" @click="dialogFormVisible = true">提交审核</el-button>
+          <el-button type="warning" @click="submit">提交审核</el-button>
         </el-row>
         <el-dialog
           title="成组特例申请"
@@ -133,54 +144,9 @@
         let that = this;
         that.courseId=that.$route.query.courseId;
 
-        that.$axios({
-          method:'GET',
-          url:'/course/'+that.courseId+'/noTeam',
-          headers:{
-            'Authorization':window.localStorage['token']
-          }
-        }).then(res=>{
-            console.log(res);
-            if(res.status===200){
-              window.localStorage['token']=res.headers.authorization;
-              this.Unteam=res.data;
-            }
-          }).catch(e=>{console.log(e)});
+        this.getNoTeam();
 
-        this.$axios({
-          method:'GET',
-          url:'/course/'+that.courseId+'/myteam',
-          headers:{
-            'Authorization':window.localStorage['token']
-          }
-        }).then(res=>{
-            console.log(res);
-            if(res.status===200){
-              this.teamId=res.data.id;
-              console.log('传来的teamId:'+this.teamId);
-              that.$axios({
-                method:'GET',
-                url:'/team/'+this.teamId,
-                headers:{
-                  'Authorization': window.localStorage['token']
-                }
-              })
-                .then(res=>{
-                  console.log(res);
-                  if(res.status===200){
-                    that.myTeam=res.data;
-                  }
-                  else if(res.status===404){
-                    alert("未找到！")
-                  }
-                })
-                .catch(e=>{
-                  console.log(e)
-                })
-            }
-          }).catch(e=>{
-            console.log(e);
-          });
+        this.getMyTeam();
 
         that.$axios({
           method:'GET',
@@ -195,6 +161,7 @@
           }
         });
 
+        // this.checkValid();
       },
       methods:{
         searchStu(){
@@ -212,14 +179,7 @@
         },
         //删除组员
         dele(index){
-          console.log('删除的是谁'+index);
-          if(index===this.myTeam.leaderId){
-            this.$message({
-              type:'error',
-              message:'组长无法执行自删除操作，可以选择解散小组。'
-            })
-          }
-          else{
+            console.log('删除的是谁'+index);
             this.$confirm('此操作将删除您的队友, 是否继续?', '提示', {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
@@ -244,6 +204,8 @@
                       type: 'success',
                       message: '删除成功!'
                     });
+                    this.getMyTeam();
+                    this.getNoTeam();
                   }
                   else{
                     alert("删除失败！")
@@ -258,42 +220,114 @@
                 message: '已取消删除'
               });
             });
+
+        },
+        //获得我的小组信息
+        getMyTeam(){
+          let that=this;
+          this.$axios({
+            method:'GET',
+            url:'/course/'+that.courseId+'/myteam',
+            headers:{
+              'Authorization':window.localStorage['token']
+            }
+          }).then(res=>{
+            console.log(res);
+            if(res.status===200){
+              this.teamId=res.data.id;
+              console.log('传来的teamId:'+this.teamId);
+              that.$axios({
+                method:'GET',
+                url:'/team/'+this.teamId,
+                headers:{
+                  'Authorization': window.localStorage['token']
+                },
+                params:{
+                  courseId:this.courseId
+                }
+              })
+                .then(res=>{
+                  console.log(res);
+                  if(res.status===200){
+                    console.log("我的队伍：");
+                    that.myTeam=res.data;
+                    console.log(that.myTeam);
+                  }
+                  else if(res.status===404){
+                    alert("未找到！")
+                  }
+                })
+                .catch(e=>{
+                  console.log(e)
+                })
+            }
+          }).catch(e=>{
+            console.log(e);
+          });  //获得我的组队信息
+        },
+        //获得未组队成员信息
+        getNoTeam(){
+          let that=this;
+          that.$axios({
+            method:'GET',
+            url:'/course/'+that.courseId+'/noteam',
+            headers:{
+              'Authorization':window.localStorage['token']
+            }
+          }).then(res=>{
+            console.log(res);
+            if(res.status===200){
+              window.localStorage['token']=res.headers.authorization;
+              this.Unteam=res.data;
+            }
+          }).catch(e=>{console.log(e)});  //获得所有未组队成员
+        },
+        //
+        submit(){
+          let  that=this;
+          if(that.myTeam.status===1){
+            that.$message({
+              type:'warning',
+              message:'你的team已合法，无需提交申请！'
+            })
+          }else{
+            this.dialogFormVisible = true;
           }
         },
         // 提交审核
         validate(){
-          this.$axios({
-            method:'POST',
-            url:'/team/'+this.$data.teamId+'/teamvalidrequest',
-            headers:{
-              'Authorization':window.localStorage['token']
-            },
-            data:{
-              courseId: this.courseId,
-              //classId: this.myTeam.klassId,
-              teamId: this.teamId,
-              //leaderId:this.leader.id,
-              reason:this.reason,
-            }
-          })
-            .then(res=>{
-              console.log(res);
-              if(res.status===200){
-               this.$message({
-                 type:'success',
-                 message:'您的申请已提交'
-               })
-              }else if(res.status===403){
-                alert("用户权限不足");
-              }else{
-                alert("未找到该队伍");
+            this.$axios({
+              method:'POST',
+              url:'/team/'+this.$data.teamId+'/teamvalidrequest',
+              headers:{
+                'Authorization':window.localStorage['token']
+              },
+              data:{
+                courseId: this.courseId,
+                //classId: this.myTeam.klassId,
+                teamId: this.teamId,
+                //leaderId:this.leader.id,
+                reason:this.reason,
               }
-              this.dialogFormVisible=false;
             })
-            .catch(e=>{
-              console.log(e);
-              this.dialogFormVisible=false;
-            })
+              .then(res=>{
+                console.log(res);
+                if(res.status===200){
+                  this.$message({
+                    type:'success',
+                    message:'您的申请已提交，请等待老师审核通过！'
+                  })
+                }else if(res.status===403){
+                  alert("用户权限不足");
+                }else{
+                  alert("未找到该队伍");
+                }
+                this.dialogFormVisible=false;
+              })
+              .catch(e=>{
+                console.log(e);
+                this.dialogFormVisible=false;
+              })
         },
 
         back(){
@@ -305,6 +339,7 @@
             }
           })
         },
+        //添加组员(从未组队学生中)
         handleEdit(index, row){
             console.log(row.id);
             this.$confirm('确定添加'+row.studentName, '提示', {
@@ -331,7 +366,12 @@
                   window.localStorage['token']=res.headers.authorization;
                   console.log(res);
                   if(res.status===200){
-
+                    this.getMyTeam();
+                    this.getNoTeam();
+                    this.$message({
+                      type:'success',
+                      message:'添加成功'
+                    })
                   }
                 })
                   .catch(e=>{
@@ -379,6 +419,7 @@
           }).catch(e=>{console.log(e);})})
 
         },//解散小组
+
       }
     }
 </script>

@@ -59,12 +59,12 @@
               <el-table-column
                 prop="studentName"
                 label="姓名"
-                width="130">
+                width="90">
               </el-table-column>
               <el-table-column
                 prop="account"
                 label="学号"
-                width="130">
+                width="150">
               </el-table-column>
             </el-table>
           </template>
@@ -120,7 +120,7 @@
           console.log(that.courseId);
           that.$axios({
             method:'GET',
-            url:'/course/'+that.courseId+'/noTeam',
+            url:'/course/'+that.courseId+'/noteam',
             headers:{
               'Authorization':window.localStorage['token']
             }
@@ -149,7 +149,7 @@
             })
             .catch(e=>{
               console.log(e);
-            })
+            });
 
         //获得创建小组人的信息（组长）
           that.$axios({
@@ -181,7 +181,7 @@
             console.log(this.name+'-');
             console.log(this.courseId+'-');
             console.log(this.classId);
-            console.log(this.leader);
+            console.log(this.leader.id);
             console.log(this.members);
             this.$refs[ruleForm].validate((valid) => {
               if (valid) {

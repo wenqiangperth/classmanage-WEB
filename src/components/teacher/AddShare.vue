@@ -103,24 +103,26 @@
         });
       },
       successShare() {
-        MessageBox.confirm('确认发送共享分组请求?', '提示', {
+       MessageBox.confirm('确认发送共享分组请求?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'info'
+          type: 'info',
         }).then(() => {
             this.$axios({
               method: 'POST',
               url: '/course/' + this.$data.courseId + '/teamsharerequest',
               data: {
-                subCourseId: this.$data.courseId,
-                mainCourseId: this.courses[this.index1].courseId,
-                subCourseTeacherId: this.$data.teacherId
+                mainCourseId: this.$data.courseId,
+                subCourseId: this.$data.courses[this.index1].courseId,
+                subCourseTeacherId: this.$data.courses[this.index1].studentOrTeacherId
               },
               headers: {
                 'Authorization': window.localStorage['token']
               }
             })
               .then(res => {
+                console.log("发起共享:");
+                console.log(res);
                 if (res.status === 200) {
                   window.localStorage['token'] = res.headers.authorization;
                   this.$message({
@@ -151,7 +153,8 @@
               .catch(e => {
                 console.log(e);
               })
-        }).catch(() => {
+        }).catch((e) => {
+          console.log(e);
           this.$message({
             type: 'info',
             message: '已取消'

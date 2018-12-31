@@ -24,7 +24,7 @@
 
       <div class="main" style="opacity: 0.85;">
         <div>
-          <el-button style="width: 90%;margin:10px 0 10px 0;background-color: #f0f0f0" @click="EnterTeam">进入我的小组</el-button>
+          <el-button style="width:60%;margin:10px 0 10px 0;background-color: #f0f0f0" @click="EnterTeam">进入我的小组</el-button>
         </div>
 
         <div style="width: 100%;background-color: #fff">
@@ -32,8 +32,8 @@
         </div>
         <el-collapse v-model="activeName" class="team" accordion>
           <el-collapse-item v-for="(team,index) in teams" :key="index" :class="{'active':index%2!=1}">
-            <template slot="title">
-              <div style="font-size: 17px;font-weight: bold">
+            <template slot="title" >
+              <div style="font-size: 17px;font-weight: bold;width: 100%;text-align: left" @click="chooseTeam(index)">
                 <i class="header-icon el-icon-search"></i>
                 {{team.klassSerial}}-{{team.teamSerial}}  : {{team.teamName}}
                 <a v-if="team.status===1" style="color:green;font-size: 20px">
@@ -48,9 +48,14 @@
               </div>
             </template>
             <div style="text-align: left;font-size: 16px;font-family: 幼圆">
-              <div style="background-color: #66cccc;font-weight: bold">组长：{{team.leaderName}}——{{team.leaderAccount}}</div>
-              <div v-for="mem in team.students">
-                组员：{{mem.studentName}}——{{mem.account}}
+              <div style="background-color: #66cccc;font-weight: bold" v-for="mem in students">
+                <div v-if="team.leaderId===mem.id">
+                  组长：{{mem.studentName}}——{{mem.account}}
+                </div>
+              </div>
+              <div v-for="mem in students">
+                <div v-if="team.leaderId===mem.id"></div>
+                <div v-else>组员：{{mem.studentName}}——{{mem.account}}</div>
               </div>
             </div>
           </el-collapse-item>
@@ -89,6 +94,7 @@
           leaderName:'',
           leaderAccount:'',
           teams:[],
+          students:[],//team下的所有学生，包括组长
           leaders:[],
           Unteam:[],
           teamId:'',
@@ -107,12 +113,13 @@
           console.log(that.courseId);
           that.$axios({
             method:'GET',
-            url:'course/'+that.courseId+'/team',
+            url:'/course/'+that.courseId+'/team',
             headers:{
               'Authorization':window.localStorage['token']
             }
           })
             .then(res=>{
+              console.log("所有小组的组队信息：");
               console.log(res);
               if(res.status===200){
                 window.localStorage['token']=res.headers.authorization;
@@ -136,7 +143,7 @@
 
           that.$axios({
             method:'GET',
-            url:'course/'+that.$data.courseId+'/noTeam',
+            url:'course/'+that.$data.courseId+'/noteam',
             headers:{
               'Authorization':window.localStorage['token']
             }
@@ -153,7 +160,7 @@
             })
             .catch(e=>{
               console.log(e)
-            })
+            });
 
           that.$axios({
             method:'GET',
@@ -244,9 +251,39 @@
                 }
               })
               .catch(e=>{
+                this.$message({
+                  type:'error',
+                  message:'您尚未加入任何小组，您可以选择创建小组！'
+                });
                 console.log(e);
               })
-          }
+          },
+          //选择队伍查看信息
+          chooseTeam(index){
+            console.log('点击了：'+index);
+            let that=this;
+            let teamId=that.teams[index].id;
+            that.$axios({
+              method:'GET',
+              url:'/team/'+teamId,
+              headers:{
+                'Authorization':window.localStorage['token']
+              },
+              params:{
+                courseId: that.courseId
+              }
+            })
+              .then(res=>{
+                console.log(res);
+                if(res.status===200){
+                  //渲染该队伍下的所有学生
+                  that.students=res.data.students;
+                }
+              })
+              .catch(e=>{
+                console.log(e);
+              })
+          },
       }
     }
 </script>
