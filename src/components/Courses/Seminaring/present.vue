@@ -128,24 +128,6 @@
               console.log(e)
             });
 
-        // this.$axios({
-        //   method:'GET',
-        //   url:'/course/'+this.courseId+'/myTeam',
-        //   headers:{
-        //     'Authorization':window.localStorage['token']
-        //   }
-        // })
-        //   .then(res=>{
-        //     console.log(res);
-        //     if(res.status===200){
-        //       this.teamId=res.data.id;
-        //       console.log('传来的teamId'+this.teamId);
-        //     }
-        //   })
-        //   .catch(e=>{
-        //     console.log(e);
-        //   })
-
         that.initWebSocket();
         console.log("teamId:" + this.teamId);
       },
@@ -248,12 +230,7 @@
           },
          open() {
            let that = this;
-           // if(that.teamId===that.SeminaringInfo[that.index].teamId){
-           //   this.$message({
-           //     type:error,
-           //     message:'当前展示组为您的小组，您暂时无法提问！'
-           //   })
-           // }
+
            if (this.index === -1) {
              this.$message({
                type: 'error',

@@ -80,7 +80,7 @@
         classId: '',
         seminarId: '',
         roundId: '',
-        currentSeminarInfo: {},
+        currentSeminarInfo: [],
         status: '',
         course: [],
         klassSeminarId: ''
@@ -102,6 +102,7 @@
           console.log("当前信息");
           console.log(data_);
           that.currentSeminarInfo = data_;
+
         }
       })
         .catch(e => {
@@ -142,6 +143,9 @@
         });
       },
       startSeminar() {
+        let that=this;
+        console.log('执行xia:');
+        console.log(that.currentSeminarInfo.seminarName);
         this.$axios({
           method: 'PUT',
           url: '/seminar/' + this.seminarId + '/status',
@@ -156,21 +160,20 @@
           .then(res => {
             console.log(res);
             if (res.status === 200) {
-
+              that.$router.push({
+                path: '/teacher/StartSeminar',
+                name: 'StartSeminar',
+                params: {
+                  classId: that.classId,
+                  seminarId: that.seminarId,
+                  course: that.course,
+                  roundId: that.roundId,
+                  seminarName: that.currentSeminarInfo.seminarName
+                }
+              });
             }
           }).catch(e => {
           console.log(e);
-        });
-        this.$router.push({
-          path: '/teacher/StartSeminar',
-          name: 'StartSeminar',
-          params: {
-            classId: this.classId,
-            seminarId: this.seminarId,
-            course: this.course,
-            roundId: this.roundId,
-            klassSeminarId: this.klassSeminarId
-          }
         });
       },
       gotoOngoingSeminar() {
@@ -179,7 +182,8 @@
           name: 'StartSeminar',
           params: {
             classId: this.classId,
-            seminarId: this.seminarId
+            seminarId: this.seminarId,
+            seminarName:this.currentSeminarInfo.seminarName,
           }
         });
       },
