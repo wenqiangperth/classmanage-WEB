@@ -90,6 +90,10 @@
             if(command === "course")
               this.$router.push({
                 path:'/Courses/CoursePage'
+              });
+            else if(command==="per")
+              this.$router.push({
+                path:'/Account/ManageAccount'
               })
           },
 

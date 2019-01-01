@@ -4,7 +4,7 @@
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
           <label>OOAD </label>
-          <el-dropdown trigger="click" >
+          <el-dropdown trigger="click" @command="handleCommand">
             <span class="el-dropdown-link">
               <i class="el-icon-plus"></i>
             </span>
@@ -164,6 +164,16 @@
         // this.checkValid();
       },
       methods:{
+        handleCommand(command){
+          if(command === "course")
+            this.$router.push({
+              path:'/Courses/CoursePage'
+            });
+          else if(command==="per")
+            this.$router.push({
+              path:'/Account/ManageAccount'
+            })
+        },
         searchStu(){
           let that=this;
           let j=0;

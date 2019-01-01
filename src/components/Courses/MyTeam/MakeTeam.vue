@@ -4,7 +4,7 @@
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
           <label>OOAD </label>
-          <el-dropdown trigger="click" >
+          <el-dropdown trigger="click" @command="handleCommand">
             <span class="el-dropdown-link">
               <i class="el-icon-plus"></i>
             </span>
@@ -28,7 +28,8 @@
           </el-form-item>
           <el-form-item label="选择班级" prop="region">
             <el-select v-model="classId" placeholder="2016-1">
-              <el-option v-for="klass in classInfo"
+              <el-option v-for="(klass,index) in classInfo"
+                         :key="index"
                          :label="klass.grade+'-'+klass.klassSerial"
                          :value="klass.id">
 
@@ -167,6 +168,16 @@
           }).catch(e=>{console.log(e)})
       },
       methods:{
+        handleCommand(command){
+          if(command === "course")
+            this.$router.push({
+              path:'/Courses/CoursePage'
+            });
+          else if(command==="per")
+            this.$router.push({
+              path:'/Account/ManageAccount'
+            })
+        },
           back(){
             this.$router.push({
               path:'/Courses/MyTeam/TeamInfo',
@@ -212,6 +223,7 @@
                     type:'success',
                     message:'创建小组成功！'
                   })
+
                 }
                 else{
                   alert("创建失败！请重新创建！");

@@ -3,7 +3,7 @@
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
           <label>账户与设置</label>
-          <el-dropdown trigger="click" >
+          <el-dropdown trigger="click" @command="handleCommand">
             <span class="el-dropdown-link">
               <i class="el-icon-plus"></i>
             </span>
@@ -30,8 +30,9 @@
           </el-form-item>
           <el-form-item label="联系方式">
             <el-input v-model="formLabelAlign.email">
-              <i slot="suffix" class="el-input__icon el-icon-edit icon0" @click="ChangeEmail"></i>
+              <i slot="suffix" class="el-input__icon el-icon-edit icon0" ></i>
             </el-input>
+            <el-button size="mini" style="float: right;background-color: #66CCCC" @click="ChangeEmail">修改</el-button>
           </el-form-item>
           <el-form-item label="账户密码">
             <el-input v-model="formLabelAlign.password" id="pass">
@@ -127,6 +128,16 @@
             })
       },
       methods: {
+        handleCommand(command){
+          if(command === "course")
+            this.$router.push({
+              path:'/Courses/CoursePage'
+            });
+          else if(command==="per")
+            this.$router.push({
+              path:'/Account/ManageAccount'
+            })
+        },
           back(){
             this.$router.push({path:'/HomePage'});
           },

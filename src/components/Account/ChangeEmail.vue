@@ -4,7 +4,7 @@
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
           <label>账户邮箱</label>
-          <el-dropdown trigger="click">
+          <el-dropdown trigger="click" @command="handleCommand">
             <span class="el-dropdown-link">
               <i class="el-icon-plus"></i>
             </span>
@@ -53,6 +53,16 @@
         }
       },
       methods:{
+        handleCommand(command){
+          if(command === "course")
+            this.$router.push({
+              path:'/Courses/CoursePage'
+            });
+          else if(command==="per")
+            this.$router.push({
+              path:'/Account/ManageAccount'
+            })
+        },
         back(){
           this.$router.push('/Account/ManageAccount');
         },

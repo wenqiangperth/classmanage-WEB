@@ -186,13 +186,17 @@
       editResults() {
         this.$axios({
           method: 'PUT',
-          url: '/seminar/' + this.seminarId + '/class/' + this.classId + '/reportscore',
+          url: '/seminar/' + this.seminarId + '/class/' + this.classId + '/reportScore',
           data: {
             groupInfo: this.groupInfo
+          },
+          headers: {
+            'Authorization': window.localStorage['token']
           }
         })
           .then(res => {
             if (res.status === 200) {
+              window.localStorage['token'] = res.headers.authorization;
               this.$message({
                 type: 'success',
                 message: '修改成功'

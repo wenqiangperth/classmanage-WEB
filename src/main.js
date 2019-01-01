@@ -27,7 +27,7 @@ new Vue({
   router,
 
   created(){
-    this.$axios.defaults.baseURL = 'http://47.107.103.28:8081'
+    this.$axios.defaults.baseURL = 'http://47.107.103.28:8082'
   },
 
   components: { App },

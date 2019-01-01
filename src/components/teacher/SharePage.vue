@@ -16,7 +16,7 @@
 
     <div class="main">
       <div style="width: 100%;height:60px;">
-        <el-button type="text" size="small" plain style="float: right;margin-top: 20px" @click="addShare">
+        <el-button type="text" size="small" plain style="float: right;margin-top: 20px;font-weight: bold;color: #616161" @click="addShare">
           新增共享
         </el-button>
       </div>

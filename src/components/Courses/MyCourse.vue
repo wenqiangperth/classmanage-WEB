@@ -117,11 +117,15 @@
       },
       methods:{
           handleCommand(command){
-              if(command === "course")
-                this.$router.push({
-                  path:'/Courses/CoursePage'
-                })
-            },
+          if(command === "course")
+            this.$router.push({
+              path:'/Courses/CoursePage'
+            });
+          else if(command==="per")
+            this.$router.push({
+              path:'/Account/ManageAccount'
+            })
+        },
           choose(index){
             this.dialogVisible=true;
             this.courseId=this.courses[index].courseId;

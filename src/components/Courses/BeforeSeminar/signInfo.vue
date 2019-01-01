@@ -4,7 +4,7 @@
         <div class="homeTitle">
           <i class="el-icon-arrow-left" @click="back"></i>
           <label>OOAD-讨论课</label>
-          <el-dropdown trigger="click" >
+          <el-dropdown trigger="click" @command="handleCommand">
             <span class="el-dropdown-link">
               <i class="el-icon-plus"></i>
             </span>
@@ -59,7 +59,7 @@
       <div class="post-seminar">
         <a @click="sign">报名</a>
       </div>
-      <div style="height: 230px;"></div>
+      <div style="height: 500px;"></div>
     </div>
 </template>
 
@@ -144,6 +144,16 @@
         })
       },
       methods:{
+        handleCommand(command){
+          if(command === "course")
+            this.$router.push({
+              path:'/Courses/CoursePage'
+            });
+          else if(command==="per")
+            this.$router.push({
+              path:'/Account/ManageAccount'
+            })
+        },
         // open() {
         //   this.$confirm('确定报名?', '提示', {
         //     confirmButtonText: '确定',
@@ -216,20 +226,28 @@
               .then(res=>{
                 console.log(res);
                 if(res.status===200){
-                  this.$message({
-                    type: 'success',
-                    message: '你的展示顺序: ' + value
-                  });
-                  this.$router.push({
-                    path:'/Courses/TotalSeminars',    //报名成功进入可修改报名界面
-                    name:'TotalSeminars',
-                    query:{
-                      seminarId:this.seminarId,
-                      courseId: this.courseId,
-                      courseName: this.courseName,
-                      klassId: this.klassId
-                    }
-                  })
+                  if(res.data!==0){
+                    this.$message({
+                      type: 'success',
+                      message: '你的展示顺序: ' + value
+                    });
+                    this.$router.push({
+                      path:'/Courses/TotalSeminars',    //报名成功进入可修改报名界面
+                      name:'TotalSeminars',
+                      query:{
+                        seminarId:this.seminarId,
+                        courseId: this.courseId,
+                        courseName: this.courseName,
+                        klassId: this.klassId
+                      }
+                    })
+                  }
+                  else if(res.data==0){
+                    this.$message({
+                      type:'error',
+                      message:'该位置已被抢先报名，您可以刷新该页面查看最新报名情况。'
+                    })
+                  }
                 }
                 else{
                   this.$message({

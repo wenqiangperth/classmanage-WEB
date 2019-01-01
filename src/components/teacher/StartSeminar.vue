@@ -42,10 +42,10 @@
         <el-button type="text" style="float: right" @click="endSeminar">SURE</el-button>
       </el-card>
       <div class="left">
-        <el-menu default-active="1-4-1" class="el-menu-vertical-demo" :collapse="isCollapse">
+        <el-menu default-active="1-4-1" class="el-menu-vertical-demo" :collapse="isCollapse" style="width: 100%">
           <el-submenu index="1">
             <template slot="title">
-              <i class="iconfont icon-huatong"></i>&nbsp;&nbsp;展示
+              <i class="iconfont icon-huatong" style="font-weight: bolder;font-size: 18px;color:#66cccc"></i>&nbsp;&nbsp;展示
               <span slot="title"></span>
             </template>
             <el-menu-item-group>
@@ -61,7 +61,7 @@
           </el-submenu>
           <el-submenu index="2">
             <template slot="title">
-              <i class="iconfont icon-jushou"></i>&nbsp;&nbsp;提问
+              <i class="iconfont icon-jushou" style="font-weight: bolder;font-size: 18px;color:#66cccc"></i>&nbsp;&nbsp;提问
               <span slot="title"></span>
             </template>
             <el-menu-item-group>

@@ -147,10 +147,14 @@
 
       },
       methods: {
-        handleCommand(command) {
-          if (command === "course")
+        handleCommand(command){
+          if(command === "course")
             this.$router.push({
-              path: '/Courses/CoursePage'
+              path:'/Courses/CoursePage'
+            });
+          else if(command==="per")
+            this.$router.push({
+              path:'/Account/ManageAccount'
             })
         },
         back(){

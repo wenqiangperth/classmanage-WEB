@@ -112,31 +112,11 @@
                   type: 'success',
                   message: '您已接受共享分组'
                 });
-                this.$axios({
-                  method: 'GET',
-                  url: '/request/teamshare',
-                  params: {
-                    teacherId: this.teacherId
-                  },
-                  headers: {
-                    'Authorization': window.localStorage['token']
-                  }
-                })
-                  .then(res => {
-                    if (res.status === 200) {
-                      window.localStorage['token'] = res.headers.authorization;
-                      console.log("共享组队申请");
-                      console.log(res.data);
-                      this.teamShares = res.data;
-                    }
-                  }).catch(e => {
-                  console.log(e);
-                })
+                this.methodCall();
               }
             }).catch(e => {
             console.log(e);
           });
-          this.methodCall();
         },
         refuseShare(index) {
           this.$axios({
@@ -155,12 +135,9 @@
                 this.$message({
                   type: 'success',
                   message: '您已拒绝接受共享'
-                })
-              }
-            }).catch(e => {
-            console.log(e);
-          })
-          this.methodCall();
+                });
+                this.methodCall();
+              }})
         },
         acceptAppli(index){
 
@@ -180,10 +157,11 @@
               this.$message({
                 type:'success',
                 message:'您已接收该申请！'
-              })
+              });
+              this.methodCall();
             }
           }).catch(e=>{console.log(e);})
-          this.methodCall();
+
         },
         refuseAppli(index){
           this.$axios({
@@ -202,10 +180,11 @@
               this.$message({
                 type:'info',
                 message:'您已拒绝该申请！'
-              })
+              });
+              this.methodCall();
             }
           }).catch(e=>{console.log(e);})
-          this.methodCall();
+
         },
       }
     }

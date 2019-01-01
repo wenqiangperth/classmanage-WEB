@@ -203,7 +203,7 @@
         this.$router.push({path: '/teacher/CourseManage'});
       },
       gotoSeminar() {
-        this.$router.push({path: '/teacher/SeminarPage'});
+        this.$router.push({path: '/teacher/TotalSeminar'});
       },
       handleExceed(files, fileList) {
         this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
@@ -252,9 +252,38 @@
                   type: 'success',
                   message: '删除成功!'
                 });
-                this.$router.push({
-                  path: '/teacher/CourseManage',
+                let that = this;
+                that.$axios({
+                  method: 'GET',
+                  url: '/course/' + that.$data.courseId + '/class',
+                  headers: {
+                    'Authorization': window.localStorage['token']
+                  }
                 })
+                  .then(res => {
+                    if (res.status === 200) {
+                      window.localStorage['token'] = res.headers.authorization;
+                      let data = res.data;
+                      console.log(data);
+                      that.classInfo = data;
+                    } else if (res.status === 400) {
+                      that.$message({
+                        type: 'error',
+                        message: '错误的ID格式'
+                      })
+                    } else if (res.status === 404) {
+                      that.$message({
+                        type: 'error',
+                        message: '未找到班级'
+                      })
+                    }
+                  })
+                  .catch(e => {
+                    console.log(e);
+                  })
+                // this.$router.push({
+                //   path: '/teacher/CourseManage',
+                // })
               } else if (res.status === 400) {
                 this.$message({
                   type: 'error',
