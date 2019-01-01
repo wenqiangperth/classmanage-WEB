@@ -2,7 +2,7 @@
   <div>
     <div id="head" class="head">
       <div class="title"><i class="el-icon-back icon1 icon0" @click="returnBeforeSeminar"></i>讨论课
-        <el-dropdown class="plus" trigger="click">
+        <el-dropdown style="transform: translateX(1300%)" trigger="click">
           <span class="el-dropdown-link">
             <i class="el-icon-plus icon0"></i>
           </span>
@@ -69,7 +69,7 @@
               <el-menu-item v-for="(group1,index1) in quesGroups"
                             :key="index1"
                             index=index1 @click="updateQuesScore(index1)">
-                {{group1.questionSerial}}.{{group1.klassSerial}}-{{group1.teamSerial}}{{group1.teamName}}
+                {{index1+1}}
               </el-menu-item>
             </el-menu-item-group>
           </el-submenu>
@@ -97,7 +97,7 @@
             <tr>
               <td style="width: 30%">提问成绩</td>
               <td>
-                <el-input placeholder="输入成绩"></el-input>
+                <el-input v-model="questionScore" placeholder="输入成绩"></el-input>
               </td>
             </tr>
             <tr>
@@ -187,12 +187,12 @@
         questionScore: '',
         klassSeminarId: '',
         otherScore: '',
-        otherQuesScore: '',
+        otherQuesScore:'',
         tempUpdate: 1,
         tempQuesUpdate: 1,
         quesNum: 0,
         quesGroups: [],
-        nowQuesGroup: {}
+        nowQuesGroup: []
 
       }
     },
@@ -275,7 +275,20 @@
         console.log(message);
         console.log("aaa" + message);
         if (message === "提问") {
-          that.quesNum++;
+          //that.quesNum++;
+          that.$axios({
+            method:'GET',
+            url:'/seminar/'+that.klassSeminarId+'/attendance/'+that.attendanceInfo[that.nowIndex].id+'/questionnumber',
+            headers: {
+              'Authorization': window.localStorage['token']
+            }
+          })
+            .then(res=>{
+              console.log("提问人数获取：");
+              if(res.status===200){
+                that.quesNum=res.data;
+              }
+            })
         }
         // else if (message === "提问") {
         //   that.questionNum++;
@@ -341,6 +354,7 @@
               if (res.status === 200) {
                 that.nowQuesGroup = res.data;
                 console.log("提问小组信息");
+                console.log(that.nowQuesGroup);
                 if (res.data === null) {
                   this.$message({
                     type: 'info',
@@ -348,6 +362,7 @@
                   })
                 } else {
                   that.ws.send("抽取提问" + that.nowQuesGroup.studentId);
+                  that.quesNum--;
                 }
                 window.localStorage['token'] = res.headers.authorization;
               }
@@ -400,7 +415,7 @@
         //向后端发请求保存提问成绩
         this.$axios({
           method: 'PUT',
-          url: '/attendance/question/' + this.questionId,
+          url: '/attendance/question/' + this.nowQuesGroup.id+'/score',
           data: {
             questionScore: this.questionScore
           },
@@ -411,13 +426,18 @@
           .then(res => {
             if (res.status === 200) {
               window.localStorage['token'] = res.headers.authorization;
-              this.gradeQues.push(this.nowQuesGroup);
+
               console.log("aaaaaaaaaaaa");
               console.log(this.gradeQues);
               this.$message({
                 type: 'success',
                 message: '保存成功！'
               });
+              this.nowQuesGroup.score=this.questionScore;
+              this.quesGroups.push({questionId:this.nowQuesGroup.id,score:this.questionScore});
+              console.log("提问列表");
+              console.log(this);
+              console.log(this.quesGroups);
               this.questionScore='';
             }
           }).catch(e => {
@@ -585,7 +605,7 @@
       update_.style.display = "none";
       this.$axios({
         method: 'PUT',
-        url: '/attendance/question/' + this.questionId,
+        url: '/attendance/question/' + this.quesGroups[this.tempQuesUpdate].questionId+'/score',
         data: {
           questionScore: this.otherQuesScore
         },
@@ -693,12 +713,9 @@
         console.log(e);
       });
       this.$router.push({
-        path: '/teacher/BeforeSeminar',
-        name: 'beforeSeminar',
+        path: '/teacher/SeminarPage',
+        name: 'SeminarPage',
         params: {
-          seminarId: this.seminarId,
-          roundId: this.roundId,
-          classId: this.classId,
           course: this.course
         }
       });

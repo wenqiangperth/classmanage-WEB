@@ -5,10 +5,10 @@
       </div>
     </div>
 
-    <div class="main" style="font-size: 14px" v-for="(round,index) in rounds"
-         :key="index">
+    <div class="main" style="font-size: 14px"
+         >
       <el-collapse accordion>
-        <el-collapse-item>
+        <el-collapse-item v-for="(round,index) in rounds" :key="index">
           <template slot="title">
             <div style="width: 100%;text-align: left" @click="getScores(index)">
               &nbsp;&nbsp;<i class="header-icon el-icon-service el-icon0"></i>&nbsp;&nbsp;<span
@@ -44,7 +44,7 @@
                  v-for="item in seminarsScore">
             <tr style="width: 100%">
               <td style="width: 30%">
-                <el-input v-model="item.seminarName"></el-input>
+                <label>{{item.seminarName}}</label>
               </td>
               <td style="width: 24%">
                 <el-input v-model="item.presentationScore"></el-input>
@@ -59,27 +59,31 @@
           </table>
           <table style="width: 100%">
             <tr style="width: 100%">
-              <td style="text-align: center;width: 30%">总成绩</td>
-              <td style="text-align: center;width: 30%">
+              <td style="width: 30%">总成绩</td>
+              <td style="text-align: center;width: 24%">
                 <el-input width="75" v-model="roundScore.presentationScore" :disabled="true"></el-input>
               </td>
-              <td style="text-align: center;width: 30%">
+              <td style="text-align: center;width: 24%">
                 <el-input width="75" v-model="roundScore.questionScore" :disabled="true"></el-input>
               </td>
-              <td style="text-align: center;width: 30%">
+              <td style="text-align: center;">
                 <el-input width="75" v-model="roundScore.reportScore" :disabled="true"></el-input>
               </td>
             </tr>
           </table>
           <table style="width: 100%">
             <tr style="width: 100%">
-              <td style="width: 40%">本轮总成绩</td>
+              <td style="width: 30%">本轮总成绩</td>
+              <td style="width: 24%"></td>
+              <td style="width: 24%"></td>
               <td>
                 <el-input v-model="roundScore.totalScore" :disabled="true"></el-input>
               </td>
             </tr>
             <tr style="width: 100%">
-              <td style="width: 40%"></td>
+              <td style="width: 30%"></td>
+              <td style="width: 24%"></td>
+              <td style="width: 24%"></td>
               <td>
                 <el-button type="info" plain @click="UpdateGrades(index)"
                            style="margin-top: 5px;float: right;margin-bottom: 15px">
@@ -88,42 +92,6 @@
               </td>
             </tr>
           </table>
-          <!--
-          <el-table
-            :data="seminarsScore"
-            style="width: 100%;"
-          >
-            <el-table-column
-              prop="seminarName"
-              label="主题"
-              style="width: 30%"
-              align="center">
-            </el-table-column>
-            <el-table-column
-              label="展示"
-              style="width: 24%"
-              align="center">
-              <template slot-scope="scope">
-                <el-input v-model="scope.row.presentationScore"></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="提问"
-              style="width: 24%"
-              align="center">
-              <template slot-scope="scope">
-                <el-input v-model="scope.row.questionScore"></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="报告"
-              align="center">
-              <template slot-scope="scope">
-                <el-input v-model="scope.row.reportScore"></el-input>
-              </template>
-            </el-table-column>
-          </el-table>
-          -->
 
         </el-dialog>
       </div>

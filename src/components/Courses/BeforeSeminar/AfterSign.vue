@@ -142,7 +142,7 @@
         that.seminarId=that.$route.query.seminarId;
         this.$axios({
           method:'GET',
-          url:'/course/'+this.courseId+'/myTeam',
+          url:'/course/'+this.courseId+'/myteam',
           headers:{
             'Authorization':window.localStorage['token']
           }
@@ -154,7 +154,7 @@
             }
           }).catch(e=>{
             console.log(e);
-          })
+          });
 
         that.$axios({
           method:'GET',

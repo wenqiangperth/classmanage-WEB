@@ -1,5 +1,5 @@
 <template>
-  <div class="body0">
+  <div>
       <div id="head" class="head">
         <div class="title"><i class="el-icon-close icon1 icon0"></i><span>个人主页</span>
           <el-dropdown style="transform: translateX(1300%)" trigger="click">
@@ -45,6 +45,9 @@
             </el-card>
           </el-col>
         </el-row>
+        <div style="width: 100%;height:450px">
+
+        </div>
       </div>
 
     </div>

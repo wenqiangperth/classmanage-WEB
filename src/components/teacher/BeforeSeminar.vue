@@ -3,7 +3,7 @@
     <div id="head" class="head">
       <div class="title">
         <i class="el-icon-back icon1 icon0" @click="Back"></i>讨论课
-        <el-dropdown class="plus" trigger="click">
+        <el-dropdown style="transform: translateX(1300%)" trigger="click">
           <span class="el-dropdown-link">
             <i class="el-icon-plus icon0"></i>
           </span>

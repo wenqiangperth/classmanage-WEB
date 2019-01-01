@@ -106,7 +106,7 @@
         :limit="3"
         :on-exceed="handleExceed"
         :file-list="fileList">
-        <el-button style="font-size: 19px;font-weight: bold;letter-spacing: 3px;border-radius: 25px" type="success"
+        <el-button style="font-size: 19px;font-weight: bold;letter-spacing: 3px;border-radius: 25px;margin-top: 25px" type="success"
                    @click="upload">
           <i class="el-icon-upload"></i> 上传PPT</el-button>
       </el-upload>

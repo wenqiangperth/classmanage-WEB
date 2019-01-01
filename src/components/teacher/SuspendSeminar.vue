@@ -3,7 +3,7 @@
     <div id="head" class="head">
       <div class="title">
         <i class="el-icon-back icon1 icon0"></i>--讨论课
-        <el-dropdown class="plus" trigger="click">
+        <el-dropdown style="transform: translateX(1300%)" trigger="click">
           <i class="el-icon-plus icon0"></i>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item><i class="el-icon-bell icon0" @click="gotoHomePage">&nbsp;&nbsp;个人页</i></el-dropdown-item>

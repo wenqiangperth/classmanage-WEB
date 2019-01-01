@@ -11,7 +11,7 @@
         <el-collapse-item v-for="(item,index) in info"
                           :key="index">
           <template slot="title">
-            <div style="font-weight: bold;width: 100%" @click="checkTeam(index)">
+            <div style="font-weight: bold;width: 100%;text-align: left" @click="checkTeam(index)">
               &nbsp;&nbsp<span><i class="header-icon el-icon-star-off el-icon0"></i>&nbsp;&nbsp;{{item.klassSerial}}-{{item.teamSerial}}-{{item.teamName}}</span>
               <span v-if="item.status===0" style="color: red;"><i class="el-icon-warning" style="font-size: 18px"></i></span>
               <span v-else-if="item.status===2" style="color: red;"><i class="el-icon-time" style="font-size: 18px"></i></span>
@@ -183,7 +183,7 @@
           method:'GET',
           url:'/team/'+this.info[index].id,
           params:{
-            courseId:this.info[index].courseId
+            courseId:this.courseId
           },
           headers: {
             'Authorization': window.localStorage['token']

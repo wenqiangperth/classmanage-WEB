@@ -80,23 +80,26 @@
         <label v-else-if="pptName!==null" style="text-align: center;color: green">
           已提交
         </label>
-        <el-button @click="openIntro" style="width:100%; height: 50px;text-decoration: underline;background-color: #fff">点此查看讨论课介绍</el-button>
+        <el-button @click="openIntro" style="width:100%; height: 50px;text-decoration: underline;background-color: #fff;margin-bottom: 30px">点此查看讨论课介绍</el-button>
       </div>
 
-      <el-upload
-        class="upload-demo"
-        :http-request="upload"
-        action="https://jsonplaceholder.typicode.com/posts/"
-        :on-preview="handlePreview"
-        :on-remove="handleRemove"
-        multiple
-        :limit="3"
-        :on-exceed="handleExceed"
-        :file-list="fileList">
-        <div class="grade">
-          <a @click="upload">PPT提交</a>
-        </div>
-      </el-upload>
+      <div style="margin-top: 40px">
+        <el-upload
+          class="upload-demo"
+          :http-request="upload"
+          action="https://jsonplaceholder.typicode.com/posts/"
+          :on-preview="handlePreview"
+          :on-remove="handleRemove"
+          multiple
+          :limit="3"
+          :on-exceed="handleExceed"
+          :file-list="fileList">
+          <div class="grade">
+            <a @click="upload">PPT提交</a>
+          </div>
+        </el-upload>
+      </div>
+
 
     </div>
     <div style="height: 100px;"></div>
@@ -320,7 +323,7 @@
 
   .grade{
     margin:60px 10px 15px 10px;
-    border-radius:25px;
+    border-radius:3px;
   }
 
   .grade a{

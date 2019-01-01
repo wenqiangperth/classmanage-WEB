@@ -1,36 +1,39 @@
 <template>
-  <div class="main" :style="note">
+  <div :style="note">
     <div class="login-form">
       <div class="login-title">
 
         <a >讨论课管理系统登陆</a>
       </div>
 
-      <el-form class="login">
-        <div class="login-input">
-          <label>学/工号:</label>
-          <input v-model="account" type="text"  placeholder=""/>
-        </div>
+      <div class="main">
+        <el-form class="login">
+          <div class="login-input">
+            <label>学/工号:</label>
+            <input v-model="account" type="text"  placeholder=""/>
+          </div>
 
-        <div class="login-input">
-          <label>密码:</label>
-          <input v-model="password" type="password" placeholder="" />
-        </div>
+          <div class="login-input">
+            <label>密码:</label>
+            <input v-model="password" type="password" placeholder="" />
+          </div>
 
-        <div class="login-input">
-          <a v-on:click="login">登陆</a>
-        </div>
+          <div class="login-input">
+            <a v-on:click="login">登陆</a>
+          </div>
 
-        <div class="login-txt">
-          <a href="#/findkey1">忘记密码</a>
-        </div>
+          <div class="login-txt">
+            <a href="#/findkey1">忘记密码</a>
+          </div>
 
-        <div class="divHeight" style="height:300px"></div>
+          <div class="divHeight" style="height:390px"></div>
 
-      <div class="login-info">
-        <a>初始密码为123456</a>
+          <div class="login-info">
+            <a>初始密码为123456</a>
+          </div>
+        </el-form>
       </div>
-      </el-form>
+
     </div>
   </div>
 </template>

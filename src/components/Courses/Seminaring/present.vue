@@ -91,50 +91,13 @@
           that.seminarName=that.$route.query.seminarName;
           that.teamId = that.$route.query.teamId;
           that.klassSeminarId = that.$route.query.klassSeminarId;
-          that.$axios({
-            method:'GET',
-            url:'/seminar/'+that.seminarId+'/class/'+that.klassId+'/attendance',
-            headers:{
-              'Authorization':window.localStorage['token']
-            }
-          })
-            .then(res=>{
-              console.log('获得所得所有attendance:');
-              console.log(res);
-              if(res.status===200){
-                that.SeminaringInfo = res.data;
-                for (let i = 0; i < that.SeminaringInfo.length; i++) {
-                  if (that.SeminaringInfo[i].isPresent === 1)
-                    that.index = i;
-                }
-                console.log('当前展示顺序index:' + that.index);
-                //如果有正在展示组，查看该组提问人数，小组？
-                if(this.index!==-1){
-                  that.$axios({
-                    method: 'GET',
-                    url: '/seminar/' + that.SeminaringInfo[0].klassSeminarId + '/attendance/' + that.SeminaringInfo[that.index].id + '/questionnumber',
-                    headers: {
-                      'Authorization': window.localStorage['token']
-                    }
-                  }).then(res => {
-                    window.localStorage['token'] = res.headers.authorization;
-                    console.log("当前提问人数：");
-                    console.log(res);
-                    that.questionNum = res.data;
-                  }).catch(e => {
-                    console.log(e)
-                  })
-                }
-              }
-            })
-            .catch(e=>{
-              console.log(e)
-            });
+          that.getNowTeamAndQue();
 
         that.initWebSocket();
         console.log("teamId:" + this.teamId);
       },
       methods:{
+
         threadPoxi() {  // 实际调用的方法
           //参数
           const agentData = "mymessage";
@@ -190,22 +153,28 @@
           console.log("传来的消息是：" + message);
           if (message === "下一组展示") {
             console.log("dfsfs");
-            that.isShow = true;
-            that.index++;
+            console.log("加一次你说一次？");
+            console.log(that.index);
+            // that.index++;
+            that.getNowTeamAndQue();
             that.questionNum = 0;
           } else if (message === "提问") {
             that.questionNum++;
           } else if (message === "抽取提问") {
             that.questionNum--;
           } else if (message === "请您开始提问") {
-            this.$message({
+            that.questionNum--;
+            that.$message({
               type: 'success',
-              message: '请您开始提问'
+              message: '请您开始提问',
+              center: true,
+              duration:10000
             })
           } else {
             this.$message({
               type: 'warning',
-              message: '很遗憾，您未被选中，请您耐心等待！'
+              message: '很遗憾，您未被选中，请您耐心等待！',
+              center: true
             })
           }
 
@@ -240,6 +209,7 @@
                message: '讨论课尚未开始，无法发起提问！'
              })
            } else {
+             console.log(that.index);
              that.$axios({
                method: 'POST',
                url: '/seminar/' + that.SeminaringInfo[0].klassSeminarId + '/attendance/' + that.SeminaringInfo[that.index].id + '/team/' + this.teamId + '/question',
@@ -263,6 +233,51 @@
                  console.log(e);
                })
            }
+        },
+        getNowTeamAndQue(){
+          let that=this;
+          that.$axios({
+            method:'GET',
+            url:'/seminar/'+that.seminarId+'/class/'+that.klassId+'/attendance',
+            headers:{
+              'Authorization':window.localStorage['token']
+            }
+          })
+            .then(res=>{
+              console.log('获得所得所有attendance:');
+              console.log(res);
+              if(res.status===200){
+                that.SeminaringInfo = res.data;
+                for (let i = 0; i < that.SeminaringInfo.length; i++) {
+                  if (that.SeminaringInfo[i].isPresent === 1)
+                    that.index = i;
+                  else
+                    that.index = 0;
+                }
+
+                console.log('当前展示顺序index:' + that.index);
+                //如果有正在展示组，查看该组提问人数，小组？
+                if(this.index!==-1){
+                  that.$axios({
+                    method: 'GET',
+                    url: '/seminar/' + that.SeminaringInfo[0].klassSeminarId + '/attendance/' + that.SeminaringInfo[that.index].id + '/questionnumber',
+                    headers: {
+                      'Authorization': window.localStorage['token']
+                    }
+                  }).then(res => {
+                    window.localStorage['token'] = res.headers.authorization;
+                    console.log("当前提问人数：");
+                    console.log(res);
+                    that.questionNum = res.data;
+                  }).catch(e => {
+                    console.log(e)
+                  })
+                }
+              }
+            })
+            .catch(e=>{
+              console.log(e)
+            });
         }
       }
     }
