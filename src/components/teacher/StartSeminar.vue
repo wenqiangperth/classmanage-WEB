@@ -353,7 +353,7 @@
             .then(res => {
               if (res.status === 200) {
                 that.nowQuesGroup = res.data;
-                console.log("提问小组信息");
+                console.log("提问小组信息aaaa");
                 console.log(that.nowQuesGroup);
                 if (res.data === null) {
                   this.$message({
@@ -362,6 +362,10 @@
                   })
                 } else {
                   that.ws.send("抽取提问" + that.nowQuesGroup.studentId);
+                  that.$message({
+                    type:'info',
+                    message:'成功抽取'+that.nowQuesGroup.team.klassSerial+'-'+that.nowQuesGroup.team.teamSerial+'小组同学提问'
+                  });
                   that.quesNum--;
                 }
                 window.localStorage['token'] = res.headers.authorization;
@@ -369,8 +373,8 @@
             }).catch(e => {
             console.log(e);
           });
-          var askQues = document.getElementById("askQues");
-          askQues.disabled = true;
+         /* var askQues = document.getElementById("askQues");
+          askQues.disabled = true;*/
           var pre_ = document.getElementById("pre");
           var ques_ = document.getElementById("ques");
           var update_ = document.getElementById("update");
@@ -410,8 +414,8 @@
       },
       //给提问打分
       gradeQues() {
-        var askQues = document.getElementById("askQues");
-        askQues.disabled = false;
+        /*var askQues = document.getElementById("askQues");
+        askQues.disabled = false;*/
         //向后端发请求保存提问成绩
         this.$axios({
           method: 'PUT',

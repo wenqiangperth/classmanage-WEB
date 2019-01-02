@@ -74,7 +74,9 @@
     },
     created() {
       this.course = this.$route.params.course;
+      console.log("courseId---aaaaaaaa");
       console.log(this.course);
+      console.log(this.course.courseId);
       let that = this;
       that.$axios({
         method: 'GET',

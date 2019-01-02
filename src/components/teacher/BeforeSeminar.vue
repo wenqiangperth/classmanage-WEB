@@ -192,7 +192,8 @@
           path: '/teacher/SeminarPage',
           name: 'SeminarPage',
           params: {
-            course: this.course
+            course: this.course,
+            courseId:this.course.courseId
           }
         })
       },

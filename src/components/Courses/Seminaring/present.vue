@@ -67,7 +67,8 @@
           seminarName:'',
           klassSeminarId: '',
           SeminaringInfo:[],
-          teamId: '',
+          teamId: '',       //在哪里？
+          NowTeamId:'',
           ws: null,
           SeminarTitle: '业务流程分析',
           isShow: false,
@@ -180,6 +181,7 @@
               duration:10000
             })
           } else {
+            that.questionNum--;
             this.$message({
               type: 'warning',
               message: '很遗憾，您未被选中，请您耐心等待！',
@@ -211,36 +213,42 @@
           },
          open() {
            let that = this;
-
-           if (this.index === -1) {
-             this.$message({
-               type: 'error',
-               message: '讨论课尚未开始，无法发起提问！'
+           if(that.teamId===that.NowTeamId){
+             that.$message({
+               type:'error',
+               message:'您不可以提问您的小组！！！'
              })
-           } else {
-             console.log(that.index);
-             that.$axios({
-               method: 'POST',
-               url: '/seminar/' + that.SeminaringInfo[0].klassSeminarId + '/attendance/' + that.SeminaringInfo[that.index].id + '/team/' + this.teamId + '/question',
-               headers: {
-                 'Authorization': window.localStorage['token']
-               }
-             })
-               .then(res => {
-                 console.log(res);
-                 if (res.status === 200) {
-                   that.$message({
-                     type: 'info',
-                     message: res.data
-                   });
-                   if (res.data === "报名提问成功") {
-                     that.ws.send("提问")
-                   }
+           }else {
+             if (this.index === -1) {
+               this.$message({
+                 type: 'error',
+                 message: '讨论课尚未开始，无法发起提问！'
+               })
+             } else {
+               console.log(that.index);
+               that.$axios({
+                 method: 'POST',
+                 url: '/seminar/' + that.SeminaringInfo[0].klassSeminarId + '/attendance/' + that.SeminaringInfo[that.index].id + '/team/' + this.teamId + '/question',
+                 headers: {
+                   'Authorization': window.localStorage['token']
                  }
                })
-               .catch(e => {
-                 console.log(e);
-               })
+                 .then(res => {
+                   console.log(res);
+                   if (res.status === 200) {
+                     that.$message({
+                       type: 'info',
+                       message: res.data
+                     });
+                     if (res.data === "报名提问成功") {
+                       that.ws.send("提问")
+                     }
+                   }
+                 })
+                 .catch(e => {
+                   console.log(e);
+                 })
+             }
            }
         },
         getNowTeamAndQue(){
@@ -258,8 +266,10 @@
               if(res.status===200){
                 that.SeminaringInfo = res.data;
                 for (let i = 0; i < that.SeminaringInfo.length; i++) {
-                  if (that.SeminaringInfo[i].isPresent === 1)
+                  if (that.SeminaringInfo[i].isPresent === 1){
                     that.index = i;
+                    that.NowTeamId = that.SeminaringInfo[i].teamId;
+                  }
                   else
                     that.index = 0;
                 }

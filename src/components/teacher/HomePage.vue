@@ -45,6 +45,28 @@
             </el-card>
           </el-col>
         </el-row>
+        <el-row style="width: 100%">
+          <el-col :span="12">
+            <el-card shadow="hover" class="card">
+              <div @click="gotoBacklog">
+                <i class="el-icon-date icon2"></i>
+                <div>
+                  <span class="font0">我的待办</span>
+                </div>
+              </div>
+            </el-card>
+          </el-col>
+          <el-col :span="12">
+            <el-card shadow="hover" class="card">
+              <div @click="returnLogin">
+                <i class="el-icon-back icon2"></i>
+                <div>
+                  <span class="font0">退出账户</span>
+                </div>
+              </div>
+            </el-card>
+          </el-col>
+        </el-row>
         <div style="width: 100%;height:450px">
 
         </div>
