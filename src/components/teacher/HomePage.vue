@@ -49,7 +49,7 @@
           <el-col :span="12">
             <el-card shadow="hover" class="card">
               <div @click="gotoBacklog">
-                <i class="el-icon-date icon2"></i>
+                <i class="el-icon-date icon3"></i>
                 <div>
                   <span class="font0">我的待办</span>
                 </div>
@@ -59,7 +59,7 @@
           <el-col :span="12">
             <el-card shadow="hover" class="card">
               <div @click="returnLogin">
-                <i class="el-icon-back icon2"></i>
+                <i class="el-icon-back icon3"></i>
                 <div>
                   <span class="font0">退出账户</span>
                 </div>
@@ -153,6 +153,11 @@
   .icon2{
     font-size: 60px;
     color: #66cccc;
+  }
+  .icon3{
+    font-size:55px;
+    color:#66cccc;
+    font-weight: bold;
   }
   .font0{
     font-family: 宋体;
